@@ -5,15 +5,10 @@
     tools:context="de.grau.organizer.MonthFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <CalendarView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-    <DatePicker
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/datePicker"
-        android:addStatesFromChildren="false" />
-
+        android:id="@+id/calendarView"
+        android:elevation="1dp" />
 </FrameLayout>
