@@ -2,13 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.grau.organizer.Fragments.MonthFragment">
+    tools:context="de.grau.organizer.Fragments.WeekFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
-    <CalendarView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/calendarView"
-        android:elevation="1dp" />
+        android:text="@string/hello_blank_fragment" />
+
 </FrameLayout>
