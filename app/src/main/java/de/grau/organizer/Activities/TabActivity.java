@@ -23,8 +23,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import de.grau.organizer.EventsManagerRealm;
 import de.grau.organizer.fragments.MonthFragment;
 import de.grau.organizer.R;
+import de.grau.organizer.interfaces.EventsManager;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -44,6 +46,8 @@ public class TabActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private Context activityContext;
+
+    private EventsManager eventsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +80,21 @@ public class TabActivity extends AppCompatActivity {
             }
         });
 
+        eventsManager = new EventsManagerRealm();
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        eventsManager.open(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        eventsManager.close();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

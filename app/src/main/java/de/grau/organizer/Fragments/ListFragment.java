@@ -7,8 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.List;
 
 import de.grau.organizer.R;
+import de.grau.organizer.activities.TabActivity;
+import de.grau.organizer.adapters.EventsListAdapter;
+import de.grau.organizer.classes.Event;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +33,13 @@ public class ListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EventsListAdapter mAdapter;
+
+    private TabActivity mActivity;
+
+
+    private ListView listView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,13 +72,25 @@ public class ListFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        mActivity = (TabActivity) getActivity();
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view =  inflater.inflate(R.layout.fragment_list, container, false);
+
+        listView = (ListView) view.findViewById(R.id.fragment_list_listview);
+
+
+        mAdapter = new EventsListAdapter(getActivity(), 0, null);
+
+        listView.setAdapter(mAdapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

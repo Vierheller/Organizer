@@ -47,7 +47,7 @@ public class EditorActivity extends AppCompatActivity {
      * This method references every necessary GUI-Element
      */
     private void initialize(){
-        et_title =              (EditText) findViewById(R.id.editor_event_name);
+        et_title =              (EditText) findViewById(R.id.editor_et_title);
         btn_pickDate =          (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
         btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
