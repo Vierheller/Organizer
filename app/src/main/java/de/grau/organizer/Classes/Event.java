@@ -26,4 +26,87 @@ public class Event extends RealmObject{
     private RealmList<Tag> tags;        //""
     private Category category;
 
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
+    public int getNotificationTime() {
+        return notificationTime;
+    }
+
+    public void setNotificationTime(int notificationTime) {
+        this.notificationTime = notificationTime;
+    }
+
+    public RealmList<Action> getActions() {
+        return actions;
+    }
+
+    public void setActions(RealmList<Action> actions) {
+        this.actions = actions;
+    }
+
+    public RealmList<Notes> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(RealmList<Notes> notes) {
+        this.notes = notes;
+    }
+
+    public RealmList<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(RealmList<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
