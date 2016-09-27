@@ -1,18 +1,21 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
+import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
 
@@ -85,11 +88,21 @@ public class ListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.fragment_list_listview);
 
-        List<Event> events = mActivity.eventsManager.getEvents();
+        final List<Event> events = mActivity.eventsManager.getEvents();
 
         mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events);
 
         listView.setAdapter(mAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(mActivity, TaskActivity.class);
+                String id = events.get(i).getId();
+                intent.putExtra(TaskActivity.PARAM_ID, id);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
