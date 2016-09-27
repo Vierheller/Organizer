@@ -1,4 +1,4 @@
-package de.grau.organizer.Fragments;
+package de.grau.organizer.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;

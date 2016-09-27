@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.grau.organizer.Fragments.WeekFragment">
+    tools:context="de.grau.organizer.fragments.WeekFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

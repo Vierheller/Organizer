@@ -1,4 +1,4 @@
-package de.grau.organizer.Classes;
+package de.grau.organizer.classes;
 
 import java.util.Date;
 

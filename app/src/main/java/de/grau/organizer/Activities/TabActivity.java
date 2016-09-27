@@ -1,10 +1,12 @@
-package de.grau.organizer.Activities;
+package de.grau.organizer.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,13 +19,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import de.grau.organizer.Fragments.MonthFragment;
+import de.grau.organizer.fragments.MonthFragment;
 import de.grau.organizer.R;
 
 public class TabActivity extends AppCompatActivity {
-
+    public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -39,13 +43,17 @@ public class TabActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private Context activityContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setActionBar(toolbar);
+        activityContext = this;
+//        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -61,8 +69,10 @@ public class TabActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(activityContext, EditorActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -73,6 +83,13 @@ public class TabActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tab, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -160,9 +177,9 @@ public class TabActivity extends AppCompatActivity {
                 case 0:
                     return "MONTH";
                 case 1:
-                    return "SECTION 2";
+                    return "WEEK";
                 case 2:
-                    return "SECTION 3";
+                    return "LIST";
             }
             return null;
         }
