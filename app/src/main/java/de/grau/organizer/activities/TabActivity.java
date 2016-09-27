@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toolbar;
 
 import de.grau.organizer.EventsManagerRealm;
+import de.grau.organizer.fragments.ListFragment;
 import de.grau.organizer.fragments.MonthFragment;
 import de.grau.organizer.R;
 import de.grau.organizer.interfaces.EventsManager;
@@ -47,7 +48,7 @@ public class TabActivity extends AppCompatActivity {
 
     private Context activityContext;
 
-    private EventsManager eventsManager;
+    public EventsManager eventsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +178,8 @@ public class TabActivity extends AppCompatActivity {
             switch(position){
                 case 0:
                     return MonthFragment.newInstance("String1", "String2");
+                case 2:
+                     return ListFragment.newInstance("String1","String2");
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }

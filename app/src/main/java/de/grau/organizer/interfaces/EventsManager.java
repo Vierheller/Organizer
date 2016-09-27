@@ -17,6 +17,7 @@ public interface EventsManager {
     List<Event> getEvents(Date startDate, Date endDate);
     List<Event> getEvents(Category category);
     List<Event> getEvents(List<Tag> tags);
+    List<Event> getEvents();
 
     Event loadEvent(long eventId);
 

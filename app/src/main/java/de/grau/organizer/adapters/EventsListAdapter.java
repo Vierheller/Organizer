@@ -2,6 +2,7 @@ package de.grau.organizer.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -32,10 +33,13 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.eventslist_row, parent,false);
+
         Event event = eventList.get(position);
-        TextView textView = (TextView) convertView.findViewById(R.id.eventlist_title);
+        TextView textView = (TextView) view.findViewById(R.id.eventlist_title);
 
         textView.setText(event.getName());
-        return super.getView(position, convertView, parent);
+        return view;
     }
 }

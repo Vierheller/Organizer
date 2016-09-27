@@ -1,10 +1,12 @@
 package de.grau.organizer.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import de.grau.organizer.EventsManagerRealm;
 import de.grau.organizer.R;
@@ -53,6 +55,8 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
+        btn_save =              (Button) findViewById(R.id.editor_btn_saveevent);
+        setupListeners();
     }
 
     private void setupListeners(){
@@ -73,6 +77,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),"Saving Event", Toast.LENGTH_LONG).show();
                 if(verifyEvent()){
                     saveEvent();
                 }
@@ -88,6 +93,10 @@ public class EditorActivity extends AppCompatActivity {
         event.setName(et_title.getText().toString());
 
         eventsManager.writeEvent(event);
+
+        Intent intent = new Intent(this, TabActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     /**

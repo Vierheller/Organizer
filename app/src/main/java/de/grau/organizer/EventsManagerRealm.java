@@ -42,6 +42,12 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
+    public List<Event> getEvents() {
+        RealmQuery<Event> query = realm.where(Event.class);
+        return  query.findAll();
+    }
+
+    @Override
     public Event loadEvent(long eventId) {
         return null;
     }
@@ -55,14 +61,14 @@ public class EventsManagerRealm implements EventsManager {
     public boolean writeEvent(final Event event) {
 
         realm.beginTransaction();
-
-        realm.executeTransaction(new Realm.Transaction() {
+        realm.copyToRealmOrUpdate(event);
+        /*realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.insertOrUpdate(event);
             }
         });
-
+        */
         realm.commitTransaction();
 
         return false;
@@ -71,11 +77,13 @@ public class EventsManagerRealm implements EventsManager {
     @Override
     public void open(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
-        Realm.setDefaultConfiguration(realmConfig);
+        if (realm == null) {
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+            Realm.setDefaultConfiguration(realmConfig);
 
-        // Get a Realm instance for this thread
-        realm = Realm.getDefaultInstance();
+            // Get a Realm instance for this thread
+            realm = Realm.getDefaultInstance();
+        }
     }
 
     @Override

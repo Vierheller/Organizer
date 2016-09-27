@@ -1,6 +1,7 @@
 package de.grau.organizer.classes;
 
 import java.util.Date;
+import java.util.UUID;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -14,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Event extends RealmObject{
     @PrimaryKey
-    private long id;
+    private String id;
     private String name, description;
     private int priority;
 
@@ -26,7 +27,13 @@ public class Event extends RealmObject{
     private RealmList<Tag> tags;        //""
     private Category category;
 
-    public long getId() {
+    public Event(){
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
+    }
+
+    public String getId() {
         return id;
     }
 
