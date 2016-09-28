@@ -125,7 +125,6 @@ public class TabActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
     /**
      * A placeholder fragment containing a simple view.
      */

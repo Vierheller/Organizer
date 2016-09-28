@@ -31,6 +31,8 @@ public class Event extends RealmObject{
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
+        this.actions = new RealmList<Action>();
+        this.notes = new RealmList<Notes>();
     }
 
     public String getId() {
@@ -115,5 +117,16 @@ public class Event extends RealmObject{
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public void addAction(Action action){
+        this.actions.add(action);
+    }
+    public void removeAction(Action action){
+        this.actions.remove(action);
+    }
+
+    public void addNote(Notes note){
+        this.notes.add(note);
     }
 }

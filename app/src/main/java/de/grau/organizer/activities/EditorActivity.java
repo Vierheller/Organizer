@@ -1,6 +1,10 @@
 package de.grau.organizer.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +14,8 @@ import android.widget.Toast;
 
 import de.grau.organizer.EventsManagerRealm;
 import de.grau.organizer.R;
+import de.grau.organizer.classes.Action;
+import de.grau.organizer.classes.ContactHelper;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.interfaces.EventsManager;
 
@@ -21,16 +27,15 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_addNote;
     Button btn_chooseAction;
     Button btn_pickNotifyDelay;
-
+    private final static int CONTACT_PICKER = 1;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     EventsManager eventsManager = new EventsManagerRealm();
-
-
+    Event event = new Event();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         initialize();
-
     }
 
     @Override
@@ -83,13 +88,67 @@ public class EditorActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_chooseAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContactInfo();
+            }
+        });
     }
+
+    private void getContactInfo() {
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            // Android version is lesser than 6.0 or the permission is already granted.
+            Intent contactPickerIntent =
+                    new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(contactPickerIntent, CONTACT_PICKER);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // check whether the result is ok
+        if (resultCode == RESULT_OK) {
+            // Check for the request code, we might be using multiple startActivityForReslut
+            switch (requestCode) {
+                case CONTACT_PICKER:
+                    ContactHelper c = new ContactHelper();
+                    c.contactPicked(getApplicationContext(),data);
+                    Action action = new Action();
+                    action.setData(c.getNumber());
+                    event.addAction(action);
+                    break;
+            }
+        } else {
+            //Log.e("MainActivity", "Failed to pick contact");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                Intent contactPickerIntent =
+                        new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, CONTACT_PICKER);
+            } else {
+                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     /**
      * This method calls the {@EventsManager} to store the current Event
      */
     private void saveEvent() {
-        Event event = new Event();
         event.setName(et_title.getText().toString());
 
         eventsManager.writeEvent(event);
@@ -104,6 +163,6 @@ public class EditorActivity extends AppCompatActivity {
      * @return isValid
      */
     private boolean verifyEvent() {
-        return true;
+        return et_title.getText().toString() != null;
     }
 }
