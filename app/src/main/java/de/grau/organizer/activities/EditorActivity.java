@@ -1,20 +1,24 @@
 package de.grau.organizer.activities;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.ContactsContract;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.grau.organizer.EventsManagerRealm;
@@ -26,6 +30,8 @@ import de.grau.organizer.classes.Notes;
 import de.grau.organizer.interfaces.EventsManager;
 
 public class EditorActivity extends AppCompatActivity {
+    public static final String DEBUG_TAG = EditorActivity.class.getCanonicalName();
+
     //GUI ELEMENTS
     EditText et_title;
     Button btn_save;
@@ -39,6 +45,10 @@ public class EditorActivity extends AppCompatActivity {
     LinearLayout layout_notecontainer;
     List<EditText> layout_notelist;
 
+    //DIALOGS
+    DatePickerDialog datePickerDialog;
+    TimePickerDialog timePickerDialog;
+
     //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
@@ -49,6 +59,9 @@ public class EditorActivity extends AppCompatActivity {
 
     //INTENT
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
+
+    //HELPERS
+    Calendar currentStartDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,15 +100,56 @@ public class EditorActivity extends AppCompatActivity {
         et_description=         (EditText) findViewById(R.id.editor_description);
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
+
+        //TODO This is only for testing
+        currentStartDate = Calendar.getInstance();
+        btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ currentStartDate.get(Calendar.MONTH)+"."+ currentStartDate.get(Calendar.YEAR));
+
         addNote();
+        setupDialogs();
         setupListeners();
+    }
+
+    private void setupDialogs() {
+        final int year = currentStartDate.get(Calendar.YEAR);
+        final int month = currentStartDate.get(Calendar.MONTH);
+        final int day = currentStartDate.get(Calendar.DAY_OF_MONTH);
+        int hour = currentStartDate.get(Calendar.HOUR_OF_DAY);
+        int minute = currentStartDate
+                .get(Calendar.MINUTE);
+        datePickerDialog = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
+                currentStartDate.set(Calendar.YEAR, year);
+                currentStartDate.set(Calendar.MONTH, month);
+                currentStartDate.set(Calendar.DAY_OF_MONTH, day_of_month);
+                btn_pickDate.setText(day_of_month+"."+month+"."+year);
+            }
+        },year, month, day);
+
+        timePickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
+                currentStartDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
+                currentStartDate.set(Calendar.MINUTE, minute);
+                btn_pickTime.setText(hour_of_day+":"+minute);
+            }
+        }, hour, minute, true);
+
     }
 
     private void setupListeners(){
         btn_pickDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                datePickerDialog.show();
+            }
+        });
 
+        btn_pickTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerDialog.show();
             }
         });
 
@@ -207,6 +261,9 @@ public class EditorActivity extends AppCompatActivity {
         }
         //Set description
         event.setDescription(et_description.getText().toString());
+
+        //set startdate
+        event.setStart(currentStartDate.getTime());
 
         //Save event into Database
         eventsManager.writeEvent(event);
