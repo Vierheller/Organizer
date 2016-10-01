@@ -73,6 +73,12 @@
             android:id="@+id/editor_btn_chooseaction"
             android:layout_marginTop="10dp" />
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editor_notecontainer"></LinearLayout>
+
         <Button
             android:text="@string/layout_button_addNote"
             android:layout_width="match_parent"
@@ -80,6 +86,16 @@
             android:id="@+id/editor_btn_addnote"
             android:layout_marginTop="10dp"
             android:elevation="0dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/editor_description"
+            android:layout_marginTop="10dp"
+            android:hint="@string/layout_editor_descriptionhint"
+            android:elegantTextHeight="false" />
 
         <Button
             android:text="Save"

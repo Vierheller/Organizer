@@ -43,6 +43,7 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public List<Event> getEvents() {
+        if(realm.isClosed()) realm = Realm.getDefaultInstance();
         RealmQuery<Event> query = realm.where(Event.class);
         return  query.findAll();
     }

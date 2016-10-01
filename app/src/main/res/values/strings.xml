@@ -14,4 +14,6 @@
     <string name="layout_dateTime">Datum und Uhrzeit</string>
     <string name="layout_button_addNote">Notiz hinzufügen</string>
     <string name="layout_button_addAction">Aktion hinzufügen</string>
+    <string name="layout_editor_descriptionhint">Description</string>
+    <string name="layout_editor_notehint">Note</string>
 </resources>

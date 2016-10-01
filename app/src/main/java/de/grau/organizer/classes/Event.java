@@ -103,6 +103,10 @@ public class Event extends RealmObject{
         this.notes = notes;
     }
 
+    public void putNote(Notes note){
+        notes.add(note);
+    }
+
     public RealmList<Tag> getTags() {
         return tags;
     }

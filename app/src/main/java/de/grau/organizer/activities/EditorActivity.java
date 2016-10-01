@@ -5,18 +5,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.grau.organizer.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.ContactHelper;
 import de.grau.organizer.classes.Event;
+import de.grau.organizer.classes.Notes;
 import de.grau.organizer.interfaces.EventsManager;
 
 public class EditorActivity extends AppCompatActivity {
@@ -28,6 +34,10 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_addNote;
     Button btn_chooseAction;
     Button btn_pickNotifyDelay;
+    EditText et_description;
+
+    LinearLayout layout_notecontainer;
+    List<EditText> layout_notelist;
 
     //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
@@ -74,6 +84,10 @@ public class EditorActivity extends AppCompatActivity {
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_save =              (Button) findViewById(R.id.editor_btn_saveevent);
+        et_description=         (EditText) findViewById(R.id.editor_description);
+        layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
+        layout_notelist = new ArrayList<EditText>();
+        addNote();
         setupListeners();
     }
 
@@ -88,7 +102,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_addNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                addNote();
             }
         });
 
@@ -108,6 +122,21 @@ public class EditorActivity extends AppCompatActivity {
                 getContactInfo();
             }
         });
+    }
+
+    private void addNote() {
+        EditText et = new EditText(this);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 10, 0, 0);
+        et.setLayoutParams(layoutParams);
+
+        et.setHint(R.string.layout_editor_notehint);
+
+        layout_notelist.add(et);
+        layout_notecontainer.addView(et);
     }
 
     private void getContactInfo() {
@@ -162,12 +191,27 @@ public class EditorActivity extends AppCompatActivity {
      * This method calls the {@EventsManager} to store the current Event
      */
     private void saveEvent() {
+        //Set title
         event.setName(et_title.getText().toString());
 
+        //Set all Notes
+        for (EditText et_note:
+             layout_notelist) {
+            //no need to add empty Notes
+            if(et_note.getText().toString().isEmpty())
+                continue;
+
+            Notes curNote = new Notes();
+            curNote.setText(et_note.getText().toString());
+            event.putNote(curNote);
+        }
+        //Set description
+        event.setDescription(et_description.getText().toString());
+
+        //Save event into Database
         eventsManager.writeEvent(event);
 
-        Intent intent = new Intent(this, TabActivity.class);
-        startActivity(intent);
+        //After we saved the Event we will switch back to the last Activity
         finish();
     }
 
