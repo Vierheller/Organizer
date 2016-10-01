@@ -46,6 +46,9 @@ public class ListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private List<Event> events ;
+
+
     public ListFragment() {
         // Required empty public constructor
     }
@@ -88,24 +91,29 @@ public class ListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.fragment_list_listview);
 
-        final List<Event> events = mActivity.eventsManager.getEvents();
+        events = mActivity.eventsManager.getEvents();
 
         mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events);
 
         listView.setAdapter(mAdapter);
 
+        setupListeners();
+
+        return view;
+    }
+
+    private void setupListeners() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mActivity, TaskActivity.class);
                 String id = events.get(i).getId();
-                intent.putExtra(TaskActivity.PARAM_ID, id);
+                intent.putExtra(TaskActivity.INTENT_PARAM_ID, id);
                 startActivity(intent);
             }
         });
-
-        return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

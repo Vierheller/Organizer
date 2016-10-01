@@ -10,7 +10,7 @@ import android.view.View;
 import de.grau.organizer.R;
 
 public class TaskActivity extends AppCompatActivity {
-    public static final String PARAM_ID = "idParameter";
+    public static final String INTENT_PARAM_ID = "idParameter";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

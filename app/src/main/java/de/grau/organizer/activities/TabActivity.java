@@ -71,18 +71,24 @@ public class TabActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Intent intent = new Intent(activityContext, EditorActivity.class);
-                startActivity(intent);
+                startEditorActivity(null);
             }
         });
 
         eventsManager = new EventsManagerRealm();
 
+    }
+
+    public void startEditorActivity(String eventID){
+        Intent intent = new Intent(activityContext, EditorActivity.class);
+        if(eventID!=null){
+            intent.putExtra(EditorActivity.INTENT_PARAM_EVENTID, eventID);
+        }
+        startActivity(intent);
     }
 
     @Override

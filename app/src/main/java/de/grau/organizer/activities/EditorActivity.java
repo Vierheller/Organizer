@@ -20,6 +20,7 @@ import de.grau.organizer.classes.Event;
 import de.grau.organizer.interfaces.EventsManager;
 
 public class EditorActivity extends AppCompatActivity {
+    //GUI ELEMENTS
     EditText et_title;
     Button btn_save;
     Button btn_pickDate;
@@ -27,15 +28,27 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_addNote;
     Button btn_chooseAction;
     Button btn_pickNotifyDelay;
+
+    //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+
+    //INTERNAL EVENT REPRESENTATION
     EventsManager eventsManager = new EventsManagerRealm();
     Event event = new Event();
+
+    //INTENT
+    public static final String INTENT_PARAM_EVENTID = "intent_eventID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
-        initialize();
+        initializeGUI();
+        checkIntent(getIntent());
+    }
+
+    private void checkIntent(Intent intent) {
+
     }
 
     @Override
@@ -53,7 +66,7 @@ public class EditorActivity extends AppCompatActivity {
     /**
      * This method references every necessary GUI-Element
      */
-    private void initialize(){
+    private void initializeGUI(){
         et_title =              (EditText) findViewById(R.id.editor_et_title);
         btn_pickDate =          (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
