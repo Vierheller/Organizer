@@ -51,11 +51,12 @@
             android:layout_marginTop="10dp">
 
             <TextView
-                android:text="TextView"
+                android:text="@string/layout_editor_rememberlable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView7"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp" />
 
             <Button
                 android:id="@+id/editor_btn_picknotifydelay"

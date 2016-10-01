@@ -43,7 +43,6 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public List<Event> getEvents() {
-        if(realm.isClosed()) realm = Realm.getDefaultInstance();
         RealmQuery<Event> query = realm.where(Event.class);
         return  query.findAll();
     }
@@ -60,7 +59,6 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public boolean writeEvent(final Event event) {
-        if (realm.isClosed()) realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(event);
         realm.commitTransaction();
@@ -71,7 +69,7 @@ public class EventsManagerRealm implements EventsManager {
     @Override
     public void open(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
-        if (realm == null) {
+        if (realm == null || realm.isClosed()) {
             Realm.init(context);
             RealmConfiguration config = new RealmConfiguration.Builder().build();
             Realm.setDefaultConfiguration(config);
@@ -83,5 +81,6 @@ public class EventsManagerRealm implements EventsManager {
     @Override
     public void close() {
         realm.close();
+        realm = null;
     }
 }

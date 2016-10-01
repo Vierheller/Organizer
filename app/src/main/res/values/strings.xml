@@ -16,4 +16,5 @@
     <string name="layout_button_addAction">Aktion hinzufügen</string>
     <string name="layout_editor_descriptionhint">Description</string>
     <string name="layout_editor_notehint">Note</string>
+    <string name="layout_editor_rememberlable">Notification delay</string>
 </resources>
