@@ -85,6 +85,14 @@ public class TabActivity extends AppCompatActivity {
 
     }
 
+    public void startTaskActivity(String eventID){
+        Intent intent = new Intent(activityContext, TaskActivity.class);
+        if(eventID!=null){
+            intent.putExtra(EditorActivity.INTENT_PARAM_EVENTID, eventID);
+        }
+        startActivity(intent);
+    }
+
     public void startEditorActivity(String eventID){
         Intent intent = new Intent(activityContext, EditorActivity.class);
         if(eventID!=null){

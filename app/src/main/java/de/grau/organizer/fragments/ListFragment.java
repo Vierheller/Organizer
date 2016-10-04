@@ -106,10 +106,8 @@ public class ListFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(mActivity, TaskActivity.class);
                 String id = events.get(i).getId();
-                intent.putExtra(TaskActivity.INTENT_PARAM_ID, id);
-                startActivity(intent);
+                mActivity.startTaskActivity(id);
             }
         });
     }

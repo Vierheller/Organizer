@@ -19,9 +19,9 @@ public interface EventsManager {
     List<Event> getEvents(List<Tag> tags);
     List<Event> getEvents();
 
-    Event loadEvent(long eventId);
+    Event loadEvent(String eventId);
 
-    boolean deleteEvent(long eventId);
+    boolean deleteEvent(String eventId);
 
     boolean writeEvent(Event event);
 
