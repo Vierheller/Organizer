@@ -33,7 +33,11 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public List<Event> getEvents(Category category) {
-        return null;
+        // Build the query looking at all users:
+        RealmQuery<Event> query = realm.where(Event.class);
+        query.equalTo("category.id", category.getID());
+        List<Event> result = query.findAll();
+        return result;
     }
 
     @Override
@@ -49,12 +53,25 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public Event loadEvent(long eventId) {
-        return null;
+        RealmQuery<Event> query = realm.where(Event.class);
+        query.equalTo("id", eventId);
+        Event result = query.findFirst();
+        return result;
     }
 
     @Override
     public boolean deleteEvent(long eventId) {
-        return false;
+
+        RealmQuery<Event> query = realm.where(Event.class);
+        query.equalTo("id", eventId);
+        Event result = query.findFirst();
+        if (result == null) {
+            return false;
+        } else {
+            result.deleteFromRealm();
+            return true;
+        }
+
     }
 
     @Override
