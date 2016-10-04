@@ -52,7 +52,7 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public Event loadEvent(long eventId) {
+    public Event loadEvent(String eventId) {
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("id", eventId);
         Event result = query.findFirst();
@@ -60,7 +60,7 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public boolean deleteEvent(long eventId) {
+    public boolean deleteEvent(String eventId) {
 
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("id", eventId);
