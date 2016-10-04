@@ -41,19 +41,19 @@
             android:text="Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView2" />
+            android:id="@+id/task_tv_title" />
 
         <Button
             android:text="Edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Edit" />
+            android:id="@+id/task_btn_edit" />
 
         <Button
             android:text="Execute Action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button2" />
+            android:id="@+id/task_btn_executeaction" />
 
     </LinearLayout>
 
