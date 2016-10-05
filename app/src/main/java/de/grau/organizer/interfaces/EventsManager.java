@@ -8,6 +8,7 @@ import java.util.List;
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
+import io.realm.RealmResults;
 
 /**
  * Created by Vierheller on 27.09.2016.
@@ -18,6 +19,8 @@ public interface EventsManager {
     List<Event> getEvents(Category category);
     List<Event> getEvents(List<Tag> tags);
     List<Event> getEvents();
+
+    RealmResults<Event> getRealmEventList();
 
     Event loadEvent(String eventId);
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +35,8 @@ public class ListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private static final String DEBUG_TAG = ListFragment.class.getCanonicalName();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -91,7 +96,16 @@ public class ListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.fragment_list_listview);
 
-        events = mActivity.eventsManager.getEvents();
+        RealmResults<Event> realmList  = mActivity.eventsManager.getRealmEventList();
+
+        events = realmList;
+
+        realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
+            @Override
+            public void onChange(RealmResults<Event> element) {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
         mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events);
 
@@ -107,6 +121,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String id = events.get(i).getId();
+                Log.d(DEBUG_TAG, id);
                 mActivity.startTaskActivity(id);
             }
         });

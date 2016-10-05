@@ -133,4 +133,21 @@ public class Event extends RealmObject{
     public void addNote(Notes note){
         this.notes.add(note);
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", priority=" + priority +
+                ", start=" + start +
+                ", end=" + end +
+                ", notificationTime=" + notificationTime +
+                ", actions=" + actions +
+                ", notes=" + notes +
+                ", tags=" + tags +
+                ", category=" + category +
+                '}';
+    }
 }

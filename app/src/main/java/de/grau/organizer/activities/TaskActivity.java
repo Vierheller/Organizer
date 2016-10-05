@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,8 +17,8 @@ import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.interfaces.EventsManager;
 
-public class TaskActivity extends AppCompatActivity {
-    public static final String DEBUG_LOG = TaskActivity.class.getCanonicalName();
+public class  TaskActivity extends AppCompatActivity {
+    public static final String DEBUG_TAG = TaskActivity.class.getCanonicalName();
     public static final String INTENT_PARAM_ID = "idParameter";
 
     private TextView tv_title;
@@ -84,12 +85,19 @@ public class TaskActivity extends AppCompatActivity {
     private Event getEventFromIntent(Intent intent){
         //Get the EventId from the previous mActivity
         String id = intent.getStringExtra(INTENT_PARAM_ID);
+
         //If EventId is null, tell Activity that there is a mistake
-        if(id == null)
+        if(id == null){
+            Log.d(DEBUG_TAG , "Id is null");
             return null;
+        }else{
+            Log.d(DEBUG_TAG , "ID: "+id);
+        }
+
 
         //Load event with specific ID
         Event event = eventsManager.loadEvent(id);
+        Log.d(DEBUG_TAG, event.toString());
         //EventsManager will return null if there was no event with that id.
         //Again tell Activity that there is a mistake
         if(event==null)

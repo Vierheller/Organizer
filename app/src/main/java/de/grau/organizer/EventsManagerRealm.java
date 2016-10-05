@@ -12,6 +12,8 @@ import de.grau.organizer.interfaces.EventsManager;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Vierheller on 27.09.2016.
@@ -28,7 +30,7 @@ public class EventsManagerRealm implements EventsManager {
         query.greaterThan("start", startDate);
         query.lessThan("end", endDate);
 
-        return  query.findAll();
+        return  query.findAll().sort("start", Sort.ASCENDING);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class EventsManagerRealm implements EventsManager {
         // Build the query looking at all users:
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("category.id", category.getID());
-        List<Event> result = query.findAll();
+        List<Event> result = query.findAll().sort("start", Sort.ASCENDING);
         return result;
     }
 
@@ -48,7 +50,14 @@ public class EventsManagerRealm implements EventsManager {
     @Override
     public List<Event> getEvents() {
         RealmQuery<Event> query = realm.where(Event.class);
-        return  query.findAll();
+        return  query.findAll().sort("start");
+    }
+
+    @Override
+    public RealmResults<Event> getRealmEventList() {
+        RealmQuery<Event> query = realm.where(Event.class);
+        RealmResults events = query.findAll().sort("start");
+        return events;
     }
 
     @Override
