@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.Permission;
 import java.util.Arrays;
 import java.util.List;
 
@@ -141,10 +142,10 @@ public class TaskActivity extends AppCompatActivity {
 
         switch (requestCode){
             case PERMISSIONS_REQUEST_CALL_PHONE:
-                if(checkArrayContainsPermission(permissions, Manifest.permission.CALL_PHONE)){
+                if(checkArrayContainsPermission(permissions, Manifest.permission.CALL_PHONE) && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     call();
                 }else{
-                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission not granted cannot proceed with executing action", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
