@@ -22,7 +22,7 @@ public class Event extends RealmObject{
     private Date start,end;
     private int notificationTime; //Seconds before event.start to notify
 
-    private RealmList<Action> actions;  //List of actions corresponding to an Event instance
+    private Action action;  //List of actions corresponding to an Event instance
     private RealmList<Notes> notes;     //List of all notes corresponding to an Event instance
     private RealmList<Tag> tags;        //""
     private Category category;
@@ -31,7 +31,6 @@ public class Event extends RealmObject{
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
-        this.actions = new RealmList<Action>();
         this.notes = new RealmList<Notes>();
     }
 
@@ -87,12 +86,12 @@ public class Event extends RealmObject{
         this.notificationTime = notificationTime;
     }
 
-    public RealmList<Action> getActions() {
-        return actions;
+    public Action getAction() {
+        return action;
     }
 
-    public void setActions(RealmList<Action> actions) {
-        this.actions = actions;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public RealmList<Notes> getNotes() {
@@ -123,31 +122,10 @@ public class Event extends RealmObject{
         this.category = category;
     }
 
-    public void addAction(Action action){
-        this.actions.add(action);
-    }
-    public void removeAction(Action action){
-        this.actions.remove(action);
-    }
 
     public void addNote(Notes note){
         this.notes.add(note);
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", priority=" + priority +
-                ", start=" + start +
-                ", end=" + end +
-                ", notificationTime=" + notificationTime +
-                ", actions=" + actions +
-                ", notes=" + notes +
-                ", tags=" + tags +
-                ", category=" + category +
-                '}';
-    }
+
 }

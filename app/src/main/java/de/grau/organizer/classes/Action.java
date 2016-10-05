@@ -10,6 +10,7 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Action extends RealmObject {
+    public static final String TYPE_CALL = "phone-call";
     @PrimaryKey
     private String id;
 

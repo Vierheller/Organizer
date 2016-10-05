@@ -213,11 +213,13 @@ public class EditorActivity extends AppCompatActivity {
             // Check for the request code, we might be using multiple startActivityForReslut
             switch (requestCode) {
                 case CONTACT_PICKER:
+                    btn_chooseAction.setText("Action: CALL");
                     ContactHelper c = new ContactHelper();
                     c.contactPicked(getApplicationContext(),data);
                     Action action = new Action();
+                    action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
-                    event.addAction(action);
+                    event.setAction(action);
                     break;
             }
         } else {
