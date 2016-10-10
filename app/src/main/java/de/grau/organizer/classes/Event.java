@@ -1,6 +1,7 @@
 package de.grau.organizer.classes;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import io.realm.RealmList;
@@ -128,4 +129,7 @@ public class Event extends RealmObject{
     }
 
 
+    public void putNotes(List<Notes> notes) {
+        this.notes.addAll(notes);
+    }
 }

@@ -2,6 +2,7 @@ package de.grau.organizer.activities;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -48,6 +50,8 @@ public class EditorActivity extends AppCompatActivity {
     //DIALOGS
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
+    Dialog notificationTimeIntervalDialog;
+    private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
@@ -103,14 +107,69 @@ public class EditorActivity extends AppCompatActivity {
 
         //TODO This is only for testing
         currentStartDate = Calendar.getInstance();
-        btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ currentStartDate.get(Calendar.MONTH)+"."+ currentStartDate.get(Calendar.YEAR));
+        btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
 
+        //Add a sigle Note for better user experience.
         addNote();
-        setupDialogs();
+
+        setupDialogsDateAndTime();
+        setupDialogRememberTime();
         setupListeners();
     }
 
-    private void setupDialogs() {
+    private void setupDialogRememberTime() {
+        notificationTimeIntervalDialog = new Dialog(this);
+        notificationTimeIntervalDialog.setTitle("NumberPicker");
+        notificationTimeIntervalDialog.setContentView(R.layout.dialog_numberpicker);
+
+        //Getting references to Dialog UI
+        final NumberPicker np = (NumberPicker) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_np);
+        final Button btn_accept = (Button) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_accept);
+        final Button btn_cancel = (Button) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_cancel);
+
+        //Setup Numberrange of numberpicker
+        final String[] numbers = new String[200/5];
+        for (int i=0; i<numbers.length; i++)
+            numbers[i] = Integer.toString(i*5+5);
+        np.setDisplayedValues(numbers);
+        np.setMaxValue(numbers.length-1);
+        np.setMinValue(0);
+        np.setWrapSelectorWheel(false);
+
+
+
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
+                newVal = Integer.valueOf(numbers[newVal]);
+                notificationTimeInterval = newVal;
+            }
+        });
+        notificationTimeIntervalDialog.setCanceledOnTouchOutside(true);
+        btn_accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setRememberTimeForEvent();
+                btn_pickNotifyDelay.setText(notificationTimeInterval +" min");
+                notificationTimeIntervalDialog.dismiss();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notificationTimeIntervalDialog.dismiss();
+                btn_pickNotifyDelay.setText("None");
+                notificationTimeInterval =-1;
+            }
+        });
+    }
+
+    private void setRememberTimeForEvent() {
+    }
+
+    private void setupDialogsDateAndTime() {
         final int year = currentStartDate.get(Calendar.YEAR);
         final int month = currentStartDate.get(Calendar.MONTH);
         final int day = currentStartDate.get(Calendar.DAY_OF_MONTH);
@@ -123,7 +182,7 @@ public class EditorActivity extends AppCompatActivity {
                 currentStartDate.set(Calendar.YEAR, year);
                 currentStartDate.set(Calendar.MONTH, month);
                 currentStartDate.set(Calendar.DAY_OF_MONTH, day_of_month);
-                btn_pickDate.setText(day_of_month+"."+month+"."+year);
+                btn_pickDate.setText(day_of_month + "." + (int)(month+1) + "." + year);
             }
         },year, month, day);
 
@@ -132,7 +191,7 @@ public class EditorActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
                 currentStartDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
                 currentStartDate.set(Calendar.MINUTE, minute);
-                btn_pickTime.setText(hour_of_day+":"+minute);
+                btn_pickTime.setText((hour_of_day<10?"0"+hour_of_day:hour_of_day)+":"+(minute<10?"0"+minute:minute));
             }
         }, hour, minute, true);
 
@@ -157,6 +216,13 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addNote();
+            }
+        });
+
+        btn_pickNotifyDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notificationTimeIntervalDialog.show();
             }
         });
 
@@ -251,18 +317,13 @@ public class EditorActivity extends AppCompatActivity {
         event.setName(et_title.getText().toString());
 
         //Set all Notes
-        for (EditText et_note:
-             layout_notelist) {
-            //no need to add empty Notes
-            if(et_note.getText().toString().isEmpty())
-                continue;
-
-            Notes curNote = new Notes();
-            curNote.setText(et_note.getText().toString());
-            event.putNote(curNote);
-        }
+        event.putNotes(filterNotes());
+        
         //Set description
         event.setDescription(et_description.getText().toString());
+
+        //set interval
+        event.setNotificationTime(notificationTimeInterval);
 
         //set startdate
         event.setStart(currentStartDate.getTime());
@@ -272,6 +333,21 @@ public class EditorActivity extends AppCompatActivity {
 
         //After we saved the Event we will switch back to the last Activity
         finish();
+    }
+
+    private List<Notes> filterNotes() {
+        List<Notes> retNotes = new ArrayList<Notes>();
+        for (EditText et_note:
+            layout_notelist) {
+            //no need to add empty Notes
+            if (et_note.getText().toString().isEmpty())
+                continue;
+
+            Notes curNote = new Notes();
+            curNote.setText(et_note.getText().toString());
+            retNotes.add(curNote);
+        }
+        return retNotes;
     }
 
     /**
