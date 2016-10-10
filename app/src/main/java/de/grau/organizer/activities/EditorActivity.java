@@ -30,6 +30,7 @@ import de.grau.organizer.classes.ContactHelper;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Notes;
 import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.notification.NotificationAlarmHandler;
 
 public class EditorActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = EditorActivity.class.getCanonicalName();
@@ -318,7 +319,7 @@ public class EditorActivity extends AppCompatActivity {
 
         //Set all Notes
         event.putNotes(filterNotes());
-        
+
         //Set description
         event.setDescription(et_description.getText().toString());
 
@@ -330,6 +331,8 @@ public class EditorActivity extends AppCompatActivity {
 
         //Save event into Database
         eventsManager.writeEvent(event);
+
+        NotificationAlarmHandler.setNotification(this, event);
 
         //After we saved the Event we will switch back to the last Activity
         finish();

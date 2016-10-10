@@ -33,6 +33,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.grau.organizer.activities.TabActivity" />
         </activity>
+        <receiver android:name=".notification.NotificationBroadcastReceiver" />
         <activity android:name=".activities.EditorActivity"></activity>
     </application>
 
