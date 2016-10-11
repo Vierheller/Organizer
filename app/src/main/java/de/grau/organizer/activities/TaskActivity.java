@@ -35,6 +35,7 @@ public class TaskActivity extends AppCompatActivity {
     private TextView tv_title;
     private Button btn_executeAction;
     private Button btn_edit;
+    private Button btn_delete;
 
     private EventsManager eventsManager;
     private Event mEvent;
@@ -83,6 +84,7 @@ public class TaskActivity extends AppCompatActivity {
     private void initializeGUI() {
         tv_title = (TextView) findViewById(R.id.task_tv_title);
         btn_edit = (Button) findViewById(R.id.task_btn_edit);
+        btn_delete = (Button) findViewById(R.id.task_btn_delete);
         btn_executeAction = (Button) findViewById(R.id.task_btn_executeaction);
 
         setupListeners();
@@ -97,6 +99,7 @@ public class TaskActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         btn_executeAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +118,17 @@ public class TaskActivity extends AppCompatActivity {
                     }
                 }
                 snackbar.show();
+            }
+        });
+
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String cur_eventName = mEvent.getName();
+
+                eventsManager.deleteEvent(mEvent.getId());
+                finish();
+                Toast.makeText(getApplicationContext(),"Event "+cur_eventName+" deleted", Toast.LENGTH_LONG).show();
             }
         });
     }

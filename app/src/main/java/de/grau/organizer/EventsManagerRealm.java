@@ -87,7 +87,9 @@ public class EventsManagerRealm implements EventsManager {
         if (result == null) {
             return false;
         } else {
+            realm.beginTransaction();
             result.deleteFromRealm();
+            realm.commitTransaction();
             return true;
         }
 

@@ -43,6 +43,7 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_addNote;
     Button btn_chooseAction;
     Button btn_pickNotifyDelay;
+    Button btn_priority;
     EditText et_description;
 
     LinearLayout layout_notecontainer;
@@ -52,6 +53,7 @@ public class EditorActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     Dialog notificationTimeIntervalDialog;
+    Dialog priorityDialog;
     private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -101,6 +103,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
+        btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
         btn_save =              (Button) findViewById(R.id.editor_btn_saveevent);
         et_description=         (EditText) findViewById(R.id.editor_description);
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
@@ -115,6 +118,7 @@ public class EditorActivity extends AppCompatActivity {
 
         setupDialogsDateAndTime();
         setupDialogRememberTime();
+        setupDialogPriority();
         setupListeners();
     }
 
@@ -165,6 +169,12 @@ public class EditorActivity extends AppCompatActivity {
                 notificationTimeInterval =-1;
             }
         });
+    }
+
+    private void setupDialogPriority(){
+        //TODO Setup Dialog
+        priorityDialog = new Dialog(this);
+        priorityDialog.setTitle(R.string.editor_dialog_priority_title);
     }
 
     private void setRememberTimeForEvent() {
@@ -243,6 +253,13 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getContactInfo();
+            }
+        });
+
+        btn_priority.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Numberpicker hinzufügen
             }
         });
     }

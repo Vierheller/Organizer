@@ -55,6 +55,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/task_btn_executeaction" />
 
+        <Button
+            android:text="Delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_btn_delete" />
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
