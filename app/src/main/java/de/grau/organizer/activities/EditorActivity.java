@@ -230,9 +230,11 @@ public class EditorActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Saving Event", Toast.LENGTH_LONG).show();
                 if(verifyEvent()){
                     saveEvent();
+                    Toast.makeText(getApplicationContext(),"Saving Event", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"Event has no Title!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -358,6 +360,6 @@ public class EditorActivity extends AppCompatActivity {
      * @return isValid
      */
     private boolean verifyEvent() {
-        return et_title.getText().toString() != null;
+        return !et_title.getText().toString().isEmpty();
     }
 }
