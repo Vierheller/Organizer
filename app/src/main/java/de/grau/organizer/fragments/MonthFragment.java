@@ -6,11 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-
-import java.util.Calendar;
 
 import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
@@ -80,19 +77,19 @@ public class MonthFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_month, container, false);
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
 
-        setupCalendarDecorators();
+        setupCalendar();
 
         return view;
     }
 
-    private void setupCalendarDecorators() {
+    private void setupCalendar() {
         HighlightDecorator prio0 = new HighlightDecorator(mActivity.eventsManager.getEvents(0),0);
         HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(1),1);
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(2),2);
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(3),3);
-
-
         mCalendarView.addDecorators(prio0,prio1,prio2,prio3);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
