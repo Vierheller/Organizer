@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="de.grau.organizer.fragments.MonthFragment"
     android:orientation="vertical">
 
@@ -19,8 +20,10 @@
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:layout_width="match_parent"
         android:id="@+id/calendarView"
+        app:mcv_tileSize="35dp"
+        app:mcv_tileWidth="match_parent"
+        app:mcv_firstDayOfWeek="monday"
         android:theme="@style/AppTheme"
-
         android:layout_height="wrap_content" />
 
     <ListView

@@ -79,7 +79,6 @@ public class MonthFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_month, container, false);
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
-        mCalendarView.state().edit().setFirstDayOfWeek(Calendar.MONDAY).commit();
 
         setupCalendarDecorators();
 
