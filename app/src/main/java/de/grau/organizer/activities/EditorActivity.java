@@ -53,6 +53,7 @@ public class EditorActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     Dialog notificationTimeIntervalDialog;
+    Dialog priorityDialog;
     private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -117,6 +118,7 @@ public class EditorActivity extends AppCompatActivity {
 
         setupDialogsDateAndTime();
         setupDialogRememberTime();
+        setupDialogPriority();
         setupListeners();
     }
 
@@ -167,6 +169,12 @@ public class EditorActivity extends AppCompatActivity {
                 notificationTimeInterval =-1;
             }
         });
+    }
+
+    private void setupDialogPriority(){
+        //TODO Setup Dialog
+        priorityDialog = new Dialog(this);
+        priorityDialog.setTitle(R.string.editor_dialog_priority_title);
     }
 
     private void setRememberTimeForEvent() {

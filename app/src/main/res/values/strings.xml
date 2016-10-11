@@ -22,4 +22,5 @@
     <string name="editor_btn_chooseaction">Add Action</string>
     <string name="editor_btn_priority">Priority</string>
     <string name="editor_btn_saveevent">Add Note</string>
+    <string name="editor_dialog_priority_title">Priority</string>
 </resources>
