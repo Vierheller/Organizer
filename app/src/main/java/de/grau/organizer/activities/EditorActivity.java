@@ -10,10 +10,13 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
@@ -37,7 +40,8 @@ public class EditorActivity extends AppCompatActivity {
 
     //GUI ELEMENTS
     EditText et_title;
-    Button btn_save;
+    ImageButton btn_save;
+    ImageButton btn_cancel;
     Button btn_pickDate;
     Button btn_pickTime;
     Button btn_addNote;
@@ -73,8 +77,19 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        // Find the toolbar view inside the activity layout
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         initializeGUI();
         checkIntent(getIntent());
+
+
     }
 
     private void checkIntent(Intent intent) {
@@ -104,7 +119,8 @@ public class EditorActivity extends AppCompatActivity {
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
-        btn_save =              (Button) findViewById(R.id.editor_btn_saveevent);
+        btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
+        btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
         et_description=         (EditText) findViewById(R.id.editor_description);
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
@@ -249,6 +265,13 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
 
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         btn_chooseAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -378,5 +401,13 @@ public class EditorActivity extends AppCompatActivity {
      */
     private boolean verifyEvent() {
         return !et_title.getText().toString().isEmpty();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
     }
 }
