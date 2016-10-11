@@ -155,12 +155,11 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
+                android:inputType="textAutoCorrect|textMultiLine"
                 android:id="@+id/editor_description"
                 android:layout_marginTop="10dp"
                 android:hint="@string/layout_editor_descriptionhint"
-                android:elegantTextHeight="false" />
+                android:elegantTextHeight="true" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
