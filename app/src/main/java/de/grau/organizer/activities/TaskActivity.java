@@ -169,7 +169,7 @@ public class TaskActivity extends AppCompatActivity {
 
     private void fillGUI(){
         tv_title.setText(mEvent.getName());
-        if(!mEvent.getAction().getData().isEmpty()){
+        if(mEvent.getAction() != null && !mEvent.getAction().getData().isEmpty()){
             btn_executeAction.setText("Call: "+mEvent.getAction().getData());
         }
     }
