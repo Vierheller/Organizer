@@ -23,6 +23,7 @@ import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.notification.NotificationAlarmHandler;
 
 public class TaskActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = TaskActivity.class.getCanonicalName();
@@ -123,6 +124,11 @@ public class TaskActivity extends AppCompatActivity {
                 String cur_eventName = mEvent.getName();
 
                 eventsManager.deleteEvent(mEvent.getId());
+                //TODO: Decide when there is a notification-alarm -- for now 0
+                if(mEvent.getNotificationTime() != 0){
+                    NotificationAlarmHandler.cancelNotification(TaskActivity.this, mEvent);
+                }
+
                 finish();
                 Toast.makeText(getApplicationContext(),"Event "+cur_eventName+" deleted", Toast.LENGTH_LONG).show();
             }
