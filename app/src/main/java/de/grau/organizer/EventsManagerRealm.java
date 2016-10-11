@@ -2,6 +2,7 @@ package de.grau.organizer;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -111,6 +112,20 @@ public class EventsManagerRealm implements EventsManager {
             // Get a Realm instance for this thread
             realm = Realm.getDefaultInstance();
         }
+    }
+
+    @Override
+    public List<String> searchEvents(String search){
+        RealmQuery<Event> query = realm.where(Event.class);
+
+        query.contains("name",search);
+
+        List<Event> tmp = query.findAllSorted("name");
+        List<String> result = new ArrayList<>();
+        for(Event e: tmp){
+            result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+        }
+        return result;
     }
 
     @Override

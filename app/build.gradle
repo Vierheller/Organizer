@@ -30,6 +30,7 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.0'
     compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'com.prolificinteractive:material-calendarview:1.4.2'
+    compile 'com.afollestad.material-dialogs:core:0.9.0.2'
 
     testCompile 'junit:junit:4.12'
 }

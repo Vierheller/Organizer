@@ -17,12 +17,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.List;
 
 import de.grau.organizer.EventsManagerRealm;
 import de.grau.organizer.fragments.ListFragment;
@@ -83,6 +89,7 @@ public class TabActivity extends AppCompatActivity {
 
         eventsManager = new EventsManagerRealm();
 
+
     }
 
     public void startTaskActivity(String eventID){
@@ -106,6 +113,31 @@ public class TabActivity extends AppCompatActivity {
         super.onStart();
         Log.d(DEBUG_TAG, "OnStart");
         eventsManager.open(this);
+
+        Intent intent = getIntent();
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            handleSearchIntent(intent);
+        }
+    }
+
+    private void handleSearchIntent(Intent intent) {
+        String query = intent.getStringExtra(SearchManager.QUERY);
+        List<String> searchResults = eventsManager.searchEvents(query);
+        //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
+        new MaterialDialog.Builder(this)
+                .title(R.string.search_title)
+                .items(searchResults)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        Toast.makeText(getApplicationContext(),"Clicked on item "+which,Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -126,8 +158,11 @@ public class TabActivity extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
