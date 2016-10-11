@@ -37,7 +37,7 @@
 
             <Button
                 android:id="@+id/editor_btn_picktime"
-                android:text="16:30 - 17:30"
+                android:text="@string/_16_30_17_30"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -60,19 +60,37 @@
 
             <Button
                 android:id="@+id/editor_btn_picknotifydelay"
-                android:text="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="@string/editor_btn_picknotifydelay" />
 
         </LinearLayout>
 
-        <Button
-            android:text="@string/layout_button_addAction"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editor_btn_chooseaction"
-            android:layout_marginTop="10dp" />
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="@string/editor_btn_chooseaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editor_btn_chooseaction"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:elevation="1dp"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:text="@string/editor_btn_priority"
+                android:layout_height="wrap_content"
+                android:id="@+id/editor_btn_priority"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1.96"
+                android:layout_width="wrap_content" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -85,8 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editor_btn_addnote"
-            android:layout_marginTop="10dp"
-            android:elevation="0dp" />
+            android:layout_marginTop="10dp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -99,7 +116,7 @@
             android:elegantTextHeight="false" />
 
         <Button
-            android:text="Save"
+            android:text="@string/editor_btn_saveevent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editor_btn_saveevent"
