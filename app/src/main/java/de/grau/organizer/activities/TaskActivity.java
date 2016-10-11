@@ -101,16 +101,20 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Action action = mEvent.getAction();
+                Snackbar snackbar = null;
+
                 if (action == null) {
-                    Snackbar.make(v, "No Action set for this Event!", Snackbar.LENGTH_LONG);
+                    snackbar = Snackbar.make(v, "No Action set for this Event!", Snackbar.LENGTH_LONG);
+                } else {
+                    switch (action.getType()) {
+                        case Action.TYPE_CALL:
+                            call();
+                            break;
+                        default:
+                            snackbar = Snackbar.make(v, "Action found but not executable!", Snackbar.LENGTH_LONG);
+                    }
                 }
-                switch (action.getType()) {
-                    case Action.TYPE_CALL:
-                        call();
-                        break;
-                    default:
-                        Snackbar.make(v, "Action found but not executable!", Snackbar.LENGTH_LONG);
-                }
+                snackbar.show();
             }
         });
     }
