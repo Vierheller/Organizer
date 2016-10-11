@@ -1,4 +1,4 @@
-package de.grau.organizer.interfaces;
+package de.grau.organizer.database.interfaces;
 
 import android.content.Context;
 

@@ -18,15 +18,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.security.Permission;
-import java.util.Arrays;
-import java.util.List;
-
-import de.grau.organizer.EventsManagerRealm;
+import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.Event;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 
 public class TaskActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = TaskActivity.class.getCanonicalName();

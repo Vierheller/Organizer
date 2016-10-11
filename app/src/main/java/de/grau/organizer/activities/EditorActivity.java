@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.grau.organizer.EventsManagerRealm;
+import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.ContactHelper;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Notes;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 import de.grau.organizer.notification.NotificationAlarmHandler;
 
 public class EditorActivity extends AppCompatActivity {

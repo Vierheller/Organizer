@@ -5,13 +5,12 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.renderscript.Sampler;
 import android.util.Log;
 
-import de.grau.organizer.EventsManagerRealm;
+import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 
 /**
  * Created by Vierheller on 10.10.2016.

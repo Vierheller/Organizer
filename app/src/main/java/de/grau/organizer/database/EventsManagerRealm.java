@@ -1,4 +1,4 @@
-package de.grau.organizer;
+package de.grau.organizer.database;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;

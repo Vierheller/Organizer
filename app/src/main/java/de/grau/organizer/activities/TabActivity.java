@@ -24,10 +24,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
-import de.grau.organizer.EventsManagerRealm;
+import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
