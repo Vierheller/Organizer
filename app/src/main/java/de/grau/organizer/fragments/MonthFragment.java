@@ -8,7 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
+import java.util.Calendar;
+
+import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
+import de.grau.organizer.activities.TabActivity;
 
 
 /**
@@ -30,7 +36,8 @@ public class MonthFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private CalendarView mCalendarView;
+    private TabActivity mActivity;
+    private MaterialCalendarView mCalendarView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -63,6 +70,7 @@ public class MonthFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        this.mActivity = (TabActivity)getActivity();
     }
 
     @Override
@@ -70,9 +78,22 @@ public class MonthFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_month, container, false);
-        mCalendarView = (CalendarView) view.findViewById(R.id.calendarView);
+        mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
+        mCalendarView.state().edit().setFirstDayOfWeek(Calendar.MONDAY).commit();
+
+        setupCalendarDecorators();
 
         return view;
+    }
+
+    private void setupCalendarDecorators() {
+        HighlightDecorator prio0 = new HighlightDecorator(mActivity.eventsManager.getEvents(0),0);
+        HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(1),1);
+        HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(2),2);
+        HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(3),3);
+
+
+        mCalendarView.addDecorators(prio0,prio1,prio2,prio3);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

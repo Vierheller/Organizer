@@ -43,6 +43,15 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
+    public List<Event> getEvents(int priority) {
+        // Build the query looking at all users:
+        RealmQuery<Event> query = realm.where(Event.class);
+        query.equalTo("priority", priority);
+        List<Event> result = query.findAll().sort("start", Sort.ASCENDING);
+        return result;
+    }
+
+    @Override
     public List<Event> getEvents(List<Tag> tags) {
         return null;
     }
