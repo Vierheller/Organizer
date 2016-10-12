@@ -3,13 +3,17 @@ package de.grau.organizer.database;
 import android.content.Context;
 
 import java.util.ArrayList;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
 
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
 import de.grau.organizer.database.interfaces.EventsManager;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
@@ -30,6 +34,31 @@ public class EventsManagerRealm implements EventsManager {
 
         query.greaterThan("start", startDate);
         query.lessThan("end", endDate);
+
+        return  query.findAll().sort("start", Sort.ASCENDING);
+    }
+
+    public List<Event> getEvents(CalendarDay calDate) {
+        RealmQuery<Event> query = realm.where(Event.class);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.DAY_OF_MONTH, calDate.getDay() - 1);
+        cal.set(Calendar.MINUTE, calDate.getMonth());
+        cal.set(Calendar.MINUTE, calDate.getYear());
+
+        Date dateStart = cal.getTime();
+
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+        Date dateEnd = cal.getTime();
+
+        query.greaterThan("start", dateStart);
+        query.lessThan("start", dateEnd);
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
@@ -117,17 +146,12 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public List<String> searchEvents(String search){
+    public List<Event> searchEvents(String search){
         RealmQuery<Event> query = realm.where(Event.class);
 
-        query.contains("name",search);
+        query.contains("name",search, Case.INSENSITIVE).or().contains("description",search,Case.INSENSITIVE).distinct("id");
 
-        List<Event> tmp = query.findAllSorted("name");
-        List<String> result = new ArrayList<>();
-        for(Event e: tmp){
-            result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
-        }
-        return result;
+        return query.findAllSorted("name");
     }
 
     @Override

@@ -2,7 +2,9 @@ package de.grau.organizer.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +24,10 @@ import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
@@ -45,10 +49,10 @@ public class TabActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     private Context activityContext;
-
     public EventsManager eventsManager;
+    List<Event> mSearchResults;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +85,6 @@ public class TabActivity extends AppCompatActivity {
         });
 
         eventsManager = new EventsManagerRealm();
-
-
     }
 
     public void startTaskActivity(String eventID){
@@ -119,18 +121,49 @@ public class TabActivity extends AppCompatActivity {
 
     private void handleSearchIntent(Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
-        List<String> searchResults = eventsManager.searchEvents(query);
-        //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
-        new MaterialDialog.Builder(this)
-                .title(R.string.search_title)
-                .items(searchResults)
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        Toast.makeText(getApplicationContext(),"Clicked on item "+which,Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
+        if(!query.isEmpty()) {
+
+            mSearchResults = eventsManager.searchEvents(query);
+
+            List<String> result = new ArrayList<>();
+            for(Event e: mSearchResults){
+                result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+            }
+
+            ShowSearchResults(result);
+        }else {
+            Toast.makeText(this,R.string.search_no_query,Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void ShowSearchResults(List<String> searchResults) {
+        if (searchResults.size() > 0){
+            //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
+            //ToDo coloring corresponding to Theme
+            new MaterialDialog.Builder(this)
+                    .title(R.string.search_title)
+                    .items(searchResults)
+                    .titleColorRes(R.color.colorAccent)
+                    //.backgroundColorRes(R.color.colorPrimary)
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to open corresponding Event");
+                            Event e = mSearchResults.get(which);
+                            startTaskActivity(e.getId());
+                        }
+                    })
+                    .cancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            Log.d(DEBUG_TAG,"Search dialog was canceled");
+                        }
+                    })
+                    .show();
+        } else{
+            Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -151,8 +184,6 @@ public class TabActivity extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-
-
         return true;
     }
 
