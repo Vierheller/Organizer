@@ -1,3 +1,3 @@
 # Organizer
 
-The app which provides feature no one ever dreamed of.
+The app which provides features no one ever dreamed of.
