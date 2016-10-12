@@ -24,8 +24,10 @@ import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
@@ -47,10 +49,10 @@ public class TabActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     private Context activityContext;
-
     public EventsManager eventsManager;
+    List<Event> mSearchResults;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +122,15 @@ public class TabActivity extends AppCompatActivity {
     private void handleSearchIntent(Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
         if(!query.isEmpty()) {
-            List<String> searchResults = eventsManager.searchEvents(query);
-            ShowSearchResults(searchResults);
+
+            mSearchResults = eventsManager.searchEvents(query);
+
+            List<String> result = new ArrayList<>();
+            for(Event e: mSearchResults){
+                result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+            }
+
+            ShowSearchResults(result);
         }else {
             Toast.makeText(this,R.string.search_no_query,Toast.LENGTH_LONG).show();
         }
@@ -141,7 +150,8 @@ public class TabActivity extends AppCompatActivity {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                             Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to open corresponding Event");
-
+                            Event e = mSearchResults.get(which);
+                            startTaskActivity(e.getId());
                         }
                     })
                     .cancelListener(new DialogInterface.OnCancelListener() {
@@ -174,8 +184,6 @@ public class TabActivity extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-
-
         return true;
     }
 

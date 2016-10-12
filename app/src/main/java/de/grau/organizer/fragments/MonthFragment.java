@@ -8,29 +8,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< Updated upstream
-=======
 import android.widget.ListView;
->>>>>>> Stashed changes
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
-<<<<<<< Updated upstream
-=======
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import de.grau.organizer.EventsManagerRealm;
->>>>>>> Stashed changes
 import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
-import de.grau.organizer.interfaces.EventsManager;
 
 
 /**

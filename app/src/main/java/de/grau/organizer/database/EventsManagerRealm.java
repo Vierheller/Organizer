@@ -1,13 +1,9 @@
 package de.grau.organizer.database;
 
 import android.content.Context;
-
-<<<<<<< Updated upstream:app/src/main/java/de/grau/organizer/database/EventsManagerRealm.java
 import java.util.ArrayList;
-=======
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
->>>>>>> Stashed changes:app/src/main/java/de/grau/organizer/EventsManagerRealm.java
 import java.util.Date;
 import java.util.List;
 import java.util.Calendar;
@@ -149,17 +145,12 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public List<String> searchEvents(String search){
+    public List<Event> searchEvents(String search){
         RealmQuery<Event> query = realm.where(Event.class);
 
         query.contains("name",search, Case.INSENSITIVE).or().contains("description",search,Case.INSENSITIVE).distinct("id");
 
-        List<Event> tmp = query.findAllSorted("name");
-        List<String> result = new ArrayList<>();
-        for(Event e: tmp){
-            result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
-        }
-        return result;
+        return query.findAllSorted("name");
     }
 
     @Override

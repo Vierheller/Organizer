@@ -27,7 +27,7 @@ public interface EventsManager {
     RealmResults<Event> getRealmEventList();
 
     Event loadEvent(String eventId);
-    List<String> searchEvents(String search);
+    List<Event> searchEvents(String search);
 
     boolean deleteEvent(String eventId);
 
