@@ -65,8 +65,8 @@ public class TaskActivity extends AppCompatActivity {
 
         initializeGUI();
 
-        eventsManager = EventsManagerRealm.getInstance(this);
-        eventsManager.open(this);
+        eventsManager = new EventsManagerRealm();
+        eventsManager.open();
 
         mEvent = getEventFromIntent(getIntent());
 
@@ -219,18 +219,9 @@ public class TaskActivity extends AppCompatActivity {
         return event;
     }
 
-
-
     @Override
-    protected void onStart() {
-        super.onStart();
-        eventsManager.open(this);
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         eventsManager.close();
     }
 }

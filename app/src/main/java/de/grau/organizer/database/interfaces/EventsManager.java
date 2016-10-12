@@ -33,7 +33,7 @@ public interface EventsManager {
 
     boolean writeEvent(Event event);
 
-    void open(Context context);
+    void open();
 
     void close();
 

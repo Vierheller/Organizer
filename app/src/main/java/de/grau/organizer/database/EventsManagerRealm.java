@@ -24,11 +24,6 @@ import io.realm.Sort;
 
 public class EventsManagerRealm implements EventsManager {
     private Realm realm;
-    private static EventsManagerRealm instance;
-
-    private EventsManagerRealm(Context context){
-        this.open(context);
-    }
 
     @Override
     public List<Event> getEvents(Date startDate, Date endDate) {
@@ -65,13 +60,6 @@ public class EventsManagerRealm implements EventsManager {
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
 
-
-    public static EventsManager getInstance(Context context) {
-        if(instance==null){
-            instance = new EventsManagerRealm(context);
-        }
-        return instance;
-    }
 
     @Override
     public List<Event> getEvents(Category category) {
@@ -163,19 +151,18 @@ public class EventsManagerRealm implements EventsManager {
         return false;
     }
 
-    @Override
-    public void open(Context context) {
+    public static void init(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
-        if (realm == null || realm.isClosed()) {
-            Realm.init(context);
-            RealmConfiguration config = new RealmConfiguration.Builder().build();
-            Realm.setDefaultConfiguration(config);
-            // Get a Realm instance for this thread
-            realm = Realm.getDefaultInstance();
+        Realm.init(context);
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(config);
 
-        }
     }
 
+    @Override
+    public void open() {
+        this.realm = Realm.getDefaultInstance();
+    }
 
 
     @Override
@@ -189,7 +176,7 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public void close() {
-//        realm.close();
-//        realm = null;
+        realm.close();
+        realm = null;
     }
 }

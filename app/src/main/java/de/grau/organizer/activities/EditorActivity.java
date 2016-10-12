@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +30,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import android.util.Log;
-
-import org.w3c.dom.Text;
 
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
@@ -76,7 +72,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     //INTERNAL EVENT REPRESENTATION
-    EventsManager eventsManager = EventsManagerRealm.getInstance(this);
+    EventsManager eventsManager = new EventsManagerRealm();
     Event event = null;
     private int mPriority = 4;      //default value
 
@@ -90,6 +86,8 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        eventsManager.open();
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,6 +112,15 @@ public class EditorActivity extends AppCompatActivity {
                 eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
             }
         }
+
+
+
+        if (eventID != null) {
+            Log.d(DEBUG_TAG, "ID: " + eventID);
+            event = eventsManager.loadEvent(eventID);
+            Log.d(DEBUG_TAG, event.toString());
+            setupGUI();
+        }
     }
 
     private void checkIntent(Intent intent) {
@@ -123,14 +130,7 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        eventsManager.open(this);
 
-        if (eventID != null) {
-            Log.d(DEBUG_TAG, "ID: " + eventID);
-            event = eventsManager.loadEvent(eventID);
-            Log.d(DEBUG_TAG, event.toString());
-            setupGUI();
-        }
     }
 
     private void setupGUI() {
@@ -142,12 +142,6 @@ public class EditorActivity extends AppCompatActivity {
             setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
             //TODO set values of other elements
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        eventsManager.close();
     }
 
     /**
@@ -515,5 +509,11 @@ public class EditorActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventsManager.close();
     }
 }

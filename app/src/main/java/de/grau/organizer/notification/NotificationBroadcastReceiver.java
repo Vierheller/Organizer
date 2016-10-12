@@ -26,8 +26,8 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         Log.d(DEBUG_TAG, "Received Notification request");
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         String id = intent.getStringExtra(INTENT_PARAM_EVENT_ID);
-        eventsManager = EventsManagerRealm.getInstance(context);
-        eventsManager.open(context);
+        eventsManager = new EventsManagerRealm();
+        eventsManager.open();
         Event event = eventsManager.loadEvent(id);
 
         Notification notification = buildNotification(context, event);

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -84,7 +83,11 @@ public class TabActivity extends AppCompatActivity {
             }
         });
 
-        eventsManager = EventsManagerRealm.getInstance(this);
+        eventsManager = new EventsManagerRealm();
+        eventsManager.open();
+
+        Intent intent = getIntent();
+        handleIntent(intent);
     }
 
     public void startTaskActivity(String eventID){
@@ -106,11 +109,6 @@ public class TabActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(DEBUG_TAG, "OnStart");
-        eventsManager.open(this);
-
-        Intent intent = getIntent();
-        handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -149,7 +147,7 @@ public class TabActivity extends AppCompatActivity {
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to open corresponding Event");
+                            Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to init corresponding Event");
                             Event e = mSearchResults.get(which);
                             startTaskActivity(e.getId());
                         }
@@ -166,12 +164,7 @@ public class TabActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(DEBUG_TAG, "OnStop");
-        eventsManager.close();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,5 +196,9 @@ public class TabActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventsManager.close();
+    }
 }
