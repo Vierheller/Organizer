@@ -76,6 +76,10 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        selectDate(date);
+    }
+
+    private void selectDate(CalendarDay date){
         List<Event> events = mActivity.eventsManager.getEvents(date);
         //TODO: Load events into listView
         for (Event event : events) {
@@ -114,6 +118,10 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
         mCalendarView.setOnDateChangedListener(this);
         mCalendarView.setOnMonthChangedListener(this);
+
+        //Set today as selected day
+        mCalendarView.setDateSelected(Calendar.getInstance(), true);
+        selectDate(CalendarDay.from(Calendar.getInstance()));
 
         Calendar cal = Calendar.getInstance();
         mCalendarView.getCurrentDate().copyTo(cal);
