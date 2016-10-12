@@ -99,6 +99,7 @@ public class EditorActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                 eventID = null;
+                event = new Event();
             } else {
                 eventID = extras.getString(INTENT_PARAM_EVENTID);
             }
@@ -133,6 +134,7 @@ public class EditorActivity extends AppCompatActivity {
             datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            setPriorityButton();
             //TODO set values of other elements
         }
     }
@@ -345,7 +347,9 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setPriorityButton() {
-        btn_priority.setText("Priorität "+String.valueOf(event.getPriority()));
+        if(event != null) {
+            btn_priority.setText("Priorität " + String.valueOf(event.getPriority()));
+        }
         // Color noch setzen auf Prio-Farbe ?
     }
 
