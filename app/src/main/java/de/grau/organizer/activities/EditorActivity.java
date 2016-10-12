@@ -68,7 +68,10 @@ public class EditorActivity extends AppCompatActivity {
     Dialog notificationTimeIntervalDialog;
     MaterialDialog priorityDialog;
     MaterialDialog tagDialog;
+
+    //VALUES
     private int notificationTimeInterval =0;
+    private boolean useRememberNotification = false;
 
     //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
@@ -206,7 +209,8 @@ public class EditorActivity extends AppCompatActivity {
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
 
-
+        //Set default time to lowest possible. Otherwise system would start at 0, not at the smallest number
+        notificationTimeInterval = Integer.valueOf(numbers[0]);
 
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -222,6 +226,7 @@ public class EditorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setRememberTimeForEvent();
                 btn_pickNotifyDelay.setText(notificationTimeInterval +" min");
+                useRememberNotification = true;
                 notificationTimeIntervalDialog.dismiss();
             }
         });
@@ -229,9 +234,9 @@ public class EditorActivity extends AppCompatActivity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notificationTimeIntervalDialog.dismiss();
                 btn_pickNotifyDelay.setText("None");
-                notificationTimeInterval =-1;
+                useRememberNotification = false;
+                notificationTimeIntervalDialog.dismiss();
             }
         });
     }
@@ -476,8 +481,11 @@ public class EditorActivity extends AppCompatActivity {
             //Set description
             event.setDescription(et_description.getText().toString());
 
-            //set interval
-            event.setNotificationTime(notificationTimeInterval);
+            //set notification interval
+            if(useRememberNotification){
+                event.setNotificationTime(notificationTimeInterval);
+                NotificationAlarmHandler.setNotification(this, event);
+            }
 
             //set startdate
             event.setStart(currentStartDate.getTime());
@@ -495,9 +503,6 @@ public class EditorActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Event cannot be changed yet", Toast.LENGTH_LONG).show();
 
         }
-
-        NotificationAlarmHandler.setNotification(this, event);
-
         //After we saved the Event we will switch back to the last Activity
         finish();
     }
