@@ -3,6 +3,7 @@ package de.grau.organizer.classes;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.Calendar;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -28,11 +29,33 @@ public class Event extends RealmObject{
     private RealmList<Tag> tags;        //""
     private Category category;
 
+    public int getStartYear() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        return cal.get(Calendar.YEAR);
+    }
+    public int getStartMonth() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        return cal.get(Calendar.MONTH);
+    }
+    public int getStartDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        return cal.get(Calendar.DAY_OF_MONTH);
+    }
+
     public Event(){
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
         this.notes = new RealmList<Notes>();
+        this.priority = 4;      // default value
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + description + " starts at " + start + " and ends on " + end;
     }
 
     public String getId() {

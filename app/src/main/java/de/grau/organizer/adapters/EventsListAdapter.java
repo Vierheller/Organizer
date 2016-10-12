@@ -20,6 +20,14 @@ import de.grau.organizer.classes.Event;
 public class EventsListAdapter extends ArrayAdapter<Event> {
     List<Event> eventList;
 
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
+    }
+
     public EventsListAdapter(Context context, int resource, List<Event> objects) {
         super(context, resource, objects);
         this.eventList = objects;
@@ -42,4 +50,5 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         textView.setText(event.getName());
         return view;
     }
+
 }

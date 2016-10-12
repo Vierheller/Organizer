@@ -1,14 +1,17 @@
-package de.grau.organizer;
+package de.grau.organizer.database;
 
 import android.content.Context;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
 
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
@@ -33,6 +36,31 @@ public class EventsManagerRealm implements EventsManager {
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
 
+    public List<Event> getEvents(CalendarDay calDate) {
+        RealmQuery<Event> query = realm.where(Event.class);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.DAY_OF_MONTH, calDate.getDay() - 1);
+        cal.set(Calendar.MINUTE, calDate.getMonth());
+        cal.set(Calendar.MINUTE, calDate.getYear());
+
+        Date dateStart = cal.getTime();
+
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+        Date dateEnd = cal.getTime();
+
+        query.greaterThan("start", dateStart);
+        query.lessThan("start", dateEnd);
+
+        return  query.findAll().sort("start", Sort.ASCENDING);
+    }
+
     @Override
     public List<Event> getEvents(Category category) {
         // Build the query looking at all users:
@@ -43,12 +71,32 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public List<Event> getEvents(int priority) {
-        // Build the query looking at all users:
-        RealmQuery<Event> query = realm.where(Event.class);
-        query.equalTo("priority", priority);
-        List<Event> result = query.findAll().sort("start", Sort.ASCENDING);
-        return result;
+    public List<Event> getEvents(int month,int year, int priority) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 0);
+        cal.set(Calendar.MINUTE, month);
+        cal.set(Calendar.MINUTE, year);
+
+        Date dateStart = cal.getTime();
+        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+        //cal.set(Calendar.DAY_OF_MONTH, Calendar);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+        Date dateEnd = cal.getTime();
+
+        RealmResults<Event> query = realm.where(Event.class)
+                .greaterThan("start", dateStart)
+                .lessThan("start", dateEnd)
+                .equalTo("priority",priority)
+                .findAll()
+                .sort("start", Sort.ASCENDING);
+        return query;
     }
 
     @Override
@@ -86,7 +134,9 @@ public class EventsManagerRealm implements EventsManager {
         if (result == null) {
             return false;
         } else {
+            realm.beginTransaction();
             result.deleteFromRealm();
+            realm.commitTransaction();
             return true;
         }
 
@@ -111,6 +161,15 @@ public class EventsManagerRealm implements EventsManager {
             // Get a Realm instance for this thread
             realm = Realm.getDefaultInstance();
         }
+    }
+
+    @Override
+    public List<Event> searchEvents(String search){
+        RealmQuery<Event> query = realm.where(Event.class);
+
+        query.contains("name",search, Case.INSENSITIVE).or().contains("description",search,Case.INSENSITIVE).distinct("id");
+
+        return query.findAllSorted("name");
     }
 
     @Override

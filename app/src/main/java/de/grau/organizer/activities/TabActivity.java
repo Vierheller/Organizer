@@ -2,34 +2,36 @@ package de.grau.organizer.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.SearchView;
-import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
-import de.grau.organizer.EventsManagerRealm;
-import de.grau.organizer.fragments.ListFragment;
-import de.grau.organizer.fragments.MonthFragment;
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.grau.organizer.classes.Event;
+import de.grau.organizer.database.EventsManagerRealm;
+import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
-import de.grau.organizer.fragments.WeekFragment;
-import de.grau.organizer.interfaces.EventsManager;
+import de.grau.organizer.database.interfaces.EventsManager;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -47,10 +49,10 @@ public class TabActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
     private Context activityContext;
-
     public EventsManager eventsManager;
+    List<Event> mSearchResults;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class TabActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -82,7 +85,6 @@ public class TabActivity extends AppCompatActivity {
         });
 
         eventsManager = new EventsManagerRealm();
-
     }
 
     public void startTaskActivity(String eventID){
@@ -106,6 +108,62 @@ public class TabActivity extends AppCompatActivity {
         super.onStart();
         Log.d(DEBUG_TAG, "OnStart");
         eventsManager.open(this);
+
+        Intent intent = getIntent();
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            handleSearchIntent(intent);
+        }
+    }
+
+    private void handleSearchIntent(Intent intent) {
+        String query = intent.getStringExtra(SearchManager.QUERY);
+        if(!query.isEmpty()) {
+
+            mSearchResults = eventsManager.searchEvents(query);
+
+            List<String> result = new ArrayList<>();
+            for(Event e: mSearchResults){
+                result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+            }
+
+            ShowSearchResults(result);
+        }else {
+            Toast.makeText(this,R.string.search_no_query,Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void ShowSearchResults(List<String> searchResults) {
+        if (searchResults.size() > 0){
+            //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
+            //ToDo coloring corresponding to Theme
+            new MaterialDialog.Builder(this)
+                    .title(R.string.search_title)
+                    .items(searchResults)
+                    .titleColorRes(R.color.colorAccent)
+                    //.backgroundColorRes(R.color.colorPrimary)
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to open corresponding Event");
+                            Event e = mSearchResults.get(which);
+                            startTaskActivity(e.getId());
+                        }
+                    })
+                    .cancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            Log.d(DEBUG_TAG,"Search dialog was canceled");
+                        }
+                    })
+                    .show();
+        } else{
+            Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -129,6 +187,7 @@ public class TabActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -143,84 +202,6 @@ public class TabActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            switch(position){
-                case 0:
-                    return MonthFragment.newInstance("String1", "String2");
-                case 1:
-                    return WeekFragment.newInstance("String1", "String2");
-                case 2:
-                     return ListFragment.newInstance("String1","String2");
-                default:
-                    return PlaceholderFragment.newInstance(position + 1);
-            }
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "MONTH";
-                case 1:
-                    return "WEEK";
-                case 2:
-                    return "LIST";
-            }
-            return null;
-        }
-    }
 }

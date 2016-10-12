@@ -29,10 +29,11 @@ public class HighlightDecorator implements DayViewDecorator {
     public HighlightDecorator(List<Event> events, int priority) {
 
         switch (priority){
-            case 0 : this.mColor = Color.GRAY;
-            case 1 : this.mColor = Color.GREEN;
+            case 4 : this.mColor = Color.GRAY;
+            case 3 : this.mColor = Color.GREEN;
             case 2 : this.mColor = Color.YELLOW;
-            case 3 : this.mColor = Color.RED;
+            case 1 : this.mColor = Color.RED;
+            default : this.mColor = Color.GRAY;
         }
 
         this.mEvents = events;
