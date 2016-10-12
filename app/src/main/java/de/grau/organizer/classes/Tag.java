@@ -1,5 +1,7 @@
 package de.grau.organizer.classes;
 
+import java.util.UUID;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -9,6 +11,26 @@ import io.realm.annotations.PrimaryKey;
 
 public class Tag extends RealmObject {
     @PrimaryKey
-    private long id;
+    private String id;
     private String name;
+
+    public Tag(String name) {
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
+
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

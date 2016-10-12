@@ -6,11 +6,13 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -30,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import android.util.Log;
+
+import org.w3c.dom.Text;
 
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
@@ -53,6 +57,7 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_chooseAction;
     Button btn_pickNotifyDelay;
     Button btn_priority;
+    Button btn_tag;
     EditText et_description;
 
     LinearLayout layout_notecontainer;
@@ -63,6 +68,7 @@ public class EditorActivity extends AppCompatActivity {
     TimePickerDialog timePickerDialog;
     Dialog notificationTimeIntervalDialog;
     MaterialDialog priorityDialog;
+    MaterialDialog tagDialog;
     private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -155,6 +161,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
+        btn_tag =               (Button) findViewById(R.id.editor_btn_tags);
         btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
         et_description=         (EditText) findViewById(R.id.editor_description);
@@ -172,6 +179,7 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogsDateAndTime();
         setupDialogRememberTime();
         setupDialogPriority();
+        setupDialogTag();
         setupListeners();
         setPriorityButton();
     }
@@ -247,6 +255,20 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
+    private void setupDialogTag() {
+        tagDialog = new MaterialDialog.Builder(this)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .title("Add Tag")
+                .input("my tag...", "", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // ToDo
+                    }
+                })
+                .negativeText("Cancel")
+                .build();
+    }
+
     private void setRememberTimeForEvent() {
     }
 
@@ -257,6 +279,7 @@ public class EditorActivity extends AppCompatActivity {
         int hour = currentStartDate.get(Calendar.HOUR_OF_DAY);
         int minute = currentStartDate
                 .get(Calendar.MINUTE);
+
         datePickerDialog = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
@@ -272,7 +295,6 @@ public class EditorActivity extends AppCompatActivity {
                 btn_pickTime.setText((hour_of_day<10?"0"+hour_of_day:hour_of_day)+":"+(minute<10?"0"+minute:minute));
             }
         }, hour, minute, true);
-
     }
 
     private void setBtn_pickDateText(int year, int month, int dayOfMonth) {
@@ -341,6 +363,13 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 priorityDialog.show();
+            }
+        });
+
+        btn_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tagDialog.show();
             }
         });
     }
