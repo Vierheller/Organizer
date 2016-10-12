@@ -14,16 +14,18 @@ public class Tag extends RealmObject {
     private String id;
     private String name;
 
-    public Tag(){
-
-    }
-
     public Tag(String name) {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
 
         this.name = name;
+    }
+
+    public Tag() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
     }
 
     public String getId() {
