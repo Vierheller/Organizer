@@ -72,6 +72,7 @@ public class EditorActivity extends AppCompatActivity {
     //INTERNAL EVENT REPRESENTATION
     EventsManager eventsManager = new EventsManagerRealm();
     Event event = null;
+    private int mPriority = 4;      //default value
 
     String eventID = null;
     //INTENT
@@ -99,7 +100,6 @@ public class EditorActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                 eventID = null;
-                event = new Event();
             } else {
                 eventID = extras.getString(INTENT_PARAM_EVENTID);
             }
@@ -134,7 +134,6 @@ public class EditorActivity extends AppCompatActivity {
             datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
-            setPriorityButton();
             //TODO set values of other elements
         }
     }
@@ -240,8 +239,8 @@ public class EditorActivity extends AppCompatActivity {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        Log.d(DEBUG_TAG, "User Priority Dialog Result = "+position+1);
-                        event.setPriority(position+1);
+                        mPriority = position+1;
+                        Log.d(DEBUG_TAG, "User Priority Dialog Result = "+mPriority);
                         setPriorityButton();
                     }
                 })
@@ -348,8 +347,10 @@ public class EditorActivity extends AppCompatActivity {
 
     private void setPriorityButton() {
         if(event != null) {
-            btn_priority.setText("Priorität " + String.valueOf(event.getPriority()));
+            mPriority = event.getPriority();
         }
+
+        btn_priority.setText("Priorität " + String.valueOf(mPriority));
         // Color noch setzen auf Prio-Farbe ?
     }
 
@@ -438,6 +439,9 @@ public class EditorActivity extends AppCompatActivity {
 
             //set startdate
             event.setStart(currentStartDate.getTime());
+
+            //set priority
+            event.setPriority(mPriority);
 
             //Save event into Database
             eventsManager.writeEvent(event);
