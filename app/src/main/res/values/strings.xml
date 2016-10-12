@@ -23,4 +23,6 @@
     <string name="editor_btn_priority">Priority</string>
     <string name="editor_btn_saveevent">Add Note</string>
     <string name="editor_dialog_priority_title">Priority</string>
+    <string name="search_no_result">Search returned no results</string>
+    <string name="search_no_query">Query was empty</string>
 </resources>

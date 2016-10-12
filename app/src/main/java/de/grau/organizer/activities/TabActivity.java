@@ -2,7 +2,9 @@ package de.grau.organizer.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -81,8 +83,6 @@ public class TabActivity extends AppCompatActivity {
         });
 
         eventsManager = new EventsManagerRealm();
-
-
     }
 
     public void startTaskActivity(String eventID){
@@ -119,18 +119,41 @@ public class TabActivity extends AppCompatActivity {
 
     private void handleSearchIntent(Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
-        List<String> searchResults = eventsManager.searchEvents(query);
-        //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
-        new MaterialDialog.Builder(this)
-                .title(R.string.search_title)
-                .items(searchResults)
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        Toast.makeText(getApplicationContext(),"Clicked on item "+which,Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
+        if(!query.isEmpty()) {
+            List<String> searchResults = eventsManager.searchEvents(query);
+            ShowSearchResults(searchResults);
+        }else {
+            Toast.makeText(this,R.string.search_no_query,Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void ShowSearchResults(List<String> searchResults) {
+        if (searchResults.size() > 0){
+            //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
+            //ToDo coloring corresponding to Theme
+            new MaterialDialog.Builder(this)
+                    .title(R.string.search_title)
+                    .items(searchResults)
+                    .titleColorRes(R.color.colorAccent)
+                    //.backgroundColorRes(R.color.colorPrimary)
+                    .itemsCallback(new MaterialDialog.ListCallback() {
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            Log.d(DEBUG_TAG,"Search result chosen: "+text+". Trying to open corresponding Event");
+
+                        }
+                    })
+                    .cancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            Log.d(DEBUG_TAG,"Search dialog was canceled");
+                        }
+                    })
+                    .show();
+        } else{
+            Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

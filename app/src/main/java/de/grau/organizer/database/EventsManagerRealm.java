@@ -10,6 +10,7 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
 import de.grau.organizer.database.interfaces.EventsManager;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
@@ -120,7 +121,7 @@ public class EventsManagerRealm implements EventsManager {
     public List<String> searchEvents(String search){
         RealmQuery<Event> query = realm.where(Event.class);
 
-        query.contains("name",search);
+        query.contains("name",search, Case.INSENSITIVE).or().contains("description",search,Case.INSENSITIVE).distinct("id");
 
         List<Event> tmp = query.findAllSorted("name");
         List<String> result = new ArrayList<>();
