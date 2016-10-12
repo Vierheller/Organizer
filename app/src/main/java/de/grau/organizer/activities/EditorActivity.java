@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -19,12 +20,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.util.Log;
 
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
@@ -57,7 +62,7 @@ public class EditorActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     Dialog notificationTimeIntervalDialog;
-    Dialog priorityDialog;
+    MaterialDialog priorityDialog;
     private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -66,8 +71,9 @@ public class EditorActivity extends AppCompatActivity {
 
     //INTERNAL EVENT REPRESENTATION
     EventsManager eventsManager = new EventsManagerRealm();
-    Event event = new Event();
+    Event event = null;
 
+    String eventID = null;
     //INTENT
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
 
@@ -89,7 +95,18 @@ public class EditorActivity extends AppCompatActivity {
         initializeGUI();
         checkIntent(getIntent());
 
-
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                eventID = null;
+            } else {
+                eventID = extras.getString(INTENT_PARAM_EVENTID);
+            }
+        } else {
+            if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
+                eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
+            }
+        }
     }
 
     private void checkIntent(Intent intent) {
@@ -100,6 +117,24 @@ public class EditorActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         eventsManager.open(this);
+
+        if (eventID != null) {
+            Log.d(DEBUG_TAG, "ID: " + eventID);
+            event = eventsManager.loadEvent(eventID);
+            Log.d(DEBUG_TAG, event.toString());
+            setupGUI();
+        }
+    }
+
+    private void setupGUI() {
+        if (event != null) {
+            et_title.setText(event.getName(), TextView.BufferType.NORMAL);
+            et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
+            datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
+            setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            //TODO set values of other elements
+        }
     }
 
     @Override
@@ -137,6 +172,7 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogRememberTime();
         setupDialogPriority();
         setupListeners();
+        setPriorityButton();
     }
 
     private void setupDialogRememberTime() {
@@ -189,9 +225,25 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setupDialogPriority(){
-        //TODO Setup Dialog
-        priorityDialog = new Dialog(this);
-        priorityDialog.setTitle(R.string.editor_dialog_priority_title);
+        List<Integer> priorities = new ArrayList<Integer>() {{
+            add(1);
+            add(2);
+            add(3);
+            add(4);}};
+
+        priorityDialog = new MaterialDialog.Builder(this)
+                .title(R.string.editor_dialog_priority_title)
+                .titleColorRes(R.color.colorAccent)
+                .items(priorities)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        Log.d(DEBUG_TAG, "User Priority Dialog Result = "+position+1);
+                        event.setPriority(position+1);
+                        setPriorityButton();
+                    }
+                })
+                .build();
     }
 
     private void setRememberTimeForEvent() {
@@ -207,10 +259,7 @@ public class EditorActivity extends AppCompatActivity {
         datePickerDialog = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
-                currentStartDate.set(Calendar.YEAR, year);
-                currentStartDate.set(Calendar.MONTH, month);
-                currentStartDate.set(Calendar.DAY_OF_MONTH, day_of_month);
-                btn_pickDate.setText(day_of_month + "." + (int)(month+1) + "." + year);
+                setBtn_pickDateText(year, month, day_of_month);
             }
         },year, month, day);
 
@@ -223,6 +272,13 @@ public class EditorActivity extends AppCompatActivity {
             }
         }, hour, minute, true);
 
+    }
+
+    private void setBtn_pickDateText(int year, int month, int dayOfMonth) {
+        currentStartDate.set(Calendar.YEAR, year);
+        currentStartDate.set(Calendar.MONTH, month);
+        currentStartDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        btn_pickDate.setText(dayOfMonth + "." + (int)(month+1) + "." + year);
     }
 
     private void setupListeners(){
@@ -283,9 +339,14 @@ public class EditorActivity extends AppCompatActivity {
         btn_priority.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Numberpicker hinzufügen
+                priorityDialog.show();
             }
         });
+    }
+
+    private void setPriorityButton() {
+        btn_priority.setText("Priorität "+String.valueOf(event.getPriority()));
+        // Color noch setzen auf Prio-Farbe ?
     }
 
     private void addNote() {
@@ -357,23 +418,30 @@ public class EditorActivity extends AppCompatActivity {
      * This method calls the {@EventsManager} to store the current Event
      */
     private void saveEvent() {
-        //Set title
-        event.setName(et_title.getText().toString());
+        if (event == null) {
+            event = new Event();
+            //Set title
+            event.setName(et_title.getText().toString());
 
-        //Set all Notes
-        event.putNotes(filterNotes());
+            //Set all Notes
+            event.putNotes(filterNotes());
 
-        //Set description
-        event.setDescription(et_description.getText().toString());
+            //Set description
+            event.setDescription(et_description.getText().toString());
 
-        //set interval
-        event.setNotificationTime(notificationTimeInterval);
+            //set interval
+            event.setNotificationTime(notificationTimeInterval);
 
-        //set startdate
-        event.setStart(currentStartDate.getTime());
+            //set startdate
+            event.setStart(currentStartDate.getTime());
 
-        //Save event into Database
-        eventsManager.writeEvent(event);
+            //Save event into Database
+            eventsManager.writeEvent(event);
+        } else {
+            //TODO update event
+            Toast.makeText(getApplicationContext(),"Event cannot be changed yet", Toast.LENGTH_LONG).show();
+
+        }
 
         NotificationAlarmHandler.setNotification(this, event);
 
