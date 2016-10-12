@@ -70,7 +70,7 @@ public class EditorActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     //INTERNAL EVENT REPRESENTATION
-    EventsManager eventsManager = new EventsManagerRealm();
+    EventsManager eventsManager = EventsManagerRealm.getInstance(this);
     Event event = null;
     private int mPriority = 4;      //default value
 

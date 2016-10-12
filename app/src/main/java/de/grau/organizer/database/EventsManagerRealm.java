@@ -24,7 +24,11 @@ import io.realm.Sort;
 
 public class EventsManagerRealm implements EventsManager {
     private Realm realm;
+    private static EventsManagerRealm instance;
 
+    private EventsManagerRealm(Context context){
+        this.open(context);
+    }
 
     @Override
     public List<Event> getEvents(Date startDate, Date endDate) {
@@ -59,6 +63,14 @@ public class EventsManagerRealm implements EventsManager {
         query.lessThan("start", dateEnd);
 
         return  query.findAll().sort("start", Sort.ASCENDING);
+    }
+
+
+    public static EventsManager getInstance(Context context) {
+        if(instance==null){
+            instance = new EventsManagerRealm(context);
+        }
+        return instance;
     }
 
     @Override
@@ -160,8 +172,11 @@ public class EventsManagerRealm implements EventsManager {
             Realm.setDefaultConfiguration(config);
             // Get a Realm instance for this thread
             realm = Realm.getDefaultInstance();
+
         }
     }
+
+
 
     @Override
     public List<Event> searchEvents(String search){
@@ -174,7 +189,7 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public void close() {
-        realm.close();
-        realm = null;
+//        realm.close();
+//        realm = null;
     }
 }

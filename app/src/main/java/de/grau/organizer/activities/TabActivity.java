@@ -84,7 +84,7 @@ public class TabActivity extends AppCompatActivity {
             }
         });
 
-        eventsManager = new EventsManagerRealm();
+        eventsManager = EventsManagerRealm.getInstance(this);
     }
 
     public void startTaskActivity(String eventID){
