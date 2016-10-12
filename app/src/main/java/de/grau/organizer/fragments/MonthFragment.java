@@ -88,8 +88,6 @@ public class MonthFragment extends Fragment {
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(2),2);
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(3),3);
         mCalendarView.addDecorators(prio0,prio1,prio2,prio3);
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

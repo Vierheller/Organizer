@@ -33,6 +33,7 @@ public class Event extends RealmObject{
             this.id = UUID.randomUUID().toString();
         }
         this.notes = new RealmList<Notes>();
+        this.priority = 4;      // default value
     }
 
     public String getId() {

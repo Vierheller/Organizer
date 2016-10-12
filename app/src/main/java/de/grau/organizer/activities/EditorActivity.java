@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +60,7 @@ public class EditorActivity extends AppCompatActivity {
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     Dialog notificationTimeIntervalDialog;
-    Dialog priorityDialog;
+    MaterialDialog priorityDialog;
     private int notificationTimeInterval =0;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -136,6 +139,7 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogRememberTime();
         setupDialogPriority();
         setupListeners();
+        setPriorityButton();
     }
 
     private void setupDialogRememberTime() {
@@ -188,9 +192,25 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setupDialogPriority(){
-        //TODO Setup Dialog
-        priorityDialog = new Dialog(this);
-        priorityDialog.setTitle(R.string.editor_dialog_priority_title);
+        List<Integer> priorities = new ArrayList<Integer>() {{
+            add(1);
+            add(2);
+            add(3);
+            add(4);}};
+
+        priorityDialog = new MaterialDialog.Builder(this)
+                .title(R.string.editor_dialog_priority_title)
+                .titleColorRes(R.color.colorAccent)
+                .items(priorities)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        Log.d(DEBUG_TAG, "User Priority Dialog Result = "+position+1);
+                        event.setPriority(position+1);
+                        setPriorityButton();
+                    }
+                })
+                .build();
     }
 
     private void setRememberTimeForEvent() {
@@ -282,9 +302,14 @@ public class EditorActivity extends AppCompatActivity {
         btn_priority.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Numberpicker hinzufügen
+                priorityDialog.show();
             }
         });
+    }
+
+    private void setPriorityButton() {
+        btn_priority.setText("Priorität "+String.valueOf(event.getPriority()));
+        // Color noch setzen auf Prio-Farbe ?
     }
 
     private void addNote() {
