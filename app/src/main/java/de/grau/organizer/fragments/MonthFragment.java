@@ -14,9 +14,17 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;

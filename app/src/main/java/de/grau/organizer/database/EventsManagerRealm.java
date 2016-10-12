@@ -1,6 +1,7 @@
 package de.grau.organizer.database;
 
 import android.content.Context;
+
 import java.util.ArrayList;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
