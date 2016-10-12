@@ -127,6 +127,7 @@ public class EditorActivity extends AppCompatActivity {
 
         //TODO This is only for testing
         currentStartDate = Calendar.getInstance();
+        currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
 
         //Add a sigle Note for better user experience.

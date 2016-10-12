@@ -2,6 +2,8 @@ package de.grau.organizer.database.interfaces;
 
 import android.content.Context;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public interface EventsManager {
     List<Event> getEvents(int priority);
     List<Event> getEvents(List<Tag> tags);
     List<Event> getEvents();
+    List<Event> getEvents(CalendarDay calDate);
 
     RealmResults<Event> getRealmEventList();
 
@@ -33,4 +36,6 @@ public interface EventsManager {
     void open(Context context);
 
     void close();
+
+
 }

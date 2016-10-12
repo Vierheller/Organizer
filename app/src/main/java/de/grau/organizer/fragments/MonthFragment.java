@@ -2,16 +2,35 @@ package de.grau.organizer.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< Updated upstream
+=======
+import android.widget.ListView;
+>>>>>>> Stashed changes
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+<<<<<<< Updated upstream
+=======
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import de.grau.organizer.EventsManagerRealm;
+>>>>>>> Stashed changes
 import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
+import de.grau.organizer.adapters.EventsListAdapter;
+import de.grau.organizer.classes.Event;
+import de.grau.organizer.interfaces.EventsManager;
 
 
 /**
@@ -22,7 +41,7 @@ import de.grau.organizer.activities.TabActivity;
  * Use the {@link MonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MonthFragment extends Fragment {
+public class MonthFragment extends Fragment implements OnDateSelectedListener {
     private static final String LOG_TAG = MonthFragment.class.getCanonicalName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +53,9 @@ public class MonthFragment extends Fragment {
     private String mParam2;
 
     private TabActivity mActivity;
+    private ListView mListView;
     private MaterialCalendarView mCalendarView;
+    private EventsListAdapter mListViewAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,6 +82,21 @@ public class MonthFragment extends Fragment {
     }
 
     @Override
+    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        List<Event> events = mActivity.eventsManager.getEvents(date);
+        //TODO: Load events into listView
+        for (Event event : events) {
+            Log.d(LOG_TAG, event.toString());
+        }
+        if ( events != null ) {
+            mListViewAdapter.setEventList(events);
+        } else {
+            mListViewAdapter.setEventList(new ArrayList<Event>());
+        }
+        mListViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -68,6 +104,7 @@ public class MonthFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         this.mActivity = (TabActivity)getActivity();
+
     }
 
     @Override
@@ -76,8 +113,16 @@ public class MonthFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_month, container, false);
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
+        mListView = (ListView) view.findViewById(R.id.month_list_view);
+
+        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>());
+
+        mListView.setAdapter(mListViewAdapter);
+
+        mCalendarView.setOnDateChangedListener(this);
 
         setupCalendar();
+
 
         return view;
     }
@@ -98,6 +143,7 @@ public class MonthFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     /*@Override
     public void onAttach(Context context) {

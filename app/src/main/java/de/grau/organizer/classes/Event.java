@@ -35,6 +35,11 @@ public class Event extends RealmObject{
         this.notes = new RealmList<Notes>();
     }
 
+    @Override
+    public String toString() {
+        return name + ": " + description + " starts at " + start + " and ends on " + end;
+    }
+
     public String getId() {
         return id;
     }
