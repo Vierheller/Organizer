@@ -19,7 +19,7 @@ import io.realm.RealmResults;
 public interface EventsManager {
     List<Event> getEvents(Date startDate, Date endDate);
     List<Event> getEvents(Category category);
-    List<Event> getEvents(int priority);
+    List<Event> getEvents(int month,int year, int priority);
     List<Event> getEvents(List<Tag> tags);
     List<Event> getEvents();
     List<Event> getEvents(CalendarDay calDate);

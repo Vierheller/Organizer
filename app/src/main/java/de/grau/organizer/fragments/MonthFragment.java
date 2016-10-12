@@ -13,8 +13,10 @@ import android.widget.ListView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.grau.organizer.HighlightDecorator;
@@ -32,7 +34,7 @@ import de.grau.organizer.classes.Event;
  * Use the {@link MonthFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MonthFragment extends Fragment implements OnDateSelectedListener {
+public class MonthFragment extends Fragment implements OnDateSelectedListener, OnMonthChangedListener {
     private static final String LOG_TAG = MonthFragment.class.getCanonicalName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -111,21 +113,24 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener {
         mListView.setAdapter(mListViewAdapter);
 
         mCalendarView.setOnDateChangedListener(this);
+        mCalendarView.setOnMonthChangedListener(this);
 
-        setupCalendar();
+        Calendar cal = Calendar.getInstance();
+        mCalendarView.getCurrentDate().copyTo(cal);
+
+        setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 
 
         return view;
     }
 
-    private void setupCalendar() {
-        HighlightDecorator prio0 = new HighlightDecorator(mActivity.eventsManager.getEvents(0),0);
-        HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(1),1);
-        HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(2),2);
-        HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(3),3);
-        mCalendarView.addDecorators(prio0,prio1,prio2,prio3);
+    private void setupCalendar(int month, int year) {
 
-
+        HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4),4);
+        HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3),3);
+        HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2),2);
+        HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,1),1);
+        mCalendarView.addDecorators(prio4,prio3,prio2,prio1);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -151,6 +156,13 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+        Calendar cal = Calendar.getInstance();
+        date.copyTo(cal);
+        setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
     }
 
     /**

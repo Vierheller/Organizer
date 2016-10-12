@@ -1,7 +1,6 @@
 package de.grau.organizer.database;
 
 import android.content.Context;
-import java.util.ArrayList;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.Date;
@@ -72,12 +71,32 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public List<Event> getEvents(int priority) {
-        // Build the query looking at all users:
-        RealmQuery<Event> query = realm.where(Event.class);
-        query.equalTo("priority", priority);
-        List<Event> result = query.findAll().sort("start", Sort.ASCENDING);
-        return result;
+    public List<Event> getEvents(int month,int year, int priority) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.DAY_OF_MONTH, 0);
+        cal.set(Calendar.MINUTE, month);
+        cal.set(Calendar.MINUTE, year);
+
+        Date dateStart = cal.getTime();
+        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+        //cal.set(Calendar.DAY_OF_MONTH, Calendar);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+        Date dateEnd = cal.getTime();
+
+        RealmResults<Event> query = realm.where(Event.class)
+                .greaterThan("start", dateStart)
+                .lessThan("start", dateEnd)
+                .equalTo("priority",priority)
+                .findAll()
+                .sort("start", Sort.ASCENDING);
+        return query;
     }
 
     @Override
