@@ -1,5 +1,7 @@
 package de.grau.organizer.classes;
 
+import android.graphics.Color;
+
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -45,6 +47,16 @@ public class Event extends RealmObject{
         Calendar cal = Calendar.getInstance();
         cal.setTime(start);
         return cal.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public int getPriorityColor() {
+        switch (priority){
+            case 4 : return Color.GRAY;
+            case 3 : return Color.GREEN;
+            case 2 : return Color.YELLOW;
+            case 1 : return Color.RED;
+            default : return Color.GRAY;
+        }
     }
 
     public Event(){

@@ -134,10 +134,10 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
     private void setupCalendar(int month, int year) {
 
-        HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4),4);
-        HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3),3);
-        HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2),2);
-        HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,1),1);
+        HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4));
+        HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3));
+        HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2));
+        HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,1));
         mCalendarView.addDecorators(prio4,prio3,prio2,prio1);
     }
 

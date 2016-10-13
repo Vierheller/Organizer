@@ -178,7 +178,7 @@ public class EditorActivity extends AppCompatActivity {
         currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
 
-        //Add a sigle Note for better user experience.
+        //Add a single Note for better user experience.
         addNote();
 
         setupDialogsDateAndTime();
@@ -391,7 +391,7 @@ public class EditorActivity extends AppCompatActivity {
 
         if(mTagList != null) {
             for (int i = 0; i < mTagList.size(); i++) {
-                tv_tags.setText("#"+tv_tags.getText() + " " + mTagList.get(i).getName());
+                tv_tags.setText(tv_tags.getText() + " " + "#" + mTagList.get(i).getName());
             }
         }
     }
@@ -464,7 +464,6 @@ public class EditorActivity extends AppCompatActivity {
             }
         }
     }
-
 
     /**
      * This method calls the {@EventsManager} to store the current Event
