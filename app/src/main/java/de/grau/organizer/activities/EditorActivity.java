@@ -472,31 +472,31 @@ public class EditorActivity extends AppCompatActivity {
      */
     private void saveEvent() {
 
-            event_data = new Event();
+        event_data = new Event();
 
-            //Set title
-            event_data.setName(et_title.getText().toString());
+        //Set title
+        event_data.setName(et_title.getText().toString());
 
-            //Set all Notes
-            event_data.putNotes(filterNotes());
+        //Set all Notes
+        event_data.putNotes(filterNotes());
 
-            //Set description
-            event_data.setDescription(et_description.getText().toString());
+        //Set description
+        event_data.setDescription(et_description.getText().toString());
 
-            //set notification interval
-            if(useRememberNotification){
-                event_data.setNotificationTime(notificationTimeInterval);
-                NotificationAlarmHandler.setNotification(this, event_data);
-            }
+        //set startdate
+        event_data.setStart(currentStartDate.getTime());
 
-            //set startdate
-            event_data.setStart(currentStartDate.getTime());
+        //set notification interval
+        event_data.setNotificationTime(notificationTimeInterval);
+        if(useRememberNotification){
+            NotificationAlarmHandler.setNotification(this, event_data);
+        }
 
-            //set priority
-            event_data.setPriority(mPriority);
+        //set priority
+        event_data.setPriority(mPriority);
 
-            //set Tags
-            event_data.setTags(mTagList);
+        //set Tags
+        event_data.setTags(mTagList);
 
         if(event == null) {
             //Save event into Database
