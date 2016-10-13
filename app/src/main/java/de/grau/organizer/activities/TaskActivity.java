@@ -43,6 +43,18 @@ public class TaskActivity extends AppCompatActivity {
     private final static int CONTACT_PICKER = 1;
     private static final int PERMISSIONS_REQUEST_CALL_PHONE = 101;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mEvent = getEventFromIntent(getIntent());
+
+        //If there was a fail while getting Event, do not fill UI
+        if (mEvent == null)
+            return;
+
+        fillGUI();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +71,6 @@ public class TaskActivity extends AppCompatActivity {
 
         eventsManager = new EventsManagerRealm();
         eventsManager.open();
-
-        mEvent = getEventFromIntent(getIntent());
-
-        //If there was a fail while getting Event, do not fill UI
-        if (mEvent == null)
-            return;
-
-        fillGUI();
 
     }
 

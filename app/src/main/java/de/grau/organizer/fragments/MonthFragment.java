@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+
 import de.grau.organizer.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
@@ -133,7 +134,6 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void setupCalendar(int month, int year) {
-
         HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4));
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3));
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2));

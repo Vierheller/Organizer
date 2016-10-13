@@ -69,7 +69,7 @@ public class Event extends RealmObject{
 
     @Override
     public String toString() {
-        return name + ": " + description + " starts at " + start + " and ends on " + end;
+        return name + ": " + description + " starts at " + start + " and ends on " + end + " with prio " + priority;
     }
 
     public String getId() {

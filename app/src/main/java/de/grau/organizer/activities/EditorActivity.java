@@ -82,7 +82,7 @@ public class EditorActivity extends AppCompatActivity {
     private EventsManager eventsManager = new EventsManagerRealm();
     private Event event = null;
     private Event event_data = null;     // notwendig wegen Realmzugriff
-    private int mPriority;
+    private int mPriority = 4; //default value
     private Tag mTag;
     private boolean mEventtype;         // true = Aufgabe, false = Event
     private RealmList<Tag> mTagList;
@@ -367,7 +367,6 @@ public class EditorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(verifyEvent()){
                     saveEvent();
-                    Toast.makeText(getApplicationContext(),"Saving Event", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(),"Event has no Title!", Toast.LENGTH_LONG).show();
                 }
@@ -518,11 +517,12 @@ public class EditorActivity extends AppCompatActivity {
             event = new Event();
             event = event_data;
             eventsManager.writeEvent(event);
+            Toast.makeText(getApplicationContext(),"Saved Event", Toast.LENGTH_LONG).show();
         } else {
             //Update event into Database
             eventsManager.updateEvent(event_data, eventID);
 
-            Toast.makeText(getApplicationContext(),"Event has been updated", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Updated Event", Toast.LENGTH_LONG).show();
 
             event_data = null;
         }

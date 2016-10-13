@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -14,6 +15,7 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 
 import de.grau.organizer.classes.Event;
 
@@ -28,11 +30,15 @@ public class HighlightDecorator implements DayViewDecorator {
 
     public HighlightDecorator(List<Event> events) {
 
+
         if(events.size() > 0) {
-           mColor = events.get(0).getPriorityColor();
+            mColor = events.get(0).getPriorityColor();
         }
 
         this.mEvents = events;
+
+        Log.d("abc", "mEvent size " + mEvents.size());
+
     }
 
     @Override
@@ -42,11 +48,14 @@ public class HighlightDecorator implements DayViewDecorator {
 
     private boolean shouldHighlight(Calendar calendarDay) {
         Calendar currentCalendar = Calendar.getInstance();
+
+
         for (Event currentEvent: mEvents) {
             currentCalendar.setTime(currentEvent.getStart());
             //compare if both dates are on same day.
-            if(currentCalendar.get(Calendar.YEAR) == calendarDay.get(Calendar.YEAR) &&
-                    currentCalendar.get(Calendar.DAY_OF_YEAR) == calendarDay.get(Calendar.DAY_OF_YEAR)){
+            boolean sameYear = currentCalendar.get(Calendar.YEAR) == calendarDay.get(Calendar.YEAR);
+            boolean sameDay = currentCalendar.get(Calendar.DAY_OF_YEAR) == calendarDay.get(Calendar.DAY_OF_YEAR);
+            if(sameDay && sameYear){
                 return true;
             }
         }
