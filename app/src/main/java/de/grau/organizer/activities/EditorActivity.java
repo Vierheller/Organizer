@@ -51,6 +51,8 @@ public class EditorActivity extends AppCompatActivity {
     private ImageButton btn_cancel;
     private Button btn_pickDate;
     private Button btn_pickTime;
+    private Button btn_pickDate_fin;
+    private Button btn_pickTime_fin;
     private Button btn_addNote;
     private Button btn_chooseAction;
     private Button btn_pickNotifyDelay;
@@ -82,11 +84,13 @@ public class EditorActivity extends AppCompatActivity {
     private Event event_data = null;     // notwendig wegen Realmzugriff
     private int mPriority;
     private Tag mTag;
+    private boolean mEventtype;         // true = Aufgabe, false = Event
     private RealmList<Tag> mTagList;
     private String eventID = null;
 
     //INTENT
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
+    public static final String INTENT_PARAM_EVENTTYPE = "intent_eventType";
 
     //HELPERS
     private Calendar currentStartDate;
@@ -106,7 +110,6 @@ public class EditorActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        initializeGUI();
         checkIntent(getIntent());
 
         if (savedInstanceState == null) {
@@ -115,12 +118,16 @@ public class EditorActivity extends AppCompatActivity {
                 eventID = null;
             } else {
                 eventID = extras.getString(INTENT_PARAM_EVENTID);
+                mEventtype = extras.getBoolean(INTENT_PARAM_EVENTTYPE);
             }
         } else {
             if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
                 eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
+                mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
             }
         }
+
+        initializeGUI();
 
         if (eventID != null) {
             Log.d(DEBUG_TAG, "ID: " + eventID);
@@ -161,6 +168,8 @@ public class EditorActivity extends AppCompatActivity {
         et_title =              (EditText) findViewById(R.id.editor_et_title);
         btn_pickDate =          (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
+        btn_pickDate_fin =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
+        btn_pickTime_fin =      (Button) findViewById(R.id.editor_btn_picktime_fin);
         btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
@@ -181,6 +190,7 @@ public class EditorActivity extends AppCompatActivity {
         //Add a single Note for better user experience.
         addNote();
 
+        hideFinTime();
         setupDialogsDateAndTime();
         setupDialogRememberTime();
         setupDialogPriority();
@@ -188,6 +198,13 @@ public class EditorActivity extends AppCompatActivity {
         setupListeners();
         setPriorityButton(4);
         setTagTextLine();
+    }
+
+    private void hideFinTime() {
+        if(mEventtype) {
+            btn_pickDate_fin.setVisibility(View.GONE);
+            btn_pickTime_fin.setVisibility(View.GONE);
+        }
     }
 
     private void setupDialogRememberTime() {

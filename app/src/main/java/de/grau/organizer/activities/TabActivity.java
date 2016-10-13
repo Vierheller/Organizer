@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class TabActivity extends AppCompatActivity {
     private Context activityContext;
     public EventsManager eventsManager;
     private List<Event> mSearchResults;
-
+    private MaterialDialog md_event_selector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +76,15 @@ public class TabActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);       // Eventkind selector
+
+        setupFabListener();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startEditorActivity(null);
+                md_event_selector.show();
+                //startEditorActivity(null);
             }
         });
 
@@ -88,6 +93,27 @@ public class TabActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
+    }
+
+    public void setupFabListener() {
+        md_event_selector = new MaterialDialog.Builder(this)
+                .title("Typ auswählen")
+                .content("Möchtest du einen Termin oder eine Aufgabe anlegen?")
+                .positiveText("Aufgabe")
+                .negativeText("Termin")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startEditorActivity(true);      // Ohne Startdatum laden
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startEditorActivity(false);
+                    }
+                })
+                .build();
     }
 
     public void startTaskActivity(String eventID){
@@ -103,6 +129,12 @@ public class TabActivity extends AppCompatActivity {
         if(eventID!=null){
             intent.putExtra(EditorActivity.INTENT_PARAM_EVENTID, eventID);
         }
+        startActivity(intent);
+    }
+
+    public void startEditorActivity(boolean eventtype){
+        Intent intent = new Intent(activityContext, EditorActivity.class);
+        intent.putExtra(EditorActivity.INTENT_PARAM_EVENTTYPE, eventtype);
         startActivity(intent);
     }
 
