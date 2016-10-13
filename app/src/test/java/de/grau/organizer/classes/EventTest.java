@@ -5,9 +5,14 @@ import android.provider.CalendarContract;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import io.realm.RealmList;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -78,54 +83,75 @@ public class EventTest {
         assertEquals(action, testEvent.getAction());
     }
 
-    @Test
-    public void setAction() throws Exception {
-
-    }
 
     @Test
-    public void getNotes() throws Exception {
-
+    public void get_setNotes() throws Exception {
+        Notes node = new Notes();
+        RealmList<Notes> list = new RealmList<>();
+        list.add(node);
+        testEvent.setNotes(list);
+        assertEquals(list, testEvent.getNotes());
     }
 
-    @Test
-    public void setNotes() throws Exception {
-
-    }
 
     @Test
     public void putNote() throws Exception {
-
+        Notes node = new Notes();
+        testEvent.putNote(node);
+        assertEquals(node, testEvent.getNotes().get(0));
     }
 
     @Test
-    public void getTags() throws Exception {
-
-    }
-
-    @Test
-    public void setTags() throws Exception {
-
+    public void get_setTags() throws Exception {
+        Tag tag = new Tag();
+        RealmList<Tag> list = new RealmList<>();
+        list.add(tag);
+        testEvent.setTags(list);
+        assertEquals(list, testEvent.getTags());
     }
 
     @Test
     public void getCategory() throws Exception {
-
+        Category category = new Category();
+        testEvent.setCategory(category);
+        assertEquals(category, testEvent.getCategory());
     }
 
-    @Test
-    public void setCategory() throws Exception {
-
-    }
 
     @Test
     public void addNote() throws Exception {
-
+        Notes node = new Notes();
+        testEvent.addNote(node);
+        assertEquals(node, testEvent.getNotes().get(0));
     }
 
     @Test
     public void putNotes() throws Exception {
+        Notes node1 = new Notes();
+        Notes node2 = new Notes();
+        Notes node3 = new Notes();
+        List<Notes> list = new ArrayList<>();
+        list.add(node1);
+        list.add(node2);
+        list.add(node3);
+        testEvent.putNotes(list);
+        assertEquals(list, testEvent.getNotes());
 
+    }
+    @Test
+    public void testToString() throws Exception{
+        testEvent.setDescription("This is a test");
+        testEvent.setStart(startDate);
+        testEvent.setEnd(endDate);
+        testEvent.setName("Test");
+        assertEquals("Test: This is a test starts at " + startDate + " and ends on " + endDate, testEvent.toString());
+    }
+    @Test
+    public void testGetStartYearMonthDay(){
+        testEvent.setStart(startDate);
+        assertEquals(2016, testEvent.getStartYear());
+        assertEquals(11, testEvent.getStartMonth());
+        assertEquals(15, testEvent.getStartDay());
     }
 
 }

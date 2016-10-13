@@ -24,12 +24,12 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:id="@+id/task_btn_change" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -42,12 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/task_tv_title" />
-
-        <Button
-            android:text="Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/task_btn_edit" />
 
         <Button
             android:text="Execute Action"
