@@ -1,5 +1,7 @@
 package de.grau.organizer.classes;
 
+import java.util.UUID;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -9,10 +11,16 @@ import io.realm.annotations.PrimaryKey;
 
 public class Category extends RealmObject {
     @PrimaryKey
-    private long id;
+    private String id;
     private String name;
 
-    public long getID() {
+    public Category() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
+    }
+
+    public String getID() {
         return this.id;
     }
 }
