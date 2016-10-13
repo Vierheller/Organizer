@@ -21,11 +21,13 @@ public class Tag extends RealmObject {
 
         this.name = name;
     }
+
     public Tag() {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
     }
+
     public String getId() {
         return id;
     }

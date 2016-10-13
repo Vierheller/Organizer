@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -31,10 +30,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import android.util.Log;
 
-import org.w3c.dom.Text;
-
+import de.grau.organizer.classes.Tag;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
@@ -43,6 +40,7 @@ import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Notes;
 import de.grau.organizer.database.interfaces.EventsManager;
 import de.grau.organizer.notification.NotificationAlarmHandler;
+import io.realm.RealmList;
 
 public class EditorActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = EditorActivity.class.getCanonicalName();
@@ -59,6 +57,7 @@ public class EditorActivity extends AppCompatActivity {
     Button btn_priority;
     Button btn_tag;
     EditText et_description;
+    TextView tv_tags;
 
     LinearLayout layout_notecontainer;
     List<EditText> layout_notelist;
@@ -69,7 +68,10 @@ public class EditorActivity extends AppCompatActivity {
     Dialog notificationTimeIntervalDialog;
     MaterialDialog priorityDialog;
     MaterialDialog tagDialog;
+
+    //VALUES
     private int notificationTimeInterval =0;
+    private boolean useRememberNotification = false;
 
     //INTENT ACTIONS AND PERMISSIONS
     private final static int CONTACT_PICKER = 1;
@@ -78,7 +80,11 @@ public class EditorActivity extends AppCompatActivity {
     //INTERNAL EVENT REPRESENTATION
     EventsManager eventsManager = new EventsManagerRealm();
     Event event = null;
-    private int mPriority = 4;      //default value
+    Event event_data = null;     // notwendig wegen Realmzugriff
+
+    private int mPriority;
+    private Tag mTag;
+    private RealmList<Tag> mTagList;
 
     String eventID = null;
     //INTENT
@@ -90,6 +96,8 @@ public class EditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        eventsManager.open();
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -114,16 +122,6 @@ public class EditorActivity extends AppCompatActivity {
                 eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
             }
         }
-    }
-
-    private void checkIntent(Intent intent) {
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        eventsManager.open(this);
 
         if (eventID != null) {
             Log.d(DEBUG_TAG, "ID: " + eventID);
@@ -133,21 +131,28 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    private void setupGUI() {
+    private void checkIntent(Intent intent) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    private void setupGUI() {       // It is only for edit mode
         if (event != null) {
             et_title.setText(event.getName(), TextView.BufferType.NORMAL);
             et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
             datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            mTagList.addAll(event.getTags());
+            setPriorityButton(event.getPriority());
+            setTagTextLine();
             //TODO set values of other elements
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        eventsManager.close();
     }
 
     /**
@@ -165,6 +170,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
         et_description=         (EditText) findViewById(R.id.editor_description);
+        tv_tags =               (TextView) findViewById(R.id.editor_tags);
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
 
@@ -181,7 +187,8 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogPriority();
         setupDialogTag();
         setupListeners();
-        setPriorityButton();
+        setPriorityButton(4);
+        setTagTextLine();
     }
 
     private void setupDialogRememberTime() {
@@ -203,7 +210,8 @@ public class EditorActivity extends AppCompatActivity {
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
 
-
+        //Set default time to lowest possible. Otherwise system would start at 0, not at the smallest number
+        notificationTimeInterval = Integer.valueOf(numbers[0]);
 
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -219,6 +227,7 @@ public class EditorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setRememberTimeForEvent();
                 btn_pickNotifyDelay.setText(notificationTimeInterval +" min");
+                useRememberNotification = true;
                 notificationTimeIntervalDialog.dismiss();
             }
         });
@@ -226,9 +235,9 @@ public class EditorActivity extends AppCompatActivity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notificationTimeIntervalDialog.dismiss();
                 btn_pickNotifyDelay.setText("None");
-                notificationTimeInterval =-1;
+                useRememberNotification = false;
+                notificationTimeIntervalDialog.dismiss();
             }
         });
     }
@@ -249,20 +258,24 @@ public class EditorActivity extends AppCompatActivity {
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         mPriority = position+1;
                         Log.d(DEBUG_TAG, "User Priority Dialog Result = "+mPriority);
-                        setPriorityButton();
+                        setPriorityButton(mPriority);
                     }
                 })
                 .build();
     }
 
     private void setupDialogTag() {
+        mTagList = new RealmList<>();
         tagDialog = new MaterialDialog.Builder(this)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .title("Add Tag")
                 .input("my tag...", "", new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
-                        // ToDo
+                        mTag = new Tag(input.toString());
+                        mTagList.add(mTag);
+                        Log.d(DEBUG_TAG, "Tag hinzugefügt: "+mTag.getName());
+                        setTagTextLine();
                     }
                 })
                 .negativeText("Cancel")
@@ -374,12 +387,18 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
-    private void setPriorityButton() {
-        if(event != null) {
-            mPriority = event.getPriority();
-        }
+    private void setTagTextLine() {
+        tv_tags.setText("");
 
-        btn_priority.setText("Priorität " + String.valueOf(mPriority));
+        if(mTagList != null) {
+            for (int i = 0; i < mTagList.size(); i++) {
+                tv_tags.setText("#"+tv_tags.getText() + " " + mTagList.get(i).getName());
+            }
+        }
+    }
+
+    private void setPriorityButton(int priority) {
+        btn_priority.setText("Priorität " + String.valueOf(priority));
         // Color noch setzen auf Prio-Farbe ?
     }
 
@@ -452,36 +471,46 @@ public class EditorActivity extends AppCompatActivity {
      * This method calls the {@EventsManager} to store the current Event
      */
     private void saveEvent() {
-        if (event == null) {
-            event = new Event();
+
+            event_data = new Event();
+
             //Set title
-            event.setName(et_title.getText().toString());
+            event_data.setName(et_title.getText().toString());
 
             //Set all Notes
-            event.putNotes(filterNotes());
+            event_data.putNotes(filterNotes());
 
             //Set description
-            event.setDescription(et_description.getText().toString());
+            event_data.setDescription(et_description.getText().toString());
 
-            //set interval
-            event.setNotificationTime(notificationTimeInterval);
+            //set notification interval
+            if(useRememberNotification){
+                event_data.setNotificationTime(notificationTimeInterval);
+                NotificationAlarmHandler.setNotification(this, event_data);
+            }
 
             //set startdate
-            event.setStart(currentStartDate.getTime());
+            event_data.setStart(currentStartDate.getTime());
 
             //set priority
-            event.setPriority(mPriority);
+            event_data.setPriority(mPriority);
 
+            //set Tags
+            event_data.setTags(mTagList);
+
+        if(event == null) {
             //Save event into Database
+            event = new Event();
+            event = event_data;
             eventsManager.writeEvent(event);
         } else {
-            //TODO update event
-            Toast.makeText(getApplicationContext(),"Event cannot be changed yet", Toast.LENGTH_LONG).show();
+            //Update event into Database
+            eventsManager.updateEvent(event_data, eventID);
 
+            Toast.makeText(getApplicationContext(),"Event has been updated", Toast.LENGTH_LONG).show();
+
+            event_data = null;
         }
-
-        NotificationAlarmHandler.setNotification(this, event);
-
         //After we saved the Event we will switch back to the last Activity
         finish();
     }
@@ -509,11 +538,16 @@ public class EditorActivity extends AppCompatActivity {
         return !et_title.getText().toString().isEmpty();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eventsManager.close();
     }
 }

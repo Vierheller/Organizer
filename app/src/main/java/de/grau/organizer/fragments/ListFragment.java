@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +23,7 @@ import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
+import de.grau.organizer.notification.NotificationAlarmHandler;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -127,8 +132,39 @@ public class ListFragment extends Fragment {
                 mActivity.startTaskActivity(id);
             }
         });
+
+        registerForContextMenu(listView);
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.fragment_list_listview) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_month_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int listElementPosition = info.position;
+        Event selectedEvent = events.get(listElementPosition);
+        switch(item.getItemId()) {
+            case R.id.action_list_edit:
+                mActivity.startEditorActivity(selectedEvent.getId());
+                return true;
+            case R.id.action_list_delete:
+                NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
+                mActivity.eventsManager.deleteEvent(selectedEvent.getId());
+                Snackbar.make(listView, "Sucessfully deleted!", Snackbar.LENGTH_LONG).show();
+                return true;
+            case R.id.action_list_cancel_notification:
+                NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

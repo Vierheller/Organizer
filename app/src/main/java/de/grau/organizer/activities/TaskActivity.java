@@ -66,7 +66,7 @@ public class TaskActivity extends AppCompatActivity {
         initializeGUI();
 
         eventsManager = new EventsManagerRealm();
-        eventsManager.open(this);
+        eventsManager.open();
 
         mEvent = getEventFromIntent(getIntent());
 
@@ -123,12 +123,12 @@ public class TaskActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String cur_eventName = mEvent.getName();
 
-                eventsManager.deleteEvent(mEvent.getId());
+
                 //TODO: Decide when there is a notification-alarm -- for now 0
                 if(mEvent.getNotificationTime() != 0){
                     NotificationAlarmHandler.cancelNotification(TaskActivity.this, mEvent);
                 }
-
+                eventsManager.deleteEvent(mEvent.getId());
                 finish();
                 Toast.makeText(getApplicationContext(),"Event "+cur_eventName+" deleted", Toast.LENGTH_LONG).show();
             }
@@ -219,18 +219,9 @@ public class TaskActivity extends AppCompatActivity {
         return event;
     }
 
-
-
     @Override
-    protected void onStart() {
-        super.onStart();
-        eventsManager.open(this);
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         eventsManager.close();
     }
 }

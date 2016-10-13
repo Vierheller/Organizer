@@ -25,7 +25,6 @@ import io.realm.Sort;
 public class EventsManagerRealm implements EventsManager {
     private Realm realm;
 
-
     @Override
     public List<Event> getEvents(Date startDate, Date endDate) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -60,6 +59,7 @@ public class EventsManagerRealm implements EventsManager {
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
+
 
     @Override
     public List<Event> getEvents(Category category) {
@@ -143,25 +143,33 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public boolean writeEvent(final Event event) {
+    public void writeEvent(final Event event) {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(event);
         realm.commitTransaction();
-
-        return false;
     }
 
     @Override
-    public void open(Context context) {
-        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
-        if (realm == null || realm.isClosed()) {
-            Realm.init(context);
-            RealmConfiguration config = new RealmConfiguration.Builder().build();
-            Realm.setDefaultConfiguration(config);
-            // Get a Realm instance for this thread
-            realm = Realm.getDefaultInstance();
-        }
+    public void updateEvent(Event event_data, String eventId) {
+        realm.beginTransaction();
+        event_data.setId(eventId);
+        realm.copyToRealmOrUpdate(event_data);
+        realm.commitTransaction();
     }
+
+    public static void init(Context context) {
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        Realm.init(context);
+        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(config);
+
+    }
+
+    @Override
+    public void open() {
+        this.realm = Realm.getDefaultInstance();
+    }
+
 
     @Override
     public List<Event> searchEvents(String search){
