@@ -50,7 +50,7 @@ public class TabActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Context activityContext;
     public EventsManager eventsManager;
-    List<Event> mSearchResults;
+    private List<Event> mSearchResults;
 
 
     @Override

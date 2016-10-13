@@ -46,28 +46,27 @@ public class EditorActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = EditorActivity.class.getCanonicalName();
 
     //GUI ELEMENTS
-    EditText et_title;
-    ImageButton btn_save;
-    ImageButton btn_cancel;
-    Button btn_pickDate;
-    Button btn_pickTime;
-    Button btn_addNote;
-    Button btn_chooseAction;
-    Button btn_pickNotifyDelay;
-    Button btn_priority;
-    Button btn_tag;
-    EditText et_description;
-    TextView tv_tags;
-
-    LinearLayout layout_notecontainer;
-    List<EditText> layout_notelist;
+    private EditText et_title;
+    private ImageButton btn_save;
+    private ImageButton btn_cancel;
+    private Button btn_pickDate;
+    private Button btn_pickTime;
+    private Button btn_addNote;
+    private Button btn_chooseAction;
+    private Button btn_pickNotifyDelay;
+    private Button btn_priority;
+    private Button btn_tag;
+    private EditText et_description;
+    private TextView tv_tags;
+    private LinearLayout layout_notecontainer;
+    private List<EditText> layout_notelist;
 
     //DIALOGS
-    DatePickerDialog datePickerDialog;
-    TimePickerDialog timePickerDialog;
-    Dialog notificationTimeIntervalDialog;
-    MaterialDialog priorityDialog;
-    MaterialDialog tagDialog;
+    private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
+    private Dialog notificationTimeIntervalDialog;
+    private MaterialDialog priorityDialog;
+    private MaterialDialog tagDialog;
 
     //VALUES
     private int notificationTimeInterval =0;
@@ -78,20 +77,20 @@ public class EditorActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     //INTERNAL EVENT REPRESENTATION
-    EventsManager eventsManager = new EventsManagerRealm();
-    Event event = null;
-    Event event_data = null;     // notwendig wegen Realmzugriff
-
+    private EventsManager eventsManager = new EventsManagerRealm();
+    private Event event = null;
+    private Event event_data = null;     // notwendig wegen Realmzugriff
     private int mPriority;
     private Tag mTag;
     private RealmList<Tag> mTagList;
+    private String eventID = null;
 
-    String eventID = null;
     //INTENT
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
 
     //HELPERS
-    Calendar currentStartDate;
+    private Calendar currentStartDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

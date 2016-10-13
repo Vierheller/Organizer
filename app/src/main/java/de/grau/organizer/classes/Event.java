@@ -34,11 +34,13 @@ public class Event extends RealmObject{
         cal.setTime(start);
         return cal.get(Calendar.YEAR);
     }
+
     public int getStartMonth() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(start);
         return cal.get(Calendar.MONTH);
     }
+
     public int getStartDay() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(start);

@@ -31,8 +31,8 @@ public class TaskActivity extends AppCompatActivity {
 
     private TextView tv_title;
     private Button btn_executeAction;
-    private Button btn_edit;
     private Button btn_delete;
+    private FloatingActionButton btn_edit;
 
     private EventsManager eventsManager;
     private Event mEvent;
@@ -51,14 +51,6 @@ public class TaskActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mActivity = this;
@@ -79,15 +71,16 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void initializeGUI() {
-        tv_title = (TextView) findViewById(R.id.task_tv_title);
-        btn_edit = (Button) findViewById(R.id.task_btn_edit);
-        btn_delete = (Button) findViewById(R.id.task_btn_delete);
-        btn_executeAction = (Button) findViewById(R.id.task_btn_executeaction);
+        tv_title            =       (TextView) findViewById(R.id.task_tv_title);
+        btn_delete          =       (Button) findViewById(R.id.task_btn_delete);
+        btn_executeAction   =       (Button) findViewById(R.id.task_btn_executeaction);
+        btn_edit            =       (FloatingActionButton) findViewById(R.id.task_btn_change);
 
         setupListeners();
     }
 
     private void setupListeners() {
+
         btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
