@@ -70,6 +70,10 @@ public class Event extends RealmObject{
         this.name = name;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDescription() {
         return description;
     }

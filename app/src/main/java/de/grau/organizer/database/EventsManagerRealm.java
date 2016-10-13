@@ -143,12 +143,18 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public boolean writeEvent(final Event event) {
+    public void writeEvent(final Event event) {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(event);
         realm.commitTransaction();
+    }
 
-        return false;
+    @Override
+    public void updateEvent(Event event_data, String eventId) {
+        realm.beginTransaction();
+        event_data.setId(eventId);
+        realm.copyToRealmOrUpdate(event_data);
+        realm.commitTransaction();
     }
 
     public static void init(Context context) {

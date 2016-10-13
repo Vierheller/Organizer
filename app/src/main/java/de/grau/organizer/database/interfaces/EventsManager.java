@@ -31,7 +31,9 @@ public interface EventsManager {
 
     boolean deleteEvent(String eventId);
 
-    boolean writeEvent(Event event);
+    void writeEvent(Event event);
+
+    void updateEvent(Event event, String eventId);
 
     void open();
 

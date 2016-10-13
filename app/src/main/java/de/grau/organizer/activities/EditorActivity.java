@@ -80,6 +80,7 @@ public class EditorActivity extends AppCompatActivity {
     //INTERNAL EVENT REPRESENTATION
     EventsManager eventsManager = new EventsManagerRealm();
     Event event = null;
+    Event event_data = null;     // notwendig wegen Realmzugriff
 
     private int mPriority;
     private Tag mTag;
@@ -391,7 +392,7 @@ public class EditorActivity extends AppCompatActivity {
 
         if(mTagList != null) {
             for (int i = 0; i < mTagList.size(); i++) {
-                tv_tags.setText(tv_tags.getText() + " " + mTagList.get(i).getName());
+                tv_tags.setText("#"+tv_tags.getText() + " " + mTagList.get(i).getName());
             }
         }
     }
@@ -470,38 +471,45 @@ public class EditorActivity extends AppCompatActivity {
      * This method calls the {@EventsManager} to store the current Event
      */
     private void saveEvent() {
-        if (event == null) {
-            event = new Event();
+
+            event_data = new Event();
+
             //Set title
-            event.setName(et_title.getText().toString());
+            event_data.setName(et_title.getText().toString());
 
             //Set all Notes
-            event.putNotes(filterNotes());
+            event_data.putNotes(filterNotes());
 
             //Set description
-            event.setDescription(et_description.getText().toString());
+            event_data.setDescription(et_description.getText().toString());
 
             //set notification interval
             if(useRememberNotification){
-                event.setNotificationTime(notificationTimeInterval);
-                NotificationAlarmHandler.setNotification(this, event);
+                event_data.setNotificationTime(notificationTimeInterval);
+                NotificationAlarmHandler.setNotification(this, event_data);
             }
 
             //set startdate
-            event.setStart(currentStartDate.getTime());
+            event_data.setStart(currentStartDate.getTime());
 
             //set priority
-            event.setPriority(mPriority);
+            event_data.setPriority(mPriority);
 
             //set Tags
-            event.setTags(mTagList);
+            event_data.setTags(mTagList);
 
+        if(event == null) {
             //Save event into Database
+            event = new Event();
+            event = event_data;
             eventsManager.writeEvent(event);
         } else {
-            //TODO update event
-            Toast.makeText(getApplicationContext(),"Event cannot be changed yet", Toast.LENGTH_LONG).show();
+            //Update event into Database
+            eventsManager.updateEvent(event_data, eventID);
 
+            Toast.makeText(getApplicationContext(),"Event has been updated", Toast.LENGTH_LONG).show();
+
+            event_data = null;
         }
         //After we saved the Event we will switch back to the last Activity
         finish();
