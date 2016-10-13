@@ -82,7 +82,7 @@ public class EventsManagerRealm implements EventsManager {
         cal.set(Calendar.MINUTE, year);
 
         Date dateStart = cal.getTime();
-        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
         //cal.set(Calendar.DAY_OF_MONTH, Calendar);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
