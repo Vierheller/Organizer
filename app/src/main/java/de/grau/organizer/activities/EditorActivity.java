@@ -47,6 +47,7 @@ public class EditorActivity extends AppCompatActivity {
 
     //GUI ELEMENTS
     private EditText et_title;
+    private EditText et_description;
     private ImageButton btn_save;
     private ImageButton btn_cancel;
     private Button btn_pickDate;
@@ -58,9 +59,9 @@ public class EditorActivity extends AppCompatActivity {
     private Button btn_pickNotifyDelay;
     private Button btn_priority;
     private Button btn_tag;
-    private EditText et_description;
-    private TextView tv_tags;
+    private LinearLayout layout_enddate;
     private LinearLayout layout_notecontainer;
+    private TextView tv_tags;
     private List<EditText> layout_notelist;
 
     //DIALOGS
@@ -81,10 +82,10 @@ public class EditorActivity extends AppCompatActivity {
     //INTERNAL EVENT REPRESENTATION
     private EventsManager eventsManager = new EventsManagerRealm();
     private Event event = null;
-    private Event event_data = null;     // notwendig wegen Realmzugriff
-    private int mPriority = 4; //default value
+    private Event event_data = null;
+    private int mPriority = 4;           //default value
     private Tag mTag;
-    private boolean mEventtype;         // true = Aufgabe, false = Event
+    private boolean mEventtype;          // true = "Aufgabe", false = "Termin"
     private RealmList<Tag> mTagList;
     private String eventID = null;
 
@@ -100,6 +101,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        // Open database connection
         eventsManager.open();
 
         // Find the toolbar view inside the activity layout
@@ -107,66 +109,22 @@ public class EditorActivity extends AppCompatActivity {
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        checkIntent(getIntent());
+        // check intent for eventID and eventtype
+        checkIntent(getIntent(), savedInstanceState);
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                eventID = null;
-            } else {
-                eventID = extras.getString(INTENT_PARAM_EVENTID);
-                mEventtype = extras.getBoolean(INTENT_PARAM_EVENTTYPE);
-            }
-        } else {
-            if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
-                eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
-                mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
-            }
-        }
-
+        // This method references every necessary GUI-Element
         initializeGUI();
 
-        if (eventID != null) {              // Load Editmode
-            Log.d(DEBUG_TAG, "ID: " + eventID);
-            event = eventsManager.loadEvent(eventID);
-            Log.d(DEBUG_TAG, event.toString());
-            setupGUI();
-        }
+        // check if editmode or createmode
+        checkEditorMode();
 
+        // hide some UI elements in taskmode (no endtime)
         hideFinTime();
     }
 
-    private void checkIntent(Intent intent) {
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    private void setupGUI() {       // It is only for edit mode
-        if (event != null) {
-            et_title.setText(event.getName(), TextView.BufferType.NORMAL);
-            et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
-            datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
-            //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
-            setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
-            mTagList.addAll(event.getTags());
-            setPriorityButton(event.getPriority());
-            setTagTextLine();
-            mEventtype = event.getEventtype();
-            //TODO set values of other elements
-        }
-    }
-
-    /**
-     * This method references every necessary GUI-Element
-     */
+    // This method references every necessary GUI-Element
     private void initializeGUI(){
         et_title =              (EditText) findViewById(R.id.editor_et_title);
         btn_pickDate =          (Button) findViewById(R.id.editor_btn_pickdate);
@@ -182,6 +140,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
         et_description=         (EditText) findViewById(R.id.editor_description);
         tv_tags =               (TextView) findViewById(R.id.editor_tags);
+        layout_enddate =        (LinearLayout) findViewById(R.id.layout_enddate);
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
 
@@ -190,8 +149,7 @@ public class EditorActivity extends AppCompatActivity {
         currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
 
-        //Add a single Note for better user experience.
-        addNote();
+        addNote();      //Add a single Note for better user experience.
 
         setupDialogsDateAndTime();
         setupDialogRememberTime();
@@ -202,10 +160,59 @@ public class EditorActivity extends AppCompatActivity {
         setTagTextLine();
     }
 
+    // check intent for eventID and eventtype
+    private void checkIntent(Intent intent, Bundle savedInstanceState) {
+        if (savedInstanceState == null) {                                                   // ToDo are those checks really necessary????
+            Bundle extras = intent.getExtras();
+            if(extras == null) {
+                eventID = null;
+            } else {
+                eventID = extras.getString(INTENT_PARAM_EVENTID);
+                mEventtype = extras.getBoolean(INTENT_PARAM_EVENTTYPE);
+            }
+        } else {
+            if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
+                eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
+                mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
+            }
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void checkEditorMode() {
+        if (eventID != null) {                          // true = Editmode, false = Createmode
+            Log.d(DEBUG_TAG, "ID: " + eventID);
+            event = eventsManager.loadEvent(eventID);
+            Log.d(DEBUG_TAG, event.toString());
+            setupGUI();
+        }
+    }
+
+    private void setupGUI() {       // It is only for edit mode
+        if (event != null) {
+            et_title.setText(event.getName(), TextView.BufferType.NORMAL);
+            et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
+            datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
+            setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            mTagList.addAll(event.getTags());
+            setPriorityButton(event.getPriority());
+            setTagTextLine();
+            mEventtype = event.getEventtype();
+        }
+    }
+
+    // Hide some layout components for tasks
     private void hideFinTime() {
-        if(mEventtype) {
+        if(mEventtype) {            // if event is a task
             btn_pickDate_fin.setVisibility(View.GONE);
             btn_pickTime_fin.setVisibility(View.GONE);
+            layout_enddate.setVisibility(View.GONE);
         }
     }
 
@@ -239,6 +246,7 @@ public class EditorActivity extends AppCompatActivity {
                 notificationTimeInterval = newVal;
             }
         });
+
         notificationTimeIntervalDialog.setCanceledOnTouchOutside(true);
         btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,6 +309,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setRememberTimeForEvent() {
+        // ToDo?
     }
 
     private void setupDialogsDateAndTime() {
@@ -416,7 +425,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private void setPriorityButton(int priority) {
         btn_priority.setText("Priorität " + String.valueOf(priority));
-        // Color noch setzen auf Prio-Farbe ?
     }
 
     private void addNote() {
@@ -483,11 +491,8 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * This method calls the {@EventsManager} to store the current Event
-     */
+     // This method calls the EventsManager to store the current Event
     private void saveEvent() {
-
         event_data = new Event();
 
         //Set title
@@ -504,6 +509,7 @@ public class EditorActivity extends AppCompatActivity {
 
         //set notification interval
         event_data.setNotificationTime(notificationTimeInterval);
+
         if(useRememberNotification){
             NotificationAlarmHandler.setNotification(this, event_data);
         }
