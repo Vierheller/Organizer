@@ -28,8 +28,9 @@ public class Event extends RealmObject{
 
     private Action action;  //List of actions corresponding to an Event instance
     private RealmList<Notes> notes;     //List of all notes corresponding to an Event instance
-    private RealmList<Tag> tags;        //""
+    private RealmList<Tag> tags;
     private Category category;
+    private boolean eventtype;      // true = Aufgabe, false = Event
 
     public int getStartYear() {
         Calendar cal = Calendar.getInstance();
@@ -65,6 +66,7 @@ public class Event extends RealmObject{
         }
         this.notes = new RealmList<Notes>();
         this.priority = 4;      // default value
+        this.eventtype = false; // default value
     }
 
     @Override
@@ -74,6 +76,14 @@ public class Event extends RealmObject{
 
     public String getId() {
         return id;
+    }
+
+    public boolean getEventtype() {
+        return eventtype;
+    }
+
+    public void setEventtype(boolean eventtype) {
+        this.eventtype = eventtype;
     }
 
     public String getName() {

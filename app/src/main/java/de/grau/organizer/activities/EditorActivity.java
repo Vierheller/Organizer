@@ -129,12 +129,14 @@ public class EditorActivity extends AppCompatActivity {
 
         initializeGUI();
 
-        if (eventID != null) {
+        if (eventID != null) {              // Load Editmode
             Log.d(DEBUG_TAG, "ID: " + eventID);
             event = eventsManager.loadEvent(eventID);
             Log.d(DEBUG_TAG, event.toString());
             setupGUI();
         }
+
+        hideFinTime();
     }
 
     private void checkIntent(Intent intent) {
@@ -157,6 +159,7 @@ public class EditorActivity extends AppCompatActivity {
             mTagList.addAll(event.getTags());
             setPriorityButton(event.getPriority());
             setTagTextLine();
+            mEventtype = event.getEventtype();
             //TODO set values of other elements
         }
     }
@@ -190,7 +193,6 @@ public class EditorActivity extends AppCompatActivity {
         //Add a single Note for better user experience.
         addNote();
 
-        hideFinTime();
         setupDialogsDateAndTime();
         setupDialogRememberTime();
         setupDialogPriority();
@@ -509,7 +511,10 @@ public class EditorActivity extends AppCompatActivity {
         //set priority
         event_data.setPriority(mPriority);
 
-        //set Tags
+        //set eventtype
+        event_data.setEventtype(mEventtype);
+
+        //set tags
         event_data.setTags(mTagList);
 
         if(event == null) {
