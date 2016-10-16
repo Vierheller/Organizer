@@ -1,4 +1,4 @@
-package de.grau.organizer;
+package de.grau.organizer.views;
 
 import android.graphics.Color;
 import android.graphics.Typeface;

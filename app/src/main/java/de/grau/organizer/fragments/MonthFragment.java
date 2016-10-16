@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-import de.grau.organizer.HighlightDecorator;
+import de.grau.organizer.views.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
@@ -147,18 +147,6 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
             mListener.onFragmentInteraction(uri);
         }
     }
-
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
 
     @Override
     public void onDetach() {

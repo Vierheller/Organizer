@@ -160,9 +160,8 @@ public class EventsManagerRealm implements EventsManager {
     public static void init(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
         Realm.init(context);
-        RealmConfiguration config = new RealmConfiguration.Builder().build();
+        RealmConfiguration config = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(config);
-
     }
 
     @Override
