@@ -39,9 +39,7 @@ public class NotificationAlarmHandler {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    public static void cancelNotification(Context activityContext, Event event){
+    public static void cancelNotification(Context activityContext, Event event) {
         //TODO Cancel
     }
-
-
 }

@@ -17,7 +17,12 @@ import io.realm.annotations.PrimaryKey;
  * Both actions and notes are lists of RealmObjects (1..n)
  */
 
+
 public class Event extends RealmObject{
+    public enum DateTime {
+        START, END
+    }
+
     @PrimaryKey
     private String id;
     private String name, description;
@@ -32,22 +37,18 @@ public class Event extends RealmObject{
     private Category category;
     private boolean eventtype;      // true = Aufgabe, false = Event
 
-    public int getStartYear() {
+    //example: getTime(DateTime.START, Calendar.YEAR)
+    public int getTime(DateTime dateTime, int calendarUnit) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(start);
-        return cal.get(Calendar.YEAR);
-    }
-
-    public int getStartMonth() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start);
-        return cal.get(Calendar.MONTH);
-    }
-
-    public int getStartDay() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start);
-        return cal.get(Calendar.DAY_OF_MONTH);
+        switch (dateTime) {
+            case START:
+                cal.setTime(start);
+                break;
+            case END:
+                cal.setTime(end);
+                break;
+        }
+        return cal.get(calendarUnit);
     }
 
     public int getPriorityColor() {

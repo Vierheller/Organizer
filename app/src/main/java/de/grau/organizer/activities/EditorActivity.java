@@ -42,6 +42,7 @@ import de.grau.organizer.database.interfaces.EventsManager;
 import de.grau.organizer.notification.NotificationAlarmHandler;
 import io.realm.RealmList;
 
+
 public class EditorActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = EditorActivity.class.getCanonicalName();
 
@@ -50,7 +51,7 @@ public class EditorActivity extends AppCompatActivity {
     private EditText et_description;
     private ImageButton btn_save;
     private ImageButton btn_cancel;
-    private Button btn_pickDate;
+    private Button btn_pickDateStart;
     private Button btn_pickTime;
     private Button btn_pickDate_fin;
     private Button btn_pickTime_fin;
@@ -65,7 +66,8 @@ public class EditorActivity extends AppCompatActivity {
     private List<EditText> layout_notelist;
 
     //DIALOGS
-    private DatePickerDialog datePickerDialog;
+    private DatePickerDialog datePickerDialogStart;
+    private DatePickerDialog datePickerDialogEnd;
     private TimePickerDialog timePickerDialog;
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
@@ -95,6 +97,7 @@ public class EditorActivity extends AppCompatActivity {
 
     //HELPERS
     private Calendar currentStartDate;
+    private Calendar currentEndDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +130,7 @@ public class EditorActivity extends AppCompatActivity {
     // This method references every necessary GUI-Element
     private void initializeGUI(){
         et_title =              (EditText) findViewById(R.id.editor_et_title);
-        btn_pickDate =          (Button) findViewById(R.id.editor_btn_pickdate);
+        btn_pickDateStart =          (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
         btn_pickDate_fin =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
         btn_pickTime_fin =      (Button) findViewById(R.id.editor_btn_picktime_fin);
@@ -147,7 +150,11 @@ public class EditorActivity extends AppCompatActivity {
         //TODO This is only for testing
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
-        btn_pickDate.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
+        btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
+
+        currentEndDate = Calendar.getInstance();
+        currentEndDate.set(Calendar.SECOND, 0);
+        btn_pickDate_fin.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
 
         addNote();      //Add a single Note for better user experience.
 
@@ -197,13 +204,17 @@ public class EditorActivity extends AppCompatActivity {
         if (event != null) {
             et_title.setText(event.getName(), TextView.BufferType.NORMAL);
             et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
-            datePickerDialog.updateDate(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            datePickerDialogStart.updateDate(event.getTime(Event.DateTime.START, Calendar.YEAR), event.getTime(Event.DateTime.START, Calendar.MONTH), event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
-            setBtn_pickDateText(event.getStartYear(), event.getStartMonth(), event.getStartDay());
+            setBtn_pickDateText(btn_pickDateStart, currentStartDate, event.getTime(Event.DateTime.START, Calendar.YEAR), event.getTime(Event.DateTime.START, Calendar.MONTH), event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             mTagList.addAll(event.getTags());
             setPriorityButton(event.getPriority());
             setTagTextLine();
             mEventtype = event.getEventtype();
+            if (!mEventtype) {
+                datePickerDialogEnd.updateDate(event.getTime(Event.DateTime.END, Calendar.YEAR), event.getTime(Event.DateTime.END, Calendar.MONTH), event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, event.getTime(Event.DateTime.END, Calendar.YEAR), event.getTime(Event.DateTime.END, Calendar.MONTH), event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+            }
         }
     }
 
@@ -317,13 +328,19 @@ public class EditorActivity extends AppCompatActivity {
         final int month = currentStartDate.get(Calendar.MONTH);
         final int day = currentStartDate.get(Calendar.DAY_OF_MONTH);
         int hour = currentStartDate.get(Calendar.HOUR_OF_DAY);
-        int minute = currentStartDate
-                .get(Calendar.MINUTE);
+        int minute = currentStartDate.get(Calendar.MINUTE);
 
-        datePickerDialog = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+        datePickerDialogStart = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
-                setBtn_pickDateText(year, month, day_of_month);
+                setBtn_pickDateText(btn_pickDateStart, currentStartDate, year, month, day_of_month);
+            }
+        },year, month, day);
+
+        datePickerDialogEnd = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
+                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, year, month, day_of_month);
             }
         },year, month, day);
 
@@ -337,18 +354,26 @@ public class EditorActivity extends AppCompatActivity {
         }, hour, minute, true);
     }
 
-    private void setBtn_pickDateText(int year, int month, int dayOfMonth) {
-        currentStartDate.set(Calendar.YEAR, year);
-        currentStartDate.set(Calendar.MONTH, month);
-        currentStartDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        btn_pickDate.setText(dayOfMonth + "." + (int)(month+1) + "." + year);
+
+    private void setBtn_pickDateText(Button button, Calendar date, int year, int month, int dayOfMonth) {
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        button.setText(dayOfMonth + "." + (int)(month+1) + "." + year);
     }
 
     private void setupListeners(){
-        btn_pickDate.setOnClickListener(new View.OnClickListener() {
+        btn_pickDateStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                datePickerDialog.show();
+                datePickerDialogStart.show();
+            }
+        });
+
+        btn_pickDate_fin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialogEnd.show();
             }
         });
 
@@ -506,6 +531,10 @@ public class EditorActivity extends AppCompatActivity {
 
         //set startdate
         event_data.setStart(currentStartDate.getTime());
+
+        if(!mEventtype) {
+            event_data.setEnd(currentEndDate.getTime());
+        }
 
         //set notification interval
         event_data.setNotificationTime(notificationTimeInterval);
