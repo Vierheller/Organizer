@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -45,9 +48,20 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         View view = inflater.inflate(R.layout.eventslist_row, parent,false);
 
         Event event = eventList.get(position);
-        TextView textView = (TextView) view.findViewById(R.id.eventlist_title);
+        TextView title = (TextView) view.findViewById(R.id.eventlist_title);
+        TextView start = (TextView) view.findViewById(R.id.eventlist_start);
+        TextView end = (TextView) view.findViewById(R.id.eventlist_end);
+        TextView category = (TextView) view.findViewById(R.id.eventlist_category);
+        ImageView ivPriority = (ImageView) view.findViewById(R.id.eventlist_priority);
 
-        textView.setText(event.getName());
+        //ToDo check that we got everything correct here
+        //End date may be null?, category is not even possible to set
+        title.setText(event.getName());
+        start.setText("12:00");
+        end.setText("13:00");
+        category.setText("Sample description");
+        ivPriority.setBackgroundColor(event.getPriorityColor());
+
         return view;
     }
 

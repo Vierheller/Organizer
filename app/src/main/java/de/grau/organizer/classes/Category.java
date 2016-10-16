@@ -23,4 +23,13 @@ public class Category extends RealmObject {
     public String getID() {
         return this.id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

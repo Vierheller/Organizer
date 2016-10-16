@@ -6,16 +6,67 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="60dp">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="5dp"
+            android:id="@+id/eventlist_priority"
+            android:background="@drawable/ic_action_save" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/eventlist_start"
+            android:text="12:00" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/eventlist_end"
+            android:text="13:00" />
+
+    </LinearLayout>
+
+        <View
+            android:layout_margin="2dp"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
 
         <TextView
             android:text="TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/eventlist_title"
-            android:layout_weight="1"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textColor="@android:color/black" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/eventlist_category"
+            android:textSize="12sp"
+            android:text="category" />
+
+    </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
