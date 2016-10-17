@@ -66,103 +66,104 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:ems="10"
                 android:hint="@string/layout_hint_eventName" />
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="10dp">
-
                 <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_pickdate"
-                    android:text="27.09.2016"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:elevation="0dp" />
+                    android:text="@string/datepickPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
                 <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_picktime"
                     android:text="@string/_16_30_17_30"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
             </LinearLayout>
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:id="@+id/layout_enddate"
-                android:layout_height="50dp">
-
+                android:layout_height="40dp">
                 <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_pickdate_fin"
-                    android:text="27.09.2016"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:elevation="0dp" />
+                    android:text="@string/datepickPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
 
                 <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_picktime_fin"
                     android:text="@string/_16_30_17_30"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                     android:elevation="0dp" />
             </LinearLayout>
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:text="@string/layout_editor_rememberlable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textView7"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="10dp" />
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp">
 
                 <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_picknotifydelay"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/editor_btn_picknotifydelay" />
+
+                <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:text="@string/editor_btn_chooseaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_chooseaction" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
                 <Button
-                    android:text="@string/editor_btn_chooseaction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_chooseaction"
-                    android:layout_weight="1"
-                    />
-
-                <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:text="@string/editor_btn_priority"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_priority"
                     android:layout_weight="1"
-                    android:layout_width="match_parent" />
+                    android:layout_width="wrap_content" />
 
             </LinearLayout>
+
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -170,12 +171,21 @@
                 android:layout_height="match_parent"
                 android:id="@+id/editor_notecontainer"></LinearLayout>
 
-            <Button
-                android:text="@string/layout_button_addNote"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editor_btn_addnote"
-                android:layout_marginTop="10dp" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:text="@string/layout_button_addNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_addnote"
+                    android:layout_marginTop="10dp" />
+
+            </LinearLayout>
+
 
             <EditText
                 android:layout_width="match_parent"
@@ -193,6 +203,7 @@
                 android:id="@+id/editor_tags" />
 
             <Button
+                android:drawableLeft="@drawable/ic_action_cancel"
                 android:text="Add Tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
