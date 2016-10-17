@@ -23,6 +23,7 @@ public interface EventsManager {
     List<Event> getEvents(List<Tag> tags);
     List<Event> getEvents();
     List<Event> getEvents(CalendarDay calDate);
+    List<Event> getEvents(int year, int month);
 
     RealmResults<Event> getRealmEventList();
 

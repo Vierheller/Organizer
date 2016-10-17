@@ -34,14 +34,14 @@ public class EventsManagerRealm implements EventsManager {
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
-
+    @Override
     public List<Event> getEvents(CalendarDay calDate) {
         RealmQuery<Event> query = realm.where(Event.class);
 
         Calendar cal = Calendar.getInstance();
 
-        cal.set(Calendar.MINUTE, calDate.getYear());
-        cal.set(Calendar.MINUTE, calDate.getMonth());
+        cal.set(Calendar.YEAR, calDate.getYear());
+        cal.set(Calendar.MONTH, calDate.getMonth());
         cal.set(Calendar.DAY_OF_MONTH, calDate.getDay());
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -57,6 +57,35 @@ public class EventsManagerRealm implements EventsManager {
 
         query.greaterThan("start", dateStart);
         query.lessThan("start", dateEnd);
+
+        return  query.findAll().sort("start", Sort.ASCENDING);
+    }
+    @Override
+    public List<Event> getEvents(int year, int month){
+        RealmQuery<Event> query = realm.where(Event.class);
+
+        Calendar cal = Calendar.getInstance();
+        //Anfang des Monats
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month-1);
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+        Date dateStart = cal.getTime();
+
+        //Ende des Monats
+        cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+
+        Date dateEnd = cal.getTime();
+
+        query.greaterThan("start", dateStart);
+        query.lessThan("start", dateEnd);
+        query.isNotNull("end");
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
