@@ -50,8 +50,9 @@ public class TaskActivity extends AppCompatActivity {
         mEvent = getEventFromIntent(getIntent());
 
         //If there was a fail while getting Event, do not fill UI
-        if (mEvent == null)
+        if (mEvent == null) {
             return;
+        }
 
         fillGUI();
     }
@@ -155,31 +156,23 @@ public class TaskActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
-
-        switch (requestCode){
-            case PERMISSIONS_REQUEST_CALL_PHONE:
-                if(checkArrayContainsPermission(permissions, Manifest.permission.CALL_PHONE) && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    call();
-                }else{
-                    Toast.makeText(this, "Permission not granted cannot proceed with executing action", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
+        if(requestCode == PERMISSIONS_REQUEST_CALL_PHONE
+                && checkArrayContainsPermission(permissions, Manifest.permission.CALL_PHONE)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            call();
+        } else {
+            Toast.makeText(this, "Permission not granted cannot proceed with executing action", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * This method checks the permissions-array of onRequestPermissionResult for granted permissions
-     * @param array
-     * @param requestedPermission
-     * @return
-     */
+
+    // This method checks the permissions-array of onRequestPermissionResult for granted permissions
     boolean checkArrayContainsPermission(String[] array, String requestedPermission){
-        for (String permission:
-             array) {
+        for (String permission: array) {
             //This checks is the searched permission is granted
-            if(permission.equals(requestedPermission))
+            if(permission.equals(requestedPermission)) {
                 return true;
+            }
         }
         return false;
     }
@@ -199,18 +192,18 @@ public class TaskActivity extends AppCompatActivity {
         if(id == null){
             Log.d(DEBUG_TAG , "Id is null");
             return null;
-        }else{
+        } else {
             Log.d(DEBUG_TAG , "ID: "+id);
         }
-
 
         //Load event with specific ID
         Event event = eventsManager.loadEvent(id);
         Log.d(DEBUG_TAG, event.toString());
         //EventsManager will return null if there was no event with that id.
         //Again tell Activity that there is a mistake
-        if(event==null)
+        if(event==null) {
             return null;
+        }
 
         //If everything passed, return the event
         return event;
