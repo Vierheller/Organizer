@@ -20,6 +20,14 @@ public class Category extends RealmObject {
         }
     }
 
+    public Category(String name) {
+        if (this.id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
+
+        this.name = name;
+    }
+
     public String getID() {
         return this.id;
     }

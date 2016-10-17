@@ -127,6 +127,19 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
+    public Category loadCategory(String categoryId) {
+        RealmQuery<Category> query = realm.where(Category.class);
+        query.equalTo("id", categoryId);
+        return query.findFirst();
+    }
+
+    @Override
+    public long countCategory() {
+        RealmQuery<Category> query = realm.where(Category.class);
+        return query.count();
+    }
+
+    @Override
     public boolean deleteEvent(String eventId) {
 
         RealmQuery<Event> query = realm.where(Event.class);
@@ -155,6 +168,13 @@ public class EventsManagerRealm implements EventsManager {
         realm.beginTransaction();
         event_data.setId(eventId);
         realm.copyToRealmOrUpdate(event_data);
+        realm.commitTransaction();
+    }
+
+    @Override
+    public void writeCategory(final Category category) {
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(category);
         realm.commitTransaction();
     }
 

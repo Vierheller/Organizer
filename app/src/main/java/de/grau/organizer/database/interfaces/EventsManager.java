@@ -27,13 +27,20 @@ public interface EventsManager {
     RealmResults<Event> getRealmEventList();
 
     Event loadEvent(String eventId);
+
     List<Event> searchEvents(String search);
+
+    Category loadCategory(String categoryId);
+
+    long countCategory();
 
     boolean deleteEvent(String eventId);
 
     void writeEvent(Event event);
 
     void updateEvent(Event event, String eventId);
+
+    void writeCategory(Category category);
 
     void open();
 

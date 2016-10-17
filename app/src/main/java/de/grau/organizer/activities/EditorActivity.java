@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Tag;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
@@ -85,6 +86,7 @@ public class EditorActivity extends AppCompatActivity {
     private EventsManager eventsManager = new EventsManagerRealm();
     private Event event = null;
     private Event event_data = null;
+    private Category mCategory;
     private int mPriority = 4;           //default value
     private Tag mTag;
     private boolean mEventtype;          // true = "Aufgabe", false = "Termin"
@@ -125,12 +127,15 @@ public class EditorActivity extends AppCompatActivity {
 
         // hide some UI elements in taskmode (no endtime)
         hideFinTime();
+
+        // Initialize the default Categories
+        generateDefaultCategories();
     }
 
     // This method references every necessary GUI-Element
     private void initializeGUI(){
         et_title =              (EditText) findViewById(R.id.editor_et_title);
-        btn_pickDateStart =          (Button) findViewById(R.id.editor_btn_pickdate);
+        btn_pickDateStart =     (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
         btn_pickDate_fin =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
         btn_pickTime_fin =      (Button) findViewById(R.id.editor_btn_picktime_fin);
@@ -189,6 +194,20 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    // Save the default Categories in Realm
+    private void generateDefaultCategories() {
+        if (eventsManager.countCategory() > 0)  {        // should only be true at the first run of the app
+            saveCategory("Allgemein");      // sample value
+            saveCategory("Freizeit");       // sample value
+            saveCategory("Arbeit");         // sample value
+        }
+    }
+
+    private void saveCategory(String name) {
+        mCategory = new Category(name);
+        eventsManager.writeCategory(mCategory);
     }
 
     private void checkEditorMode() {
