@@ -64,29 +64,10 @@ public class TabActivity extends AppCompatActivity {
         setActionBar(toolbar);
         activityContext = this;
 //        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        setupFragements();
 
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);       // Eventkind selector
-
-        setupFabListener();
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                md_event_selector.show();
-                //startEditorActivity(null);
-            }
-        });
+        setupFloatingActionButton();
 
         eventsManager = new EventsManagerRealm();
         eventsManager.open();
@@ -95,7 +76,22 @@ public class TabActivity extends AppCompatActivity {
         handleIntent(intent);
     }
 
-    public void setupFabListener() {
+    public void setupFragements() {
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+    }
+
+    public void setupFloatingActionButton() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);       // Eventkind selector
+
         md_event_selector = new MaterialDialog.Builder(this)
                 .title("Typ auswählen")
                 .content("Möchtest du einen Termin oder eine Aufgabe anlegen?")
@@ -114,6 +110,14 @@ public class TabActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                md_event_selector.show();
+                //startEditorActivity(null);
+            }
+        });
     }
 
     public void startTaskActivity(String eventID){
