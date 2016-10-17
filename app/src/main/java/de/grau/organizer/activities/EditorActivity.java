@@ -70,6 +70,7 @@ public class EditorActivity extends AppCompatActivity {
     private DatePickerDialog datePickerDialogStart;
     private DatePickerDialog datePickerDialogEnd;
     private TimePickerDialog timePickerDialog;
+    private TimePickerDialog timeEndPickerDialog;
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
     private MaterialDialog tagDialog;
@@ -368,7 +369,17 @@ public class EditorActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
                 currentStartDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
                 currentStartDate.set(Calendar.MINUTE, minute);
-                btn_pickTime.setText((hour_of_day<10?"0"+hour_of_day:hour_of_day)+":"+(minute<10?"0"+minute:minute));
+
+                btn_pickTime.setText(String.format("%02d:%02d",hour_of_day,minute));
+            }
+        }, hour, minute, true);
+
+        timeEndPickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
+                currentEndDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
+                currentEndDate.set(Calendar.MINUTE, minute);
+                btn_pickTime_fin.setText(String.format("%02d:%02d",hour_of_day,minute));
             }
         }, hour, minute, true);
     }
@@ -400,6 +411,13 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 timePickerDialog.show();
+            }
+        });
+
+        btn_pickTime_fin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timeEndPickerDialog.show();
             }
         });
 
