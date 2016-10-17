@@ -39,12 +39,13 @@ public class EventsManagerRealm implements EventsManager {
         RealmQuery<Event> query = realm.where(Event.class);
 
         Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.MINUTE, calDate.getYear());
+        cal.set(Calendar.MINUTE, calDate.getMonth());
+        cal.set(Calendar.DAY_OF_MONTH, calDate.getDay());
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.DAY_OF_MONTH, calDate.getDay() - 1);
-        cal.set(Calendar.MINUTE, calDate.getMonth());
-        cal.set(Calendar.MINUTE, calDate.getYear());
 
         Date dateStart = cal.getTime();
 

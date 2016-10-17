@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.grau.organizer.R;
@@ -56,10 +58,21 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
 
         //ToDo check that we got everything correct here
         //End date may be null?, category is not even possible to set
-        title.setText(event.getName());
-        start.setText("12:00");
-        end.setText("13:00");
-        category.setText("Sample description");
+        title.setText(event.getName()); //This is always present
+
+        start.setText("");
+        if (event.getStart()!=null){
+            start.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
+        }
+        end.setText("");
+        if (event.getEnd()!=null){
+            end.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
+        }
+        category.setText("");
+        if(event.getCategory() != null){
+            category.setText(event.getCategory().getName());
+        }
+
         ivPriority.setBackgroundColor(event.getPriorityColor());
 
         return view;
