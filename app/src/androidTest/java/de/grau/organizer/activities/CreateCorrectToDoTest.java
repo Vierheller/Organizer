@@ -60,7 +60,7 @@ public class CreateCorrectToDoTest {
         appCompatEditText.perform(scrollTo(), replaceText("Test"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.editor_btn_pickdate), withText("14.10.2016")));
+                allOf(withId(R.id.editor_btn_pickdate)));
         appCompatButton.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton2 = onView(

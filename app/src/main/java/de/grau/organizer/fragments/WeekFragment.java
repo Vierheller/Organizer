@@ -5,9 +5,11 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
@@ -85,11 +87,11 @@ public class WeekFragment extends Fragment {
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) view.findViewById(R.id.weekView);
 
-// Set an action when any event is clicked.
+        // Set an action when any event is clicked.
         mWeekView.setOnEventClickListener(new WeekView.EventClickListener() {
             @Override
             public void onEventClick(WeekViewEvent event, RectF eventRect) {
-
+                Toast.makeText(getContext(),event.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -98,18 +100,21 @@ public class WeekFragment extends Fragment {
         mWeekView.setMonthChangeListener(new MonthLoader.MonthChangeListener() {
             @Override
             public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+                Log.d("asd", "Month: "+newMonth+" Year: "+newYear);
                 List<WeekViewEvent> weekViewEvents = new ArrayList<WeekViewEvent>();
-                List<Event> databaseEvents = mActivity.eventsManager.getEvents();
+                List<Event> databaseEvents = mActivity.eventsManager.getEvents(newYear,newMonth);
                 long ids = 0;
                 for (Event event:
                      databaseEvents) {
-                    Calendar startTime = Calendar.getInstance();
-                    startTime.setTime(event.getStart());
-                    Calendar endTime = startTime;
-                    endTime.add(Calendar.HOUR, 3);
+                    Calendar startcal = Calendar.getInstance();
+                    startcal.setTime(event.getStart());
 
-                    WeekViewEvent currentEvent = new WeekViewEvent(ids++, event.getName(), startTime, endTime);
-                    weekViewEvents.add(currentEvent);
+                    Calendar endcal = Calendar.getInstance();
+                    endcal.setTime(event.getStart());
+
+                    WeekViewEvent newEvent = new WeekViewEvent(ids++,event.getName(),startcal,endcal);
+
+                    weekViewEvents.add(newEvent);
                 }
                 return weekViewEvents;
             }
