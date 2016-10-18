@@ -7,6 +7,12 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.util.Log;
 
@@ -35,6 +41,10 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         eventsManager.open();
         Event event = eventsManager.loadEvent(id);
 
+        if(event == null){
+            Log.d(DEBUG_TAG, "Error! Could not find an Event with given id("+id+")");
+            return;
+        }
         Notification notification = buildNotification(context, event);
 
         notificationManager.notify(NOTIFICATION_ORGANIZER_ID, notification);
@@ -54,13 +64,23 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
-        Notification notification = new Notification.Builder(context)
+        //large Image for notification
+        Bitmap largeIconBM = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_event_date);
+
+        //building actual Notification
+        Notification.Builder notificationBuilder = new Notification.Builder(context)
                 .setContentTitle(event.getName())
                 .setContentText("Event in "+event.getNotificationTime()+" minutes!\r\n"+event.getDescription())
                 .setContentIntent(resultPendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .build();
+                .setLargeIcon(largeIconBM);
+
+        Notification notification = notificationBuilder.build();
+
         notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+
+        //Sets sound and vibration to a notification
+        notification.defaults = Notification.DEFAULT_VIBRATE |Notification.DEFAULT_SOUND;
 
         return notification;
     }
