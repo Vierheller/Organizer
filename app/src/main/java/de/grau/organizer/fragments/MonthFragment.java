@@ -83,6 +83,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         selectDate(date);
     }
 
+
     private void selectDate(CalendarDay date){
         currentEventsInListView = mActivity.eventsManager.getEvents(date);
         //TODO: Load events into listView
@@ -109,6 +110,15 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        Calendar cal = Calendar.getInstance();
+        mCalendarView.getCurrentDate().copyTo(cal);
+        setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -127,13 +137,8 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         mCalendarView.setDateSelected(Calendar.getInstance(), true);
         selectDate(CalendarDay.from(Calendar.getInstance()));
 
-        Calendar cal = Calendar.getInstance();
-        mCalendarView.getCurrentDate().copyTo(cal);
-
-        setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
-
         setupOnClickListeners();
-
+        
         return view;
     }
 
@@ -147,11 +152,16 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void setupCalendar(int month, int year) {
+        Log.d(LOG_TAG, "Started Setup Calendar");
         HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4));
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3));
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2));
         HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,1));
+        Log.d(LOG_TAG, "Initialized Hightlighter");
+
         mCalendarView.addDecorators(prio4,prio3,prio2,prio1);
+        Log.d(LOG_TAG, "Ended Setup");
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

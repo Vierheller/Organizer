@@ -72,13 +72,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"/>
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoCorrect|textMultiLine"
+                android:id="@+id/editor_description"
+                android:layout_marginTop="10dp"
+                android:hint="@string/layout_editor_descriptionhint"
+                android:elegantTextHeight="true" />
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ganztägiges Ereignis    "
+                android:layout_gravity="center"/>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp">
+
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_event_date"
                     android:id="@+id/editor_btn_pickdate"
                     android:text="@string/datepickPreview"
                     android:layout_width="wrap_content"
@@ -86,7 +104,6 @@
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_picktime"
                     android:text="@string/_16_30_17_30"
                     android:layout_width="wrap_content"
@@ -100,7 +117,7 @@
                 android:id="@+id/layout_enddate"
                 android:layout_height="40dp">
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_event_date"
                     android:id="@+id/editor_btn_pickdate_fin"
                     android:text="@string/datepickPreview"
                     android:layout_width="wrap_content"
@@ -108,7 +125,6 @@
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
                     android:id="@+id/editor_btn_picktime_fin"
                     android:text="@string/_16_30_17_30"
                     android:layout_width="wrap_content"
@@ -129,29 +145,20 @@
                 android:layout_marginTop="5dp">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_add_notification"
                     android:id="@+id/editor_btn_picknotifydelay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/editor_btn_picknotifydelay" />
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_action_phone"
                     android:text="@string/editor_btn_chooseaction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_chooseaction" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_priority"
                     android:text="@string/editor_btn_priority"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_priority"
@@ -169,7 +176,8 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/editor_notecontainer"></LinearLayout>
+                android:id="@+id/editor_notecontainer">
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -177,24 +185,17 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_cancel"
+                    android:drawableLeft="@drawable/ic_add_note"
                     android:text="@string/layout_button_addNote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_addnote"
                     android:layout_marginTop="10dp" />
-
             </LinearLayout>
-
-
-            <EditText
+            <View
+                android:background="@drawable/divider_horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textAutoCorrect|textMultiLine"
-                android:id="@+id/editor_description"
-                android:layout_marginTop="10dp"
-                android:hint="@string/layout_editor_descriptionhint"
-                android:elegantTextHeight="true" />
+                android:layout_height="2dp"/>
 
             <TextView
                 android:text="No Tags"
@@ -203,11 +204,14 @@
                 android:id="@+id/editor_tags" />
 
             <Button
-                android:drawableLeft="@drawable/ic_action_cancel"
+                android:drawableLeft="@drawable/ic_add_tag"
                 android:text="Add Tag"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/editor_btn_tags" />
+
+
+
 
         </LinearLayout>
     </ScrollView>
