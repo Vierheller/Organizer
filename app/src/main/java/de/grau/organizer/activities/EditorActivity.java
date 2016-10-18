@@ -233,7 +233,7 @@ public class EditorActivity extends AppCompatActivity {
             et_description.setText(realm_event.getDescription(), TextView.BufferType.NORMAL);
             datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
-            setBtn_pickDateText(btn_pickDateStart, currentStartDate, event.getTime(Event.DateTime.START, Calendar.YEAR), event.getTime(Event.DateTime.START, Calendar.MONTH), event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
+            setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             mTagList.addAll(realm_event.getTags());
             setPriorityButton(realm_event.getPriority());
             setCategoryButton(realm_event.getCategory());
