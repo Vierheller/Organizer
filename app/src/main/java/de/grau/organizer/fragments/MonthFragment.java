@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -53,6 +54,8 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
     private OnFragmentInteractionListener mListener;
 
+    private List<Event> currentEventsInListView;
+
     public MonthFragment() {
         // Required empty public constructor
     }
@@ -81,13 +84,13 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void selectDate(CalendarDay date){
-        List<Event> events = mActivity.eventsManager.getEvents(date);
+        currentEventsInListView = mActivity.eventsManager.getEvents(date);
         //TODO: Load events into listView
-        for (Event event : events) {
+        for (Event event : currentEventsInListView) {
             Log.d(LOG_TAG, event.toString());
         }
-        if ( events != null ) {
-            mListViewAdapter.setEventList(events);
+        if ( currentEventsInListView != null ) {
+            mListViewAdapter.setEventList(currentEventsInListView);
         } else {
             mListViewAdapter.setEventList(new ArrayList<Event>());
         }
@@ -129,8 +132,18 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
         setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 
+        setupOnClickListeners();
 
         return view;
+    }
+
+    private void setupOnClickListeners(){
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mActivity.startTaskActivity(currentEventsInListView.get(position).getId());
+            }
+        });
     }
 
     private void setupCalendar(int month, int year) {
