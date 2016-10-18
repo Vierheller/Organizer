@@ -25,19 +25,24 @@ import de.grau.organizer.classes.Event;
 public class HighlightDecorator implements DayViewDecorator {
 
     private List<Event> mEvents;
+    private int eventIterator = 0;
     private int mColor;
-
+    private Calendar nextDate;
 
     public HighlightDecorator(List<Event> events) {
 
-
-        if(events.size() > 0) {
-            mColor = events.get(0).getPriorityColor();
-        }
-
         this.mEvents = events;
 
-        Log.d("abc", "mEvent size " + mEvents.size());
+        if(events.size() > 0) {
+            Event firstEvent = events.get(0);
+            this.mColor = firstEvent.getPriorityColor();
+            this.nextDate = Calendar.getInstance();
+            this.nextDate.setTime(firstEvent.getStart());
+            eventIterator = 1;
+        }
+
+
+        Log.d("HightlightDecorator", "Initialized with events: " + mEvents.size());
 
     }
 
@@ -46,19 +51,46 @@ public class HighlightDecorator implements DayViewDecorator {
         return shouldHighlight(day.getCalendar());
     }
 
+    private boolean updateNextDate(Calendar calendarDay) {
+        //if there exist more events then set the newDate, otherwise nextDate is null
+        //if the size is not bigger than the eventIterator, it does not exist a nextDate so return false
+        if(mEvents.size() > eventIterator) {
+            Event nextEvent = mEvents.get(eventIterator);
+            //check if the new event is later than the current day
+            //we can check if the next event is later because the list is sorted
+            //if it is not later then the event is on the same day
+            //increment the eventIterator and try to find an event that is higher
+            eventIterator++;
+            if (calendarDay.get(Calendar.DAY_OF_YEAR) < nextEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_YEAR)) {
+                this.nextDate.setTime(nextEvent.getStart());
+                return true;
+            } else {
+                return updateNextDate(calendarDay);
+            }
+        } else {
+            return false;
+        }
+    }
+
     private boolean shouldHighlight(Calendar calendarDay) {
-        Calendar currentCalendar = Calendar.getInstance();
+        //check if the nextDate and the calendarDay have the same day of the year
+        //if yes, set a new nextDate and return true
+        //if no, then do not highlight / return false
+        if (nextDate != null) {
+            Calendar currentCalendar = Calendar.getInstance();
+            if (calendarDay.get(Calendar.DAY_OF_YEAR) == nextDate.get(Calendar.DAY_OF_YEAR)) {
+                //a event on this day was found! Highlight this day
 
-
-        for (Event currentEvent: mEvents) {
-            currentCalendar.setTime(currentEvent.getStart());
-            //compare if both dates are on same day.
-            boolean sameYear = currentCalendar.get(Calendar.YEAR) == calendarDay.get(Calendar.YEAR);
-            boolean sameDay = currentCalendar.get(Calendar.DAY_OF_YEAR) == calendarDay.get(Calendar.DAY_OF_YEAR);
-            if(sameDay && sameYear){
+                //try to update the next date
+                //if a next day was set then it was set
+                //otherwise set the nextDate to null
+                if(!updateNextDate(calendarDay)) {
+                   this.nextDate = null;
+                }
                 return true;
             }
         }
+
         return false;
     }
 
