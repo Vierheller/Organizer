@@ -29,7 +29,7 @@ public class Event extends RealmObject{
     private int priority;
 
     private Date start,end;
-    private int notificationTime; //Seconds before event.start to notify
+    private int notificationTime; //Seconds before event.start to notify || -1 means there is no notification!
 
     private Action action;  //List of actions corresponding to an Event instance
     private RealmList<Notes> notes;     //List of all notes corresponding to an Event instance

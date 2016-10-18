@@ -283,11 +283,6 @@ public class EditorActivity extends AppCompatActivity {
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
 
-        //Set default time to lowest possible. Otherwise system would start at 0, not at the smallest number
-        notificationTimeInterval = Integer.valueOf(numbers[0]);
-
-        np.setWrapSelectorWheel(false);
-
         notificationTimeIntervalDialog.setCanceledOnTouchOutside(true);
         btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -377,6 +372,9 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setCategoryButton(Category category) {
+        if(category == null)
+            return;
+
         btn_category.setText(category.getName());
     }
 
