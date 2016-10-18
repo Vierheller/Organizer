@@ -33,6 +33,8 @@ public interface EventsManager {
 
     Category loadCategory(String categoryId);
 
+    List<Category> loadAllCategories();
+
     long countCategory();
 
     boolean deleteEvent(String eventId);

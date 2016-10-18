@@ -34,6 +34,7 @@ public class EventsManagerRealm implements EventsManager {
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
+
     @Override
     public List<Event> getEvents(CalendarDay calDate) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -160,6 +161,12 @@ public class EventsManagerRealm implements EventsManager {
         RealmQuery<Category> query = realm.where(Category.class);
         query.equalTo("id", categoryId);
         return query.findFirst();
+    }
+
+    @Override
+    public List<Category> loadAllCategories() {
+        RealmQuery<Category> query = realm.where(Category.class);
+        return query.findAll();
     }
 
     @Override

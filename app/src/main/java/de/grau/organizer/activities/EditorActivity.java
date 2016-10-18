@@ -61,6 +61,7 @@ public class EditorActivity extends AppCompatActivity {
     private Button btn_pickNotifyDelay;
     private Button btn_priority;
     private Button btn_tag;
+    private Button btn_category;
     private LinearLayout layout_enddate;
     private LinearLayout layout_notecontainer;
     private TextView tv_tags;
@@ -74,6 +75,7 @@ public class EditorActivity extends AppCompatActivity {
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
     private MaterialDialog tagDialog;
+    private MaterialDialog categoryDialog;
 
     //VALUES
     //notificationTimeInterval is the
@@ -146,6 +148,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
         btn_tag =               (Button) findViewById(R.id.editor_btn_tags);
+        btn_category =          (Button) findViewById(R.id.editor_btn_category);
         btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
         et_description=         (EditText) findViewById(R.id.editor_description);
@@ -200,11 +203,13 @@ public class EditorActivity extends AppCompatActivity {
 
     // Save the default Categories in Realm
     private void generateDefaultCategories() {
-        if (eventsManager.countCategory() > 0)  {        // should only be true at the first run of the app
+        if (eventsManager.countCategory() == 0)  {        // should only be true at the first run of the app
             saveCategory("Allgemein");      // sample value
             saveCategory("Freizeit");       // sample value
             saveCategory("Arbeit");         // sample value
         }
+
+        Log.d(DEBUG_TAG, "Methode generateDefaultCategories aufgerufen");
     }
 
     private void saveCategory(String name) {
@@ -231,6 +236,7 @@ public class EditorActivity extends AppCompatActivity {
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             mTagList.addAll(realm_event.getTags());
             setPriorityButton(realm_event.getPriority());
+            setCategoryButton(realm_event.getCategory());
             setTagTextLine();
             mEventtype = realm_event.getEventtype();
             if (!mEventtype) {
@@ -316,6 +322,7 @@ public class EditorActivity extends AppCompatActivity {
 
         priorityDialog = new MaterialDialog.Builder(this)
                 .title(R.string.editor_dialog_priority_title)
+                .content("Please choose a priority.")
                 .titleColorRes(R.color.colorAccent)
                 .items(priorities)
                 .itemsCallback(new MaterialDialog.ListCallback() {
@@ -334,6 +341,7 @@ public class EditorActivity extends AppCompatActivity {
         tagDialog = new MaterialDialog.Builder(this)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .title("Add Tag")
+                .content("Please insert a tag.")
                 .input("my tag...", "", new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
@@ -345,6 +353,31 @@ public class EditorActivity extends AppCompatActivity {
                 })
                 .negativeText("Cancel")
                 .build();
+    }
+
+    private void setupDialogCategory() {
+        final List<Category> categories;
+        categories = eventsManager.loadAllCategories();
+
+        categoryDialog = new MaterialDialog.Builder(this)
+                .title("Category")
+                .content("Please choose a category.")
+                .items(categories)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        mCategory = categories.get(position);
+                        setCategoryButton(mCategory);
+                    }
+                })
+                .negativeText("Cancel")
+                .build();
+
+        Log.d(DEBUG_TAG, "Anzahl der Kategorien: "+eventsManager.countCategory());
+    }
+
+    private void setCategoryButton(Category category) {
+        btn_category.setText(category.getName());
     }
 
     private void setRememberTimeForEvent() {
@@ -481,6 +514,19 @@ public class EditorActivity extends AppCompatActivity {
                 tagDialog.show();
             }
         });
+
+        btn_category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseCategory();
+            }
+        });
+    }
+
+    // set Category to the current event
+    private void chooseCategory() {
+        setupDialogCategory();
+        categoryDialog.show();
     }
 
     private void setTagTextLine() {
@@ -593,6 +639,9 @@ public class EditorActivity extends AppCompatActivity {
 
         //set tags
         temp_event.setTags(mTagList);
+
+        //set category
+        temp_event.setCategory(mCategory);
 
         if(realm_event == null) {
             //Save realm_event into Database
