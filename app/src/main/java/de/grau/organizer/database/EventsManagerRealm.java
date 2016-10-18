@@ -114,17 +114,17 @@ public class EventsManagerRealm implements EventsManager {
 
         Date dateStart = cal.getTime();
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-        //cal.set(Calendar.DAY_OF_MONTH, Calendar);
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
 
         Date dateEnd = cal.getTime();
 
-        RealmResults<Event> query = realm.where(Event.class)
+        RealmResults<Event> query = realm
+                .where(Event.class)
+                .equalTo("priority",priority)
                 .greaterThan("start", dateStart)
                 .lessThan("start", dateEnd)
-                .equalTo("priority",priority)
                 .findAll()
                 .sort("start", Sort.ASCENDING);
         return query;

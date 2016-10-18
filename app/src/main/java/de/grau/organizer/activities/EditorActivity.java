@@ -78,7 +78,8 @@ public class EditorActivity extends AppCompatActivity {
     private MaterialDialog categoryDialog;
 
     //VALUES
-    private int notificationTimeInterval =0;
+    //notificationTimeInterval is the
+    private int notificationTimeInterval = -1;      //-1 no notification, positive exists notification
     private boolean useRememberNotification = false;
 
     //INTENT ACTIONS AND PERMISSIONS
@@ -87,8 +88,8 @@ public class EditorActivity extends AppCompatActivity {
 
     //INTERNAL EVENT REPRESENTATION
     private EventsManager eventsManager = new EventsManagerRealm();
-    private Event event = null;
-    private Event event_data = null;
+    private Event realm_event = null;
+    private Event temp_event = null;
     private Category mCategory;
     private int mPriority = 4;           //default value
     private Tag mTag;
@@ -219,34 +220,44 @@ public class EditorActivity extends AppCompatActivity {
     private void checkEditorMode() {
         if (eventID != null) {                          // true = Editmode, false = Createmode
             Log.d(DEBUG_TAG, "ID: " + eventID);
-            event = eventsManager.loadEvent(eventID);
-            Log.d(DEBUG_TAG, event.toString());
-            setupGUI();
+            realm_event = eventsManager.loadEvent(eventID);
+            Log.d(DEBUG_TAG, realm_event.toString());
+
+            setupGUIForUpdatingEvent();
         }
     }
 
-    private void setupGUI() {       // It is only for edit mode
-        if (event != null) {
-            et_title.setText(event.getName(), TextView.BufferType.NORMAL);
-            et_description.setText(event.getDescription(), TextView.BufferType.NORMAL);
-            datePickerDialogStart.updateDate(event.getTime(Event.DateTime.START, Calendar.YEAR), event.getTime(Event.DateTime.START, Calendar.MONTH), event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
+    private void setupGUIForUpdatingEvent() {       // It is only for edit mode
+        if (realm_event != null) {
+            et_title.setText(realm_event.getName(), TextView.BufferType.NORMAL);
+            et_description.setText(realm_event.getDescription(), TextView.BufferType.NORMAL);
+            datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, event.getTime(Event.DateTime.START, Calendar.YEAR), event.getTime(Event.DateTime.START, Calendar.MONTH), event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
-            mTagList.addAll(event.getTags());
-            setPriorityButton(event.getPriority());
-            setCategoryButton(event.getCategory());
+            mTagList.addAll(realm_event.getTags());
+            setPriorityButton(realm_event.getPriority());
+            setCategoryButton(realm_event.getCategory());
             setTagTextLine();
-            mEventtype = event.getEventtype();
+            mEventtype = realm_event.getEventtype();
             if (!mEventtype) {
-                datePickerDialogEnd.updateDate(event.getTime(Event.DateTime.END, Calendar.YEAR), event.getTime(Event.DateTime.END, Calendar.MONTH), event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
-                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, event.getTime(Event.DateTime.END, Calendar.YEAR), event.getTime(Event.DateTime.END, Calendar.MONTH), event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+                datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+            }
+            //If notificationtime is grater that 0, then there is a notification set for this event
+            if(realm_event.getNotificationTime()>=0){
+                useRememberNotification = true;
+                notificationTimeInterval = realm_event.getNotificationTime();
+                //We further need to set the ui of notificationTimeIntervalDialog to display the notificationTime
+                NumberPicker np = (NumberPicker) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_np);
+                np.setValue(notificationTimeInterval/5);
+                btn_pickNotifyDelay.setText(String.format("%d min", notificationTimeInterval));
             }
         }
     }
 
     // Hide some layout components for tasks
     private void hideFinTime() {
-        if(mEventtype) {            // if event is a task
+        if(mEventtype) {            // if realm_event is a task
             btn_pickDate_fin.setVisibility(View.GONE);
             btn_pickTime_fin.setVisibility(View.GONE);
             layout_enddate.setVisibility(View.GONE);
@@ -266,7 +277,7 @@ public class EditorActivity extends AppCompatActivity {
         //Setup Numberrange of numberpicker
         final String[] numbers = new String[200/5];
         for (int i=0; i<numbers.length; i++)
-            numbers[i] = Integer.toString(i*5+5);
+            numbers[i] = Integer.toString(i*5);
         np.setDisplayedValues(numbers);
         np.setMaxValue(numbers.length-1);
         np.setMinValue(0);
@@ -276,19 +287,15 @@ public class EditorActivity extends AppCompatActivity {
         notificationTimeInterval = Integer.valueOf(numbers[0]);
 
         np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
-                newVal = Integer.valueOf(numbers[newVal]);
-                notificationTimeInterval = newVal;
-            }
-        });
 
         notificationTimeIntervalDialog.setCanceledOnTouchOutside(true);
         btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setRememberTimeForEvent();
+                //getValue returns the selected row. need to map to actual value that is based on array "numbers".
+                String selectedNumber = numbers[np.getValue()];
+                notificationTimeInterval = Integer.valueOf(selectedNumber);
                 btn_pickNotifyDelay.setText(notificationTimeInterval +" min");
                 useRememberNotification = true;
                 notificationTimeIntervalDialog.dismiss();
@@ -300,6 +307,7 @@ public class EditorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 btn_pickNotifyDelay.setText("None");
                 useRememberNotification = false;
+                notificationTimeInterval = -1;
                 notificationTimeIntervalDialog.dismiss();
             }
         });
@@ -576,7 +584,7 @@ public class EditorActivity extends AppCompatActivity {
                     Action action = new Action();
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
-                    event.setAction(action);
+                    realm_event.setAction(action);
                     break;
             }
         } else {
@@ -601,61 +609,75 @@ public class EditorActivity extends AppCompatActivity {
 
      // This method calls the EventsManager to store the current Event
     private void saveEvent() {
-        event_data = new Event();
+        //Extra temp_event to save an update into realm. We cannot overwrite an already existing realm_event
+        temp_event = new Event();
 
         //Set title
-        event_data.setName(et_title.getText().toString());
+        temp_event.setName(et_title.getText().toString());
 
         //Set all Notes
-        event_data.putNotes(filterNotes());
+        temp_event.putNotes(filterNotes());
 
         //Set description
-        event_data.setDescription(et_description.getText().toString());
+        temp_event.setDescription(et_description.getText().toString());
 
         //set startdate
-        event_data.setStart(currentStartDate.getTime());
+        temp_event.setStart(currentStartDate.getTime());
 
         if(!mEventtype) {
-            event_data.setEnd(currentEndDate.getTime());
+            temp_event.setEnd(currentEndDate.getTime());
         }
 
         //set notification interval
-        event_data.setNotificationTime(notificationTimeInterval);
-
-        if(useRememberNotification){
-            NotificationAlarmHandler.setNotification(this, event_data);
-        }
+        temp_event.setNotificationTime(notificationTimeInterval);
 
         //set priority
-        event_data.setPriority(mPriority);
+        temp_event.setPriority(mPriority);
 
         //set eventtype
-        event_data.setEventtype(mEventtype);
+        temp_event.setEventtype(mEventtype);
 
         //set tags
-        event_data.setTags(mTagList);
+        temp_event.setTags(mTagList);
 
         //set category
-        event_data.setCategory(mCategory);
+        temp_event.setCategory(mCategory);
 
-        if(event == null) {
-            //Save event into Database
-            event = new Event();
-            event = event_data;
-            eventsManager.writeEvent(event);
+        if(realm_event == null) {
+            //Save realm_event into Database
+            realm_event = new Event();
+            realm_event = temp_event;
+            eventsManager.writeEvent(realm_event);
+
+            //Creates notification
+            if(useRememberNotification){
+                NotificationAlarmHandler.setNotification(this, temp_event);
+            }
+
             Toast.makeText(getApplicationContext(),"Saved Event", Toast.LENGTH_LONG).show();
         } else {
-            //Update event into Database
-            eventsManager.updateEvent(event_data, eventID);
+
+            //Cancels previous notification in any case.
+            // Nothing happens if no notification was set. Making sure that there can't be any unexpected
+            NotificationAlarmHandler.cancelNotification(this, temp_event);
+
+            //Update realm_event into Database
+            eventsManager.updateEvent(temp_event, eventID);
+
+            //Creates notification if wanted
+            if(useRememberNotification){
+                NotificationAlarmHandler.setNotification(this, temp_event);
+            }
 
             Toast.makeText(getApplicationContext(),"Updated Event", Toast.LENGTH_LONG).show();
 
-            event_data = null;
+            temp_event = null;
         }
         //After we saved the Event we will switch back to the last Activity
         finish();
     }
 
+    //Method to filter notes with text. We don't want to store empty notes
     private List<Notes> filterNotes() {
         List<Notes> retNotes = new ArrayList<Notes>();
         for (EditText et_note:
