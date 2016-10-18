@@ -2,6 +2,7 @@ package de.grau.organizer.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -51,7 +52,6 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     private ListView mListView;
     private MaterialCalendarView mCalendarView;
     private EventsListAdapter mListViewAdapter;
-
     private OnFragmentInteractionListener mListener;
 
     private List<Event> currentEventsInListView;
@@ -130,7 +130,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         Calendar cal = Calendar.getInstance();
         mCalendarView.getCurrentDate().copyTo(cal);
 
-        setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+        //setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 
         setupOnClickListeners();
 
@@ -172,6 +172,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         Calendar cal = Calendar.getInstance();
         date.copyTo(cal);
         setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+        Log.d(LOG_TAG, "onMonthChanged Methode gestartet!"+cal.get(Calendar.MONTH));
     }
 
     /**
