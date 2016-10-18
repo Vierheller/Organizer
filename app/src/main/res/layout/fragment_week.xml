@@ -5,22 +5,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="de.grau.organizer.fragments.WeekFragment">
 
-    <com.alamkanak.weekview.WeekView
-        android:id="@+id/weekView"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"></LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:eventTextColor="@android:color/white"
-        app:textSize="10sp"
-        app:headerColumnPadding="4dp"
-        app:headerColumnTextColor="@color/colorPrimary"
-        app:headerRowPadding="4dp"
-        app:columnGap="2dp"
-        app:dayNameLength="length_short"
-        app:todayHeaderTextColor="@color/colorAccent"
-        app:noOfVisibleDays="7"
-        app:dayBackgroundColor="#05000000"
-        app:showNowLine="true"
-        app:nowLineThickness="2dp"
-        app:headerColumnBackground="#ffffffff"/>
-
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/holo_green_light"
+        android:id="@+id/event_week_view"
+        android:orientation="horizontal"></LinearLayout>
 </FrameLayout>
