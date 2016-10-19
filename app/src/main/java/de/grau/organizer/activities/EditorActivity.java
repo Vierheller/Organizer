@@ -123,6 +123,9 @@ public class EditorActivity extends AppCompatActivity {
         // check intent for eventID and eventtype
         checkIntent(getIntent(), savedInstanceState);
 
+        // Initialize the default Categories
+        generateDefaultCategories();
+
         // This method references every necessary GUI-Element
         initializeGUI();
 
@@ -132,8 +135,7 @@ public class EditorActivity extends AppCompatActivity {
         // hide some UI elements in taskmode (no endtime)
         hideFinTime();
 
-        // Initialize the default Categories
-        generateDefaultCategories();
+
     }
 
     // This method references every necessary GUI-Element
