@@ -7,4 +7,18 @@
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
 
+    <EditTextPreference
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="New Category"
+        android:key="pref_category_add_cat"
+        android:icon="@android:drawable/ic_input_add"
+        android:elevation="0dp" />
+    <MultiSelectListPreference
+        android:title="Delete Category"
+        android:defaultValue="@array/list_preference_entries"
+        android:entries="@array/list_preference_entries"
+        android:entryValues="@array/list_preference_entries"
+        android:key="pref_category_delete_cat"
+        android:icon="@android:drawable/ic_menu_delete" />
 </PreferenceScreen>

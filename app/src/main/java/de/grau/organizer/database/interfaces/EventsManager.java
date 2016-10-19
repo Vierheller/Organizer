@@ -31,13 +31,11 @@ public interface EventsManager {
 
     List<Event> searchEvents(String search);
 
-    Category loadCategory(String categoryId);
-
     Category getDefaultCategory();
 
-    List<Category> loadAllCategories();
+    Category getCategoryByName(String name);
 
-    long countCategory();
+    List<Category> loadAllCategories();
 
     boolean deleteEvent(String eventId);
 
@@ -50,6 +48,4 @@ public interface EventsManager {
     void open();
 
     void close();
-
-
 }

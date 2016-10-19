@@ -4,12 +4,14 @@ package de.grau.organizer.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -18,9 +20,14 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import de.grau.organizer.R;
+import de.grau.organizer.classes.Category;
+import de.grau.organizer.database.EventsManagerRealm;
+import de.grau.organizer.database.interfaces.EventsManager;
 
 import java.util.List;
 
@@ -36,6 +43,11 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    private static EventsManager eventsManager = new EventsManagerRealm();
+
+    public static final String DEBUG_TAG = SettingsActivity.class.getCanonicalName();
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -45,19 +57,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else if (preference instanceof RingtonePreference) {
+            if (preference instanceof RingtonePreference) {
                 // For ringtone preferences, look up the correct display value
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
@@ -79,6 +79,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
+            } else if(preference instanceof EditTextPreference) {
+                if(preference.getKey().equals("pref_category_add_cat")) {  // Listener for Add Category
+                    createCategory(stringValue, preference.getContext());
+                    ((EditTextPreference) preference).setText("");
+                    Log.d(DEBUG_TAG, "CONTEXT: "+preference.getContext());
+                }
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
@@ -87,6 +93,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return true;
         }
     };
+
+    // Creates a new Category in the Database
+    private static void createCategory(String category_name, Context context) {
+        eventsManager.open();
+        // Check if Category already exists
+        if(!category_name.trim().isEmpty() && eventsManager.getCategoryByName(category_name) == null) {
+            eventsManager.writeCategory(new Category(category_name));
+            Toast.makeText(context, "Category has been saved!", Toast.LENGTH_LONG).show();
+        }
+        eventsManager.close();
+    }
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -159,7 +176,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || CategoryPreferenceFragment.class.getName().equals(fragmentName)
-                //|| DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -179,8 +195,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            //bindPreferenceSummaryToValue(findPreference("example_text"));
-            //bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("pref_category_add_cat"));
         }
 
         @Override
@@ -190,6 +205,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
+            Log.d(DEBUG_TAG, "Item has been selected: "+item.getIntent().getDataString());
             return super.onOptionsItemSelected(item);
         }
     }

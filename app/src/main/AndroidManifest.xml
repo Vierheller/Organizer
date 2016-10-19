@@ -38,6 +38,7 @@
         <receiver android:name=".notification.NotificationBroadcastReceiver" />
 
         <activity android:name=".activities.EditorActivity" />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
