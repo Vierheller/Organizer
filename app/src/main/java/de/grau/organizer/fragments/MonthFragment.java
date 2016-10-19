@@ -152,7 +152,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void setupCalendar(int month, int year) {
-        Log.d(LOG_TAG, "Started Setup Calendar");
+        Log.d(LOG_TAG, "Started Setup Calendar for Month"+month+" year "+year);
         HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4));
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3));
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2));

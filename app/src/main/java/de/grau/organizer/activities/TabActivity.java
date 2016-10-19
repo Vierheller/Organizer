@@ -26,8 +26,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
+import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
@@ -226,10 +229,37 @@ public class TabActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            generateTestEvents(500);
+            Toast.makeText(this,"Created TestEvents",Toast.LENGTH_LONG).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void generateTestEvents(int count){
+        for (int i = 0; i < count; i++) {
+            Random r = new Random();
+            Event tmp = new Event();
+            tmp.setName("Test #"+i);
+            tmp.setCategory(new Category("Test Category"));
+            tmp.setDescription("Test Description #"+i);
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MONTH,r.nextInt(cal.getActualMaximum(Calendar.MONTH)-cal.getActualMinimum(Calendar.MONTH))+cal.getActualMinimum(Calendar.MONTH));
+            cal.set(Calendar.DAY_OF_MONTH,i%cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            cal.set(Calendar.HOUR_OF_DAY,r.nextInt(cal.getActualMaximum(Calendar.HOUR_OF_DAY)-cal.getActualMinimum(Calendar.HOUR_OF_DAY))+cal.getActualMinimum(Calendar.HOUR_OF_DAY));
+            tmp.setStart(cal.getTime());
+            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY)+1);
+            tmp.setEnd(cal.getTime());
+
+            tmp.setDescription("Test Description #"+i);
+
+
+            tmp.setPriority(r.nextInt(5 - 1) + 1);
+
+            eventsManager.writeEvent(tmp);
+
+        }
     }
 
     @Override

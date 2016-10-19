@@ -105,12 +105,13 @@ public class EventsManagerRealm implements EventsManager {
     public List<Event> getEvents(int month,int year, int priority) {
 
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.YEAR, year);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.DAY_OF_MONTH, 0);
-        cal.set(Calendar.MINUTE, month);
-        cal.set(Calendar.MINUTE, year);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
 
         Date dateStart = cal.getTime();
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
