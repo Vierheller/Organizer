@@ -171,6 +171,13 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
+    public Category getDefaultCategory() {
+        RealmQuery<Category> query = realm.where(Category.class);
+        query.equalTo("name", "Allgemein");                 // Default category with name Allgemein
+        return query.findFirst();
+    }
+
+    @Override
     public long countCategory() {
         RealmQuery<Category> query = realm.where(Category.class);
         return query.count();
