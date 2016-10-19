@@ -16,11 +16,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -62,6 +64,7 @@ public class EditorActivity extends AppCompatActivity {
     private Button btn_priority;
     private Button btn_tag;
     private Button btn_category;
+    private Switch sw_allDay;
     private LinearLayout layout_enddate;
     private LinearLayout layout_notecontainer;
     private TextView tv_tags;
@@ -141,6 +144,7 @@ public class EditorActivity extends AppCompatActivity {
     // This method references every necessary GUI-Element
     private void initializeGUI(){
         et_title =              (EditText) findViewById(R.id.editor_et_title);
+        sw_allDay   =           (Switch) findViewById(R.id.sw_allDay);
         btn_pickDateStart =     (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
         btn_pickDate_fin =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
@@ -448,9 +452,29 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
 
+        sw_allDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    Log.d(DEBUG_TAG, "User switched to allDay, disabling TimePicker");
+                    btn_pickTime_fin.setVisibility(View.INVISIBLE);
+                    btn_pickTime_fin.setEnabled(false);
+                    btn_pickTime.setVisibility(View.INVISIBLE);
+                    btn_pickTime.setEnabled(false);
+                } else{
+                    Log.d(DEBUG_TAG, "User switched to on same day, enabling TimePicker");
+                    btn_pickTime_fin.setVisibility(View.VISIBLE);
+                    btn_pickTime_fin.setEnabled(true);
+                    btn_pickTime.setVisibility(View.VISIBLE);
+                    btn_pickTime.setEnabled(true);
+                }
+            }
+        });
+
         btn_pickDate_fin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                datePickerDialogEnd.getDatePicker().setMinDate(currentStartDate.getTime().getTime());
                 datePickerDialogEnd.show();
             }
         });
