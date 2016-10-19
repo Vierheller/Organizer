@@ -14,6 +14,7 @@ import de.grau.organizer.database.interfaces.EventsManager;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -166,8 +167,10 @@ public class EventsManagerRealm implements EventsManager {
 
     @Override
     public List<Category> loadAllCategories() {
+        List<Category> categories = new RealmList<Category>();
         RealmQuery<Category> query = realm.where(Category.class);
-        return query.findAll();
+        categories = query.findAllSorted("name", Sort.ASCENDING);
+        return categories;
     }
 
     @Override

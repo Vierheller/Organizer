@@ -206,7 +206,7 @@ public class EditorActivity extends AppCompatActivity {
 
     // Save the default Categories in Realm
     private void generateDefaultCategories() {
-        if (eventsManager.countCategory() == 0)  {        // should only be true at the first run of the app
+        if (eventsManager.getDefaultCategory() == null)  {        // should only be true at the first run of the app
             saveCategory("Allgemein");      // sample value
             saveCategory("Freizeit");       // sample value
             saveCategory("Arbeit");         // sample value

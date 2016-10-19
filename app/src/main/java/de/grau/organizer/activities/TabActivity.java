@@ -145,6 +145,11 @@ public class TabActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void startSettingsActivity() {
+        Intent intent = new Intent(activityContext, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -229,20 +234,22 @@ public class TabActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            generateTestEvents(500);
-            Toast.makeText(this,"Created TestEvents",Toast.LENGTH_LONG).show();
-            return true;
+            //generateTestEvents(500);
+            //Toast.makeText(this,"Created TestEvents",Toast.LENGTH_LONG).show();
+            //return true;
+            startSettingsActivity();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void generateTestEvents(int count){
+        Category testcategory = new Category("Test Category");
         for (int i = 0; i < count; i++) {
             Random r = new Random();
             Event tmp = new Event();
             tmp.setName("Test #"+i);
-            tmp.setCategory(new Category("Test Category"));
+            tmp.setCategory(testcategory);
             tmp.setDescription("Test Description #"+i);
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MONTH,r.nextInt(cal.getActualMaximum(Calendar.MONTH)-cal.getActualMinimum(Calendar.MONTH))+cal.getActualMinimum(Calendar.MONTH));
