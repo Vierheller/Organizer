@@ -33,6 +33,8 @@ public interface EventsManager {
 
     Category loadCategory(String categoryId);
 
+    Category getDefaultCategory();
+
     List<Category> loadAllCategories();
 
     long countCategory();

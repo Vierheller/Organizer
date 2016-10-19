@@ -173,7 +173,8 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogPriority();
         setupDialogTag();
         setupListeners();
-        setPriorityButton(4);
+        setPriorityButton(4);           // set default priority
+        setCategoryButton(null);        // set default category
         setTagTextLine();
     }
 
@@ -208,8 +209,6 @@ public class EditorActivity extends AppCompatActivity {
             saveCategory("Freizeit");       // sample value
             saveCategory("Arbeit");         // sample value
         }
-
-        Log.d(DEBUG_TAG, "Methode generateDefaultCategories aufgerufen");
     }
 
     private void saveCategory(String name) {
@@ -236,7 +235,8 @@ public class EditorActivity extends AppCompatActivity {
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             mTagList.addAll(realm_event.getTags());
             setPriorityButton(realm_event.getPriority());
-            setCategoryButton(realm_event.getCategory());
+            mCategory = realm_event.getCategory();
+            setCategoryButton(mCategory);
             setTagTextLine();
             mEventtype = realm_event.getEventtype();
             if (!mEventtype) {
@@ -351,13 +351,20 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setupDialogCategory() {
-        final List<Category> categories;
-        categories = eventsManager.loadAllCategories();
+        final List<String> categorie_names;         // saves only category names
+        final List<Category> categories;            // saves the hole category
+
+        categorie_names = new ArrayList<>();
+        categories = eventsManager.loadAllCategories();     // get all categories from DB
+
+        for(int i=0; i<categories.size(); i++) {
+            categorie_names.add(categories.get(i).getName());
+        }
 
         categoryDialog = new MaterialDialog.Builder(this)
                 .title("Category")
                 .content("Please choose a category.")
-                .items(categories)
+                .items(categorie_names)
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
@@ -367,14 +374,14 @@ public class EditorActivity extends AppCompatActivity {
                 })
                 .negativeText("Cancel")
                 .build();
-
-        Log.d(DEBUG_TAG, "Anzahl der Kategorien: "+eventsManager.countCategory());
     }
 
     private void setCategoryButton(Category category) {
-        if(category == null)
-            return;
+        if(category == null) {
+            category = eventsManager.getDefaultCategory();     // search Default Category
+        }
 
+        mCategory = category;
         btn_category.setText(category.getName());
     }
 
