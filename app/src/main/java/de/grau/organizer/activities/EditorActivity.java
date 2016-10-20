@@ -3,7 +3,6 @@ package de.grau.organizer.activities;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,6 +27,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -416,17 +417,59 @@ public class EditorActivity extends AppCompatActivity {
             }
         },year, month, day);
 
-        timePickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        initStartTimePicker(hour, minute);
+        initEndTimePicker(hour, minute);
+    }
+
+    private void initStartTimePicker(int hour, int minute) {
+        btn_pickTime.setText(String.format("%02d:%02d",hour,minute));
+
+        timePickerDialog = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                        currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        currentStartDate.set(Calendar.MINUTE, minute);
+                        btn_pickTime.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
+                    }
+                },
+                currentStartDate.get(Calendar.HOUR_OF_DAY),
+                currentStartDate.get(Calendar.MINUTE),
+                true
+        );
+/*        timePickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
                 currentStartDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
                 currentStartDate.set(Calendar.MINUTE, minute);
 
                 btn_pickTime.setText(String.format("%02d:%02d",hour_of_day,minute));
+                initEndTimePicker(hour_of_day,minute);
             }
-        }, hour, minute, true);
+        }, hour, minute, true);*/
+    }
 
-        timeEndPickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+    private void initEndTimePicker(int hour, int minute) {
+        btn_pickTime_fin.setText(String.format("%02d:%02d",hour,minute));
+
+        timeEndPickerDialog = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                        currentEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        currentEndDate.set(Calendar.MINUTE, minute);
+                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
+                    }
+                },
+                currentEndDate.get(Calendar.HOUR_OF_DAY),
+                currentEndDate.get(Calendar.MINUTE),
+                true
+        );
+        timeEndPickerDialog.setMinTime(currentStartDate.get(Calendar.HOUR_OF_DAY),currentStartDate.get(Calendar.MINUTE),currentStartDate.get(Calendar.SECOND));
+
+
+        /*timeEndPickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
                 currentEndDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
@@ -434,6 +477,7 @@ public class EditorActivity extends AppCompatActivity {
                 btn_pickTime_fin.setText(String.format("%02d:%02d",hour_of_day,minute));
             }
         }, hour, minute, true);
+*/
     }
 
 
@@ -456,17 +500,9 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    Log.d(DEBUG_TAG, "User switched to allDay, disabling TimePicker");
-                    btn_pickTime_fin.setVisibility(View.INVISIBLE);
-                    btn_pickTime_fin.setEnabled(false);
-                    btn_pickTime.setVisibility(View.INVISIBLE);
-                    btn_pickTime.setEnabled(false);
+                    changeVisibilityofTimePicker("User switched to allDay, disabling TimePicker", View.INVISIBLE, false);
                 } else{
-                    Log.d(DEBUG_TAG, "User switched to on same day, enabling TimePicker");
-                    btn_pickTime_fin.setVisibility(View.VISIBLE);
-                    btn_pickTime_fin.setEnabled(true);
-                    btn_pickTime.setVisibility(View.VISIBLE);
-                    btn_pickTime.setEnabled(true);
+                    changeVisibilityofTimePicker("User switched to on same day, enabling TimePicker", View.VISIBLE, true);
                 }
             }
         });
@@ -482,14 +518,14 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timePickerDialog.show();
+                timePickerDialog.show(getFragmentManager(),"timeStartPickerDialog");
             }
         });
 
         btn_pickTime_fin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timeEndPickerDialog.show();
+                timeEndPickerDialog.show(getFragmentManager(),"timeEndPickerDialog");
             }
         });
 
@@ -552,6 +588,14 @@ public class EditorActivity extends AppCompatActivity {
                 chooseCategory();
             }
         });
+    }
+
+    private void changeVisibilityofTimePicker(String msg, int invisible, boolean enabled) {
+        Log.d(DEBUG_TAG, msg);
+        btn_pickTime_fin.setVisibility(invisible);
+        btn_pickTime_fin.setEnabled(enabled);
+        btn_pickTime.setVisibility(invisible);
+        btn_pickTime.setEnabled(enabled);
     }
 
     // set Category to the current event
