@@ -41,7 +41,11 @@
 
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:parentActivityName=".activities.TabActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.ActionBar">
+
+        </activity>
     </application>
 
 </manifest>

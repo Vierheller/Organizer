@@ -94,6 +94,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     };
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            Log.d(DEBUG_TAG, "Item has been selected in SettingsActivity");
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     // Creates a new Category in the Database
     private static void createCategory(String category_name, Context context) {
         eventsManager.open();
@@ -198,16 +209,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("pref_category_add_cat"));
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            Log.d(DEBUG_TAG, "Item has been selected: "+item.getIntent().getDataString());
-            return super.onOptionsItemSelected(item);
-        }
+
     }
 
     /**
@@ -229,14 +231,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
+
     }
 }
