@@ -265,6 +265,7 @@ public class EditorActivity extends AppCompatActivity {
     // Hide some layout components for tasks
     private void hideFinTime() {
         if(mEventtype) {            // if realm_event is a task
+            sw_allDay.setVisibility(View.GONE);
             btn_pickDate_fin.setVisibility(View.GONE);
             btn_pickTime_fin.setVisibility(View.GONE);
             layout_enddate.setVisibility(View.GONE);
@@ -481,7 +482,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    changeVisibilityofTimePicker("User switched to allDay, disabling TimePicker", View.INVISIBLE, false);
+                    changeVisibilityofTimePicker("User switched to allDay, disabling TimePicker", View.GONE, false);
                 } else{
                     changeVisibilityofTimePicker("User switched to on same day, enabling TimePicker", View.VISIBLE, true);
                 }
@@ -676,6 +677,9 @@ public class EditorActivity extends AppCompatActivity {
 
         //Set description
         temp_event.setDescription(et_description.getText().toString());
+
+        //Set isAllDay
+        temp_event.setAllDay(sw_allDay.isChecked());
 
         //set startdate
         temp_event.setStart(currentStartDate.getTime());

@@ -27,6 +27,7 @@ public class Event extends RealmObject{
     private String id;
     private String name, description;
     private int priority;
+    private boolean isAllDay; //Indicates that this event is spanning over a day
 
     private Date start,end;
     private int notificationTime; //Seconds before event.start to notify || -1 means there is no notification!
@@ -183,5 +184,13 @@ public class Event extends RealmObject{
 
     public void putNotes(List<Notes> notes) {
         this.notes.addAll(notes);
+    }
+
+    public boolean isAllDay() {
+        return isAllDay;
+    }
+
+    public void setAllDay(boolean allDay) {
+        isAllDay = allDay;
     }
 }
