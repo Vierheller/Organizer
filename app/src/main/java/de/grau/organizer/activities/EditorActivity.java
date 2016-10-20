@@ -430,7 +430,9 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentStartDate.set(Calendar.MINUTE, minute);
+                        currentEndDate = currentStartDate;
                         btn_pickTime.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
                         timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
                     }
                 },
@@ -438,16 +440,6 @@ public class EditorActivity extends AppCompatActivity {
                 currentStartDate.get(Calendar.MINUTE),
                 true
         );
-/*        timePickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
-                currentStartDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
-                currentStartDate.set(Calendar.MINUTE, minute);
-
-                btn_pickTime.setText(String.format("%02d:%02d",hour_of_day,minute));
-                initEndTimePicker(hour_of_day,minute);
-            }
-        }, hour, minute, true);*/
     }
 
     private void initEndTimePicker(int hour, int minute) {
@@ -467,17 +459,6 @@ public class EditorActivity extends AppCompatActivity {
                 true
         );
         timeEndPickerDialog.setMinTime(currentStartDate.get(Calendar.HOUR_OF_DAY),currentStartDate.get(Calendar.MINUTE),currentStartDate.get(Calendar.SECOND));
-
-
-        /*timeEndPickerDialog = new TimePickerDialog(EditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int hour_of_day, int minute) {
-                currentEndDate.set(Calendar.HOUR_OF_DAY, hour_of_day);
-                currentEndDate.set(Calendar.MINUTE, minute);
-                btn_pickTime_fin.setText(String.format("%02d:%02d",hour_of_day,minute));
-            }
-        }, hour, minute, true);
-*/
     }
 
 
