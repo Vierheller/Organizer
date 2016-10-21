@@ -1,11 +1,12 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -14,14 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import java.util.List;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
-import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
+import de.grau.organizer.adapters.MyRecyclerViewAdapter;
+import de.grau.organizer.adapters.listeners.OnClickListener;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.notification.NotificationAlarmHandler;
 import io.realm.RealmChangeListener;
@@ -31,7 +32,7 @@ import io.realm.RealmResults;
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link ListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * to handle interaction eventsDataSet.
  * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -47,16 +48,17 @@ public class ListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private EventsListAdapter mAdapter;
+    private MyRecyclerViewAdapter mAdapter;
 
     private TabActivity mActivity;
 
-
-    private ListView listView;
+    //Everything for RecyclerView
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
 
     private OnFragmentInteractionListener mListener;
 
-    private List<Event> events ;
+    private List<Event> eventsDataSet;
 
 
     public ListFragment() {
@@ -101,12 +103,21 @@ public class ListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_list, container, false);
 
-        listView = (ListView) view.findViewById(R.id.fragment_list_listview);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_list_recycler_view);
 
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(mActivity);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //Get each event row from Database
         RealmResults<Event> realmList  = mActivity.eventsManager.getRealmEventList();
+        eventsDataSet = realmList;
 
-        events = realmList;
-
+        //This is a listener to keep DataSet always up to Date
         realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
             @Override
             public void onChange(RealmResults<Event> element) {
@@ -114,9 +125,11 @@ public class ListFragment extends Fragment {
             }
         });
 
-        mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events);
+        // specify an adapter (see also next example)
+        mAdapter = new MyRecyclerViewAdapter(eventsDataSet, this, mRecyclerView);
+        mRecyclerView.setAdapter(mAdapter);
 
-        listView.setAdapter(mAdapter);
+
 
         setupListeners();
 
@@ -124,21 +137,29 @@ public class ListFragment extends Fragment {
     }
 
     private void setupListeners() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAdapter.setOnClickListener(new OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String id = events.get(i).getId();
+            public void onClick(View view, int position) {
+                String id = eventsDataSet.get(position).getId();
                 Log.d(DEBUG_TAG, id);
                 mActivity.startTaskActivity(id);
             }
         });
-
-        registerForContextMenu(listView);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                String id = eventsDataSet.get(i).getId();
+//                Log.d(DEBUG_TAG, id);
+//                mActivity.startTaskActivity(id);
+//            }
+//        });
+//
+        registerForContextMenu(mRecyclerView);
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId()==R.id.fragment_list_listview) {
+        if (v.getId()==R.id.fragment_list_recycler_view) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.menu_month_list, menu);
         }
@@ -148,7 +169,7 @@ public class ListFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int listElementPosition = info.position;
-        Event selectedEvent = events.get(listElementPosition);
+        Event selectedEvent = eventsDataSet.get(listElementPosition);
         switch(item.getItemId()) {
             case R.id.action_list_edit:
                 mActivity.startEditorActivity(selectedEvent.getId());
@@ -156,7 +177,7 @@ public class ListFragment extends Fragment {
             case R.id.action_list_delete:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
                 mActivity.eventsManager.deleteEvent(selectedEvent.getId());
-                Snackbar.make(listView, "Sucessfully deleted!", Snackbar.LENGTH_LONG).show();
+                //Snackbar.make(listView, "Sucessfully deleted!", Snackbar.LENGTH_LONG).show();
                 return true;
             case R.id.action_list_cancel_notification:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
