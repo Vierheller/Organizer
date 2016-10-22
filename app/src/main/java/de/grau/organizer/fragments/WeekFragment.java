@@ -19,7 +19,8 @@ import android.widget.TextView;
 
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
+
+import de.grau.organizer.views.WeekViewEvent;
 
 
 import java.util.ArrayList;
@@ -90,6 +91,8 @@ public class WeekFragment extends Fragment {
         mActivity = (TabActivity) getActivity();
     }
 
+    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +108,10 @@ public class WeekFragment extends Fragment {
         setupWeek();
 
         return view;
+    }
+
+    public void completedLayout() {
+        setupWeek();
     }
 
     private void setupWeek() {
@@ -209,7 +216,6 @@ public class WeekFragment extends Fragment {
 class EventWeekView extends RelativeLayout {
     private static final String LOG_TAG = EventWeekView.class.getCanonicalName();
 
-
     public EventWeekView(Context context) {
         super(context);
     }
@@ -236,11 +242,12 @@ class EventWeekView extends RelativeLayout {
         this.addView(week_view, params);
     }
 
+
     public void setupEvents(List<Event> events) {
-        int width = 650;
+        int width = 950;
 //        int width = this.getWidth();
         Log.d(LOG_TAG, width + "");
-        int height = 1000;
+        int height = 1200;
 //        int height = this.getHeight();
         Log.d(LOG_TAG, height + "");
 
@@ -266,8 +273,9 @@ class EventWeekView extends RelativeLayout {
             Log.d(LOG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
 
 
-            View week_view = this.inflate(this.getContext(), R.layout.week_view_event_layout, null);
+            WeekViewEvent week_view = new WeekViewEvent(this.getContext());
             week_view.setBackgroundColor(event.getPriorityColor());
+            week_view.fillGui(event);
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
             params.topMargin = topMargin;
