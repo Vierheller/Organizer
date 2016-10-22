@@ -9,14 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.alamkanak.weekview.MonthLoader;
+import com.alamkanak.weekview.WeekView;
+import com.alamkanak.weekview.WeekViewEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import java.lang.Float;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
@@ -43,7 +44,8 @@ public class WeekFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private LinearLayout mWeekView;
+    private WeekView mWeekView;
+
     private TabActivity mActivity;
     public WeekFragment() {
         // Required empty public constructor
@@ -82,10 +84,49 @@ public class WeekFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_week, container, false);
-        mWeekView = (LinearLayout) view.findViewById(R.id.event_week_view);
-        WeekViewEvent abc = new WeekViewEvent(mWeekView.getContext());
-        abc.setLayoutParams(new LinearLayout.LayoutParams(50,50));
-        this.mWeekView.addView(abc);
+        // Get a reference for the week view in the layout.
+        mWeekView = (WeekView) view.findViewById(R.id.weekView);
+
+        // Set an action when any event is clicked.
+        mWeekView.setOnEventClickListener(new WeekView.EventClickListener() {
+            @Override
+            public void onEventClick(WeekViewEvent event, RectF eventRect) {
+                Toast.makeText(getContext(),event.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+// The week view has infinite scrolling horizontally. We have to provide the events of a
+// month every time the month changes on the week view.
+        mWeekView.setMonthChangeListener(new MonthLoader.MonthChangeListener() {
+            @Override
+            public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+                Log.d("asd", "Month: "+newMonth+" Year: "+newYear);
+                List<WeekViewEvent> weekViewEvents = new ArrayList<WeekViewEvent>();
+                List<Event> databaseEvents = mActivity.eventsManager.getEvents(newYear,newMonth);
+                long ids = 0;
+                for (Event event:
+                     databaseEvents) {
+                    Calendar startcal = Calendar.getInstance();
+                    startcal.setTime(event.getStart());
+
+                    Calendar endcal = Calendar.getInstance();
+                    endcal.setTime(event.getStart());
+
+                    WeekViewEvent newEvent = new WeekViewEvent(ids++,event.getName(),startcal,endcal);
+
+                    weekViewEvents.add(newEvent);
+                }
+                return weekViewEvents;
+            }
+        });
+
+// Set long press listener for events.
+        mWeekView.setEventLongPressListener(new WeekView.EventLongPressListener() {
+            @Override
+            public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
+
+            }
+        });
         return view;
     }
 
@@ -127,16 +168,4 @@ public class WeekFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-}
-
-class WeekViewEvent extends View {
-
-    public WeekViewEvent(Context context) {
-
-        super(context);
-    }
-
-    public void setupView(Event event) {
-    }
-
 }
