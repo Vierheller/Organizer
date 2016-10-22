@@ -1,28 +1,36 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.classes.Event;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +41,7 @@ import de.grau.organizer.classes.Event;
  * create an instance of this fragment.
  */
 public class WeekFragment extends Fragment {
+    private static final String LOG_TAG = WeekFragment.class.getCanonicalName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,7 +53,9 @@ public class WeekFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private WeekView mWeekView;
+    private EventWeekView mWeekView;
+    private LinearLayout mWeekDays;
+    private LinearLayout mWeekTime;
 
     private TabActivity mActivity;
     public WeekFragment() {
@@ -84,50 +95,75 @@ public class WeekFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_week, container, false);
-        // Get a reference for the week view in the layout.
-        mWeekView = (WeekView) view.findViewById(R.id.weekView);
+        mWeekDays = (LinearLayout) view.findViewById(R.id.week_view_days);
+        mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
+        mWeekDays.setBackgroundColor(Color.RED);
+        mWeekTime.setBackgroundColor(Color.GREEN);
 
-        // Set an action when any event is clicked.
-        mWeekView.setOnEventClickListener(new WeekView.EventClickListener() {
-            @Override
-            public void onEventClick(WeekViewEvent event, RectF eventRect) {
-                Toast.makeText(getContext(),event.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
+//        mWeekView.setStaticEvent();
+        setupWeek();
 
-// The week view has infinite scrolling horizontally. We have to provide the events of a
-// month every time the month changes on the week view.
-        mWeekView.setMonthChangeListener(new MonthLoader.MonthChangeListener() {
-            @Override
-            public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-                Log.d("asd", "Month: "+newMonth+" Year: "+newYear);
-                List<WeekViewEvent> weekViewEvents = new ArrayList<WeekViewEvent>();
-                List<Event> databaseEvents = mActivity.eventsManager.getEvents(newYear,newMonth);
-                long ids = 0;
-                for (Event event:
-                     databaseEvents) {
-                    Calendar startcal = Calendar.getInstance();
-                    startcal.setTime(event.getStart());
-
-                    Calendar endcal = Calendar.getInstance();
-                    endcal.setTime(event.getStart());
-
-                    WeekViewEvent newEvent = new WeekViewEvent(ids++,event.getName(),startcal,endcal);
-
-                    weekViewEvents.add(newEvent);
-                }
-                return weekViewEvents;
-            }
-        });
-
-// Set long press listener for events.
-        mWeekView.setEventLongPressListener(new WeekView.EventLongPressListener() {
-            @Override
-            public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-
-            }
-        });
         return view;
+    }
+
+    private void setupWeek() {
+        setupWeekTime();
+        setupWeekDays();
+        setupWeekView();
+    }
+
+    private void setupWeekDays() {
+        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        for(String day: days) {
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(50, 50);
+            param.weight = 1;
+            TextView dayTV = new TextView(this.getContext());
+            dayTV.setText(day);
+            dayTV.setLayoutParams(param);
+            dayTV.setGravity(Gravity.CENTER);
+            mWeekDays.addView(dayTV);
+        }
+        mWeekDays.setWeightSum(days.length);
+    }
+
+    private void setupWeekTime() {
+        int interval = 4;
+        ArrayList<String> times = new ArrayList<>();
+        for(int x = 0; x <= 24; x+=interval) {
+            String formatted = String.format("%02d", x);
+            String time = formatted + ":00";
+            times.add(time);
+        }
+        for (String time : times) {
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20);
+            param.weight = 1;
+            TextView timeTV = new TextView(this.getContext());
+            timeTV.setText(time);
+            timeTV.setGravity(Gravity.CENTER_HORIZONTAL);
+            timeTV.setLayoutParams(param);
+            mWeekTime.addView(timeTV);
+        }
+        mWeekTime.setWeightSum(times.size());
+    }
+
+    private void setupWeekView() {
+        Calendar calStart = Calendar.getInstance();
+        calStart.set(Calendar.DAY_OF_WEEK, calStart.getActualMinimum(Calendar.DAY_OF_WEEK));
+        calStart.set(Calendar.HOUR_OF_DAY, calStart.getActualMinimum(Calendar.HOUR_OF_DAY));
+        calStart.set(Calendar.MINUTE, calStart.getActualMinimum(Calendar.MINUTE));
+        calStart.set(Calendar.SECOND, calStart.getActualMinimum(Calendar.SECOND));
+
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.set(Calendar.DAY_OF_WEEK, calEnd.getActualMaximum(Calendar.DAY_OF_WEEK));
+        calEnd.set(Calendar.HOUR_OF_DAY, calEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
+        calEnd.set(Calendar.MINUTE, calEnd.getActualMaximum(Calendar.MINUTE));
+        calEnd.set(Calendar.SECOND, calEnd.getActualMaximum(Calendar.SECOND));
+
+        List<Event> events = mActivity.eventsManager.getEvents(calStart.getTime(), calEnd.getTime());
+
+        Log.d(LOG_TAG, "Events to show: " + events.size());
+        mWeekView.setupEvents(events);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -167,5 +203,87 @@ public class WeekFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+}
+
+class EventWeekView extends RelativeLayout {
+    private static final String LOG_TAG = EventWeekView.class.getCanonicalName();
+
+
+    public EventWeekView(Context context) {
+        super(context);
+    }
+
+    public EventWeekView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public EventWeekView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public EventWeekView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public void setStaticEvent() {
+        View week_view = this.inflate(this.getContext(), R.layout.week_view_event_layout, null);
+        //there are 7 days so the width of one event should be equal to a day
+        //the height equals the height of the view / 24 (hours per day) times the time of the event
+        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(300, 300);
+        params.leftMargin = 40;
+        params.topMargin = 50;
+        this.addView(week_view, params);
+    }
+
+    public void setupEvents(List<Event> events) {
+        int width = 650;
+//        int width = this.getWidth();
+        Log.d(LOG_TAG, width + "");
+        int height = 1000;
+//        int height = this.getHeight();
+        Log.d(LOG_TAG, height + "");
+
+        for (Event event: events) {
+            Log.d(LOG_TAG, "Adding: " + event);
+            int day = event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) - 1;
+            int startHour = event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY);
+            int startMinute = event.getTime(Event.DateTime.START, Calendar.MINUTE);
+
+            //the time in between every event:
+            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.HOURS);
+            Log.d(LOG_TAG, "day: "  +day);
+
+            //there are 7 days so the width of one event should be equal to a day
+            //the height equals the height of the view / 24 (hours per day) times the time of the event
+            int eventWidth = width/7;
+            int eventHeight = (int)height/24*(int)duration;
+            if (eventHeight < 100) {
+                eventHeight = 100;
+            }
+            int leftMargin = day*eventWidth;
+            int topMargin = height/24*startHour + height/(24*60)*startMinute;
+            Log.d(LOG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
+
+
+            View week_view = this.inflate(this.getContext(), R.layout.week_view_event_layout, null);
+            week_view.setBackgroundColor(event.getPriorityColor());
+            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
+            params.leftMargin = leftMargin;
+            params.topMargin = topMargin;
+            this.addView(week_view, params);
+        }
+    }
+
+    /**
+     * Get a diff between two dates
+     * @param date1 the oldest date
+     * @param date2 the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 }

@@ -1,5 +1,6 @@
 package de.grau.organizer.activities;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.app.Fragment;
 
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.fragments.*;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
