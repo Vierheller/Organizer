@@ -1,6 +1,8 @@
 package de.grau.organizer.database;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.Date;
@@ -30,8 +32,11 @@ public class EventsManagerRealm implements EventsManager {
     public List<Event> getEvents(Date startDate, Date endDate) {
         RealmQuery<Event> query = realm.where(Event.class);
 
+        Log.d("database", startDate.toString());
+        Log.d("db", "hi");
+
         query.greaterThan("start", startDate);
-        query.lessThan("end", endDate);
+        query.lessThan("start", endDate);
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }

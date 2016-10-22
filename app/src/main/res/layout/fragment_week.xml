@@ -2,25 +2,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/week_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="de.grau.organizer.fragments.WeekFragment">
 
-    <com.alamkanak.weekview.WeekView
-        android:id="@+id/weekView"
+
+    <de.grau.organizer.fragments.EventWeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:eventTextColor="@android:color/white"
-        app:textSize="10sp"
-        app:headerColumnPadding="4dp"
-        app:headerColumnTextColor="@color/colorPrimary"
-        app:headerRowPadding="4dp"
-        app:columnGap="2dp"
-        app:dayNameLength="length_short"
-        app:todayHeaderTextColor="@color/colorAccent"
-        app:noOfVisibleDays="7"
-        app:dayBackgroundColor="#05000000"
-        app:showNowLine="true"
-        app:nowLineThickness="2dp"
-        app:headerColumnBackground="#ffffffff"/>
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:id="@+id/event_week_view">
 
+    </de.grau.organizer.fragments.EventWeekView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="50dp"
+        android:id="@+id/week_view_days">
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:id="@+id/week_view_time"></LinearLayout>
 </FrameLayout>

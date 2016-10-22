@@ -1,5 +1,6 @@
 package de.grau.organizer.activities;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,11 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.app.Fragment;
 
+import android.view.ViewTreeObserver;
 import android.widget.SearchView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -36,6 +40,7 @@ import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.R;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.fragments.*;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -77,7 +82,11 @@ public class TabActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
+
+
     }
+
+
 
     public void setupFragements() {
         // Create the adapter that will return a fragment for each of the three
