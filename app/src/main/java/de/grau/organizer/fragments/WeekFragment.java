@@ -1,12 +1,14 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,8 +27,10 @@ import de.grau.organizer.views.WeekViewEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import de.grau.organizer.R;
@@ -155,14 +159,16 @@ public class WeekFragment extends Fragment {
     }
 
     private void setupWeekView() {
-        Calendar calStart = Calendar.getInstance();
-        calStart.set(Calendar.DAY_OF_WEEK, calStart.getActualMinimum(Calendar.DAY_OF_WEEK));
+        Calendar calStart = GregorianCalendar.getInstance(Locale.GERMANY);
+        calStart.setFirstDayOfWeek(Calendar.MONDAY);
+        calStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         calStart.set(Calendar.HOUR_OF_DAY, calStart.getActualMinimum(Calendar.HOUR_OF_DAY));
         calStart.set(Calendar.MINUTE, calStart.getActualMinimum(Calendar.MINUTE));
         calStart.set(Calendar.SECOND, calStart.getActualMinimum(Calendar.SECOND));
 
-        Calendar calEnd = Calendar.getInstance();
-        calEnd.set(Calendar.DAY_OF_WEEK, calEnd.getActualMaximum(Calendar.DAY_OF_WEEK));
+        Calendar calEnd = GregorianCalendar.getInstance(Locale.GERMANY);
+        calEnd.setFirstDayOfWeek(Calendar.MONDAY);
+        calEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         calEnd.set(Calendar.HOUR_OF_DAY, calEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
         calEnd.set(Calendar.MINUTE, calEnd.getActualMaximum(Calendar.MINUTE));
         calEnd.set(Calendar.SECOND, calEnd.getActualMaximum(Calendar.SECOND));
@@ -244,10 +250,12 @@ class EventWeekView extends RelativeLayout {
 
 
     public void setupEvents(List<Event> events) {
-        int width = 950;
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+        int width = metrics.widthPixels;
 //        int width = this.getWidth();
         Log.d(LOG_TAG, width + "");
-        int height = 1200;
+        int height = metrics.heightPixels;;
 //        int height = this.getHeight();
         Log.d(LOG_TAG, height + "");
 
@@ -269,7 +277,7 @@ class EventWeekView extends RelativeLayout {
                 eventHeight = 100;
             }
             int leftMargin = day*eventWidth;
-            int topMargin = height/24*startHour + height/(24*60)*startMinute;
+            int topMargin = (height/24*startHour + height/(24*60)*startMinute);
             Log.d(LOG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
 
 
