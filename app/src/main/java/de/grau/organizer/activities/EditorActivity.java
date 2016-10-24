@@ -116,7 +116,6 @@ public class EditorActivity extends AppCompatActivity {
 
         // Open database connection
         eventsManager.open();
-
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
@@ -237,9 +236,16 @@ public class EditorActivity extends AppCompatActivity {
         if (realm_event != null) {
             et_title.setText(realm_event.getName(), TextView.BufferType.NORMAL);
             et_description.setText(realm_event.getDescription(), TextView.BufferType.NORMAL);
-            datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
+            currentEndDate.setTime(realm_event.getEnd());
+            currentStartDate.setTime(realm_event.getStart());
+
+            this.setupDialogsDateAndTime();
+
+
+
+            //datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
-            setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
+            //setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             mTagList.addAll(realm_event.getTags());
             setPriorityButton(realm_event.getPriority());
             mCategory = realm_event.getCategory();
@@ -259,6 +265,8 @@ public class EditorActivity extends AppCompatActivity {
                 np.setValue(notificationTimeInterval/5);
                 btn_pickNotifyDelay.setText(String.format("%d min", notificationTimeInterval));
             }
+
+            sw_allDay.setChecked(realm_event.isAllDay());
         }
     }
 
@@ -398,28 +406,35 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setupDialogsDateAndTime() {
-        final int year = currentStartDate.get(Calendar.YEAR);
-        final int month = currentStartDate.get(Calendar.MONTH);
-        final int day = currentStartDate.get(Calendar.DAY_OF_MONTH);
-        int hour = currentStartDate.get(Calendar.HOUR_OF_DAY);
-        int minute = currentStartDate.get(Calendar.MINUTE);
+        final int startyear = currentStartDate.get(Calendar.YEAR);
+        final int startmonth = currentStartDate.get(Calendar.MONTH);
+        final int startday = currentStartDate.get(Calendar.DAY_OF_MONTH);
+        int starthour = currentStartDate.get(Calendar.HOUR_OF_DAY);
+        int startminute = currentStartDate.get(Calendar.MINUTE);
+
+        final int endyear = currentEndDate.get(Calendar.YEAR);
+        final int endmonth = currentEndDate.get(Calendar.MONTH);
+        final int endday = currentEndDate.get(Calendar.DAY_OF_MONTH);
+        int endhour = currentEndDate.get(Calendar.HOUR_OF_DAY);
+        int endminute = currentEndDate.get(Calendar.MINUTE);
+
 
         datePickerDialogStart = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
                 setBtn_pickDateText(btn_pickDateStart, currentStartDate, year, month, day_of_month);
             }
-        },year, month, day);
+        },startyear, startmonth, startday);
 
         datePickerDialogEnd = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
                 setBtn_pickDateText(btn_pickDate_fin, currentEndDate, year, month, day_of_month);
             }
-        },year, month, day);
+        },endyear, endmonth, endday);
 
-        initStartTimePicker(hour, minute);
-        initEndTimePicker(hour, minute);
+        initStartTimePicker(starthour, startminute);
+        initEndTimePicker(endhour, endminute);
     }
 
     private void initStartTimePicker(int hour, int minute) {
@@ -597,6 +612,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setPriorityButton(int priority) {
+        this.mPriority = priority;
         btn_priority.setText("Priorität " + String.valueOf(priority));
     }
 
