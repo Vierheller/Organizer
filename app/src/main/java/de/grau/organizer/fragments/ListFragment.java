@@ -127,7 +127,7 @@ public class ListFragment extends Fragment {
         });
 
         // specify an adapter (see also next example)
-        mAdapter = new MyRecyclerViewAdapter(eventsDataSet, this, mRecyclerView);
+        mAdapter = new MyRecyclerViewAdapter(eventsDataSet, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
 
 

@@ -26,10 +26,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public static final int ACTION_NOTIFICATION_ID = 160003;
     public static final int ACTION_DELETE_ID = 160004;
 
-    private List<Event> mDataset;
+    private List<Event> mEventsList;
     private RecyclerView mRecyclerView;
     private OnClickListener listener = null;
-    private View.OnCreateContextMenuListener mOnCreateContextMenuListener;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -64,10 +63,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyRecyclerViewAdapter(List<Event> myDataset, View.OnCreateContextMenuListener onCreateContextMenuListener, RecyclerView recyclerView) {
-        mDataset = myDataset;
+    public MyRecyclerViewAdapter(List<Event> myDataset, RecyclerView recyclerView) {
+        mEventsList = myDataset;
         mRecyclerView = recyclerView;
-        mOnCreateContextMenuListener = onCreateContextMenuListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -96,8 +94,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
         });
 
-        view.setOnCreateContextMenuListener(mOnCreateContextMenuListener);
-
         ViewHolder vh = new ViewHolder(view, title, start, end, category, ivPriority);
 
         return vh;
@@ -109,9 +105,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        Event currentEvent = mDataset.get(position);
+        Event currentEvent = mEventsList.get(position);
         holder.mPosition = position;
-        holder.tv_title.setText(mDataset.get(position).getName());
+        holder.tv_title.setText(mEventsList.get(position).getName());
         //End date may be null?, category is not even possible to set
 
         holder.tv_startTime.setText("");
@@ -141,11 +137,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         this.listener = null;
     }
 
+    public void setEvents(List<Event> events){
+        mEventsList = events;
+    }
+
 
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mEventsList.size();
     }
 }

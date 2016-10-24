@@ -4,12 +4,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.List;
 
 
+import de.grau.organizer.adapters.MyRecyclerViewAdapter;
+import de.grau.organizer.adapters.listeners.OnClickListener;
 import de.grau.organizer.views.HighlightDecorator;
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
@@ -48,9 +50,9 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     private String mParam2;
 
     private TabActivity mActivity;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
     private MaterialCalendarView mCalendarView;
-    private EventsListAdapter mListViewAdapter;
+    private MyRecyclerViewAdapter mRecyclerViewAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -83,7 +85,13 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         selectDate(date);
     }
 
-
+    /**
+     * This method takes a date and updates the listview below the monthView.
+     * 1. get new data from date
+     * 2. update adapter
+     *
+     * @param date
+     */
     private void selectDate(CalendarDay date){
         currentEventsInListView = mActivity.eventsManager.getEvents(date);
         //TODO: Load events into listView
@@ -91,11 +99,12 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
             Log.d(LOG_TAG, event.toString());
         }
         if ( currentEventsInListView != null ) {
-            mListViewAdapter.setEventList(currentEventsInListView);
+            mRecyclerViewAdapter.setEvents(currentEventsInListView);
         } else {
-            mListViewAdapter.setEventList(new ArrayList<Event>());
+            mRecyclerViewAdapter.setEvents(new ArrayList<Event>());
         }
-        mListViewAdapter.notifyDataSetChanged();
+        mRecyclerViewAdapter.notifyDataSetChanged();
+        mRecyclerView.swapAdapter(mRecyclerViewAdapter, false);
     }
 
     @Override
@@ -124,11 +133,11 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_month, container, false);
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
-        mListView = (ListView) view.findViewById(R.id.month_list_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.month_list_view);
 
-        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>());
+        mRecyclerViewAdapter = new MyRecyclerViewAdapter(new ArrayList<Event>(), mRecyclerView);
 
-        mListView.setAdapter(mListViewAdapter);
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mCalendarView.setOnDateChangedListener(this);
         mCalendarView.setOnMonthChangedListener(this);
@@ -143,9 +152,9 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void setupOnClickListeners(){
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mRecyclerViewAdapter.setOnClickListener(new OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view, int position) {
                 mActivity.startTaskActivity(currentEventsInListView.get(position).getId());
             }
         });
