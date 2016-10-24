@@ -205,15 +205,18 @@ public class TaskActivity extends AppCompatActivity {
             tv_endTime.setVisibility(View.GONE);
             tv_endDate.setVisibility(View.GONE);
         }else{
-            tv_endDate.setText(mEvent.getEnd().getDate()+"."+mEvent.getEnd().getMonth()+"."+( mEvent.getEnd().getYear()+1900));
+            tv_endDate.setText(mEvent.getEnd().getDate()+"."+(mEvent.getEnd().getMonth()+1)+"."+( mEvent.getEnd().getYear()+1900));
             tv_endTime.setText(mEvent.getEnd().getHours()+":"+mEvent.getEnd().getMinutes());
         }
-        tv_startDate.setText(mEvent.getStart().getDate()+"."+mEvent.getStart().getMonth()+"."+(mEvent.getStart().getYear()+1900));
+        tv_startDate.setText(mEvent.getStart().getDate()+"."+(mEvent.getStart().getMonth()+1)+"."+(mEvent.getStart().getYear()+1900));
         tv_startTime.setText(mEvent.getStart().getHours()+":"+mEvent.getStart().getMinutes());
         tv_description.setText(mEvent.getDescription());
         addNotesToGui();
     }
 
+    /**
+     * Reads all Notes from the Event and adds them to the Notes Textview.
+      */
     private void addNotesToGui() {
         Log.d(DEBUG_TAG, "Number of Notes is......................................" +  mEvent.getNotes().size());
         String notes = "";
