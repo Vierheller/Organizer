@@ -51,6 +51,7 @@ public class WeekFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final int HOUR_HEIGHT = 10;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -139,7 +140,7 @@ public class WeekFragment extends Fragment {
     }
 
     private void setupWeekTime() {
-        int interval = 4;
+        int interval = 2;
         ArrayList<String> times = new ArrayList<>();
         for(int x = 0; x <= 24; x+=interval) {
             String formatted = String.format("%02d", x);
@@ -147,7 +148,7 @@ public class WeekFragment extends Fragment {
             times.add(time);
         }
         for (String time : times) {
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, interval*HOUR_HEIGHT);
             param.weight = 1;
             TextView timeTV = new TextView(this.getContext());
             timeTV.setText(time);
@@ -251,7 +252,6 @@ class EventWeekView extends RelativeLayout {
 
     public void setupEvents(List<Event> events) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-
         int width = metrics.widthPixels;
 //        int width = this.getWidth();
         Log.d(LOG_TAG, width + "");
@@ -277,17 +277,17 @@ class EventWeekView extends RelativeLayout {
                 eventHeight = 100;
             }
             int leftMargin = day*eventWidth;
-            int topMargin = (height/24*startHour + height/(24*60)*startMinute);
+            int topMargin = WeekFragment.HOUR_HEIGHT * startHour + (WeekFragment.HOUR_HEIGHT/60)*startMinute;//(height/24*startHour + height/(24*60)*startMinute);
             Log.d(LOG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
 
 
-            WeekViewEvent week_view = new WeekViewEvent(this.getContext());
+            WeekViewEvent week_view = new WeekViewEvent(this.getContext(),event);
             week_view.setBackgroundColor(event.getPriorityColor());
             week_view.fillGui(event);
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
             params.topMargin = topMargin;
-            this.addView(week_view, params);
+            this.addView(week_int px = (int) Math.ceil(dp * logicalDensity);view, params);
         }
     }
 
@@ -301,5 +301,13 @@ class EventWeekView extends RelativeLayout {
     public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
+    private int pixelToDp(int pixel){
+        /*Resources.getSystem().getde
+        getContext().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        float logicalDensity = metrics.density;
+        int px = (int) Math.ceil(dp * logicalDensity);*/
+
     }
 }

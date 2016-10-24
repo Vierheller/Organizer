@@ -17,9 +17,11 @@ import de.grau.organizer.classes.Event;
 
 public class WeekViewEvent extends LinearLayout implements View.OnClickListener {
     private TextView eventTextView;
+    private Event mEvent;
 
-    public WeekViewEvent(Context context) {
+    public WeekViewEvent(Context context, Event event) {
         super(context);
+        this.mEvent = event;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.week_view_event_layout, this, true);
@@ -54,6 +56,6 @@ public class WeekViewEvent extends LinearLayout implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(getContext(),"Event got clicked",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(),mEvent.getName(),Toast.LENGTH_LONG).show();
     }
 }
