@@ -66,9 +66,16 @@ public class Event extends RealmObject{
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
+        setDefaultValues();
+    }
+
+    private void setDefaultValues() {
         this.notes = new RealmList<Notes>();
         this.priority = 4;      // default value
         this.eventtype = false; // default value
+        this.start = new Date();
+        this.end = new Date();
+        this.notificationTime = -1;
     }
 
     @Override

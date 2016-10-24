@@ -143,20 +143,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp">
-
                 <Button
-                    android:drawableLeft="@drawable/ic_add_notification"
-                    android:id="@+id/editor_btn_picknotifydelay"
+                    android:text="Category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/editor_btn_picknotifydelay" />
+                    android:id="@+id/editor_btn_category"
+                    android:layout_weight="1.00"
+                    android:drawableLeft="?android:attr/actionModePasteDrawable" />
 
-                <Button
-                    android:drawableLeft="@drawable/ic_action_phone"
-                    android:text="@string/editor_btn_chooseaction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_chooseaction" />
                 <Button
                     android:drawableLeft="@drawable/ic_priority"
                     android:text="@string/editor_btn_priority"
@@ -171,6 +165,30 @@
                 android:background="@drawable/divider_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:drawableLeft="@drawable/ic_add_notification"
+                    android:id="@+id/editor_btn_picknotifydelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/editor_btn_picknotifydelay" />
+
+                <Button
+                    android:drawableLeft="@drawable/ic_action_phone"
+                    android:text="@string/editor_btn_chooseaction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/editor_btn_chooseaction" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -216,13 +234,7 @@
                     android:id="@+id/editor_btn_tags"
                     android:layout_weight="1" />
 
-                <Button
-                    android:text="Category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_category"
-                    android:layout_weight="1.00"
-                    android:drawableLeft="?android:attr/actionModePasteDrawable" />
+
 
             </LinearLayout>
 
