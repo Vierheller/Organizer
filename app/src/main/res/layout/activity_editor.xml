@@ -117,8 +117,9 @@
                 android:layout_width="match_parent"
                 android:id="@+id/layout_enddate"
                 android:layout_height="40dp">
+
                 <Button
-                    android:drawableLeft="@drawable/ic_event_date"
+                    android:drawableLeft="@drawable/ic_event_date_reverse"
                     android:drawablePadding="20dp"
                     android:id="@+id/editor_btn_pickdate_fin"
                     android:text="@string/datepickPreview"
