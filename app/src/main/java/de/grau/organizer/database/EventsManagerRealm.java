@@ -186,8 +186,22 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     @Override
-    public boolean deleteEvent(String eventId) {
+    public boolean deleteCategory(String categoryId) {
+        RealmQuery<Category> query = realm.where(Category.class);
+        query.equalTo("id", categoryId);
+        Category result = query.findFirst();
+        if (result == null) {
+            return false;
+        } else {
+            realm.beginTransaction();
+            result.deleteFromRealm();
+            realm.commitTransaction();
+            return true;
+        }
+    }
 
+    @Override
+    public boolean deleteEvent(String eventId) {
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("id", eventId);
         Event result = query.findFirst();
@@ -199,7 +213,6 @@ public class EventsManagerRealm implements EventsManager {
             realm.commitTransaction();
             return true;
         }
-
     }
 
     @Override

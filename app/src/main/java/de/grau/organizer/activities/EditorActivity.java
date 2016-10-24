@@ -136,9 +136,7 @@ public class EditorActivity extends AppCompatActivity {
         checkEditorMode();
 
         // hide some UI elements in taskmode (no endtime)
-        hideFinTime();
-
-
+        hideEndTime();
     }
 
     // This method references every necessary GUI-Element
@@ -271,7 +269,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     // Hide some layout components for tasks
-    private void hideFinTime() {
+    private void hideEndTime() {
         if(mEventtype) {            // if realm_event is a task
             sw_allDay.setVisibility(View.GONE);
             btn_pickDate_fin.setVisibility(View.GONE);

@@ -37,6 +37,8 @@ public interface EventsManager {
 
     List<Category> loadAllCategories();
 
+    boolean deleteCategory(String categoryId);
+
     boolean deleteEvent(String eventId);
 
     void writeEvent(Event event);

@@ -3,7 +3,6 @@ package de.grau.organizer.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,11 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.widget.TextView;
-
-import com.alamkanak.weekview.MonthLoader;
-import com.alamkanak.weekview.WeekView;
 
 import de.grau.organizer.views.WeekViewEvent;
 
@@ -218,10 +213,14 @@ public class WeekFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-}
 
+
+
+}
 class EventWeekView extends RelativeLayout {
-    private static final String LOG_TAG = EventWeekView.class.getCanonicalName();
+
+
+    public static final String DEBUG_TAG = EventWeekView.class.getCanonicalName();
 
     public EventWeekView(Context context) {
         super(context);
@@ -254,20 +253,20 @@ class EventWeekView extends RelativeLayout {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int width = metrics.widthPixels;
 //        int width = this.getWidth();
-        Log.d(LOG_TAG, width + "");
+        Log.d(DEBUG_TAG, width + "");
         int height = metrics.heightPixels;;
 //        int height = this.getHeight();
-        Log.d(LOG_TAG, height + "");
+        Log.d(DEBUG_TAG, height + "");
 
         for (Event event: events) {
-            Log.d(LOG_TAG, "Adding: " + event);
+            Log.d(DEBUG_TAG, "Adding: " + event);
             int day = event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) - 1;
             int startHour = event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY);
             int startMinute = event.getTime(Event.DateTime.START, Calendar.MINUTE);
 
             //the time in between every event:
             long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.HOURS);
-            Log.d(LOG_TAG, "day: "  +day);
+            Log.d(DEBUG_TAG, "day: "  +day);
 
             //there are 7 days so the width of one event should be equal to a day
             //the height equals the height of the view / 24 (hours per day) times the time of the event
@@ -277,8 +276,8 @@ class EventWeekView extends RelativeLayout {
                 eventHeight = 100;
             }
             int leftMargin = day*eventWidth;
-            int topMargin = WeekFragment.HOUR_HEIGHT * startHour + (WeekFragment.HOUR_HEIGHT/60)*startMinute;//(height/24*startHour + height/(24*60)*startMinute);
-            Log.d(LOG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
+            int topMargin = (int)pixelToDp(WeekFragment.HOUR_HEIGHT * 3 * startHour + (WeekFragment.HOUR_HEIGHT * 3 /60)*startMinute);//(height/24*startHour + height/(24*60)*startMinute);
+            Log.d(DEBUG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
 
 
             WeekViewEvent week_view = new WeekViewEvent(this.getContext(),event);
@@ -287,7 +286,7 @@ class EventWeekView extends RelativeLayout {
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
             params.topMargin = topMargin;
-            this.addView(week_int px = (int) Math.ceil(dp * logicalDensity);view, params);
+            this.addView(week_view, params);
         }
     }
 
@@ -303,11 +302,10 @@ class EventWeekView extends RelativeLayout {
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 
-    private int pixelToDp(int pixel){
-        /*Resources.getSystem().getde
-        getContext().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float logicalDensity = metrics.density;
-        int px = (int) Math.ceil(dp * logicalDensity);*/
-
+    private float pixelToDp(int pixel){
+        Resources resources = getContext().getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = pixel / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return pixel;
     }
 }
