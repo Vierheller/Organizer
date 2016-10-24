@@ -17,8 +17,8 @@
     <MultiSelectListPreference
         android:title="Delete Category"
         android:defaultValue="@array/list_preference_entries"
-        android:entries="@array/list_preference_entries"
-        android:entryValues="@array/list_preference_entries"
         android:key="pref_category_delete_cat"
-        android:icon="@android:drawable/ic_menu_delete" />
+        android:icon="@android:drawable/ic_menu_delete"
+        android:entries="@array/list_preference_entries"
+        android:entryValues="@array/list_preference_entries" />
 </PreferenceScreen>

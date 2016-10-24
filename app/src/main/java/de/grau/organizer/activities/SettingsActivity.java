@@ -3,8 +3,7 @@ package de.grau.organizer.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBar;
@@ -21,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -29,6 +28,7 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +54,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
+        public boolean onPreferenceChange(final Preference preference, Object value) {
             String stringValue = value.toString();
 
             if (preference instanceof RingtonePreference) {
@@ -83,7 +83,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 if(preference.getKey().equals("pref_category_add_cat")) {  // Listener for Add Category
                     createCategory(stringValue, preference.getContext());
                     ((EditTextPreference) preference).setText("");
-                    Log.d(DEBUG_TAG, "CONTEXT: "+preference.getContext());
+                }
+                if(preference.getKey().equals("pref_category_delete_cat")) {
+                    // Fill the list
                 }
             } else {
                 // For all other preferences, set the summary to the value's
@@ -98,7 +100,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            Log.d(DEBUG_TAG, "Item has been selected in SettingsActivity");
             onBackPressed();
             return true;
         }
@@ -114,6 +115,32 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Toast.makeText(context, "Category has been saved!", Toast.LENGTH_LONG).show();
         }
         eventsManager.close();
+    }
+
+    // Get List of all categorie names
+    private static List<String> getAllCategorieNames() {
+        final List<String> categorie_names;         // saves only category names
+        final List<Category> categories;            // saves the hole category
+
+        eventsManager.open();
+        categorie_names = new ArrayList<>();
+        categories = eventsManager.loadAllCategories();     // get all categories from DB
+
+        for(int i=0; i<categories.size(); i++) {
+            categorie_names.add(categories.get(i).getName());
+        }
+
+        eventsManager.close();
+        return categorie_names;
+    }
+
+    // Delete a Categorie
+    private static boolean deleteCategory(String categoryId) {
+        boolean return_value;
+        eventsManager.open();
+        return_value = eventsManager.deleteCategory(categoryId);
+        eventsManager.close();
+        return return_value;
     }
 
     /**
@@ -208,8 +235,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("pref_category_add_cat"));
         }
-
-
     }
 
     /**
@@ -230,7 +255,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }
-
-
     }
 }
