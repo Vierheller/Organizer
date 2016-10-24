@@ -45,30 +45,138 @@
         app:srcCompat="@android:drawable/ic_menu_edit"
         android:id="@+id/task_btn_change" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="56dp">
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
-        <TextView
-            android:text="Title"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/task_tv_title" />
+            android:paddingTop="56dp">
 
-        <Button
-            android:text="Execute Action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/task_btn_executeaction" />
+            <TextView
+                android:text="Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/task_tv_title"
+                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                android:textSize="30sp" />
 
-        <Button
-            android:text="Delete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/task_btn_delete" />
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
 
-    </LinearLayout>
+            <TextView
+                android:text="Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/task_tv_description"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textSize="20sp" />
+
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:drawableLeft="@drawable/ic_event_date"
+                        android:text="@string/datepickPreview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/task_tv_startDate"
+                        android:layout_weight="1"
+                        android:textSize="18sp"
+                        android:textColor="?attr/colorAccent" />
+
+
+                    <TextView
+                        android:text="@string/timePreset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/task_tv_startTIme"
+                        android:layout_weight="1"
+                        android:textSize="18sp"
+                        android:textColor="?attr/colorAccent" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:drawableLeft="@drawable/ic_event_date_reverse"
+                    android:text="@string/datepickPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/task_tv_endDate"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:text="@string/timePreset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/task_tv_endTime"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+
+            <TextView
+                android:text="@string/layout_editor_notehint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/task_tv_notes"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textSize="20sp" />
+
+            <Button
+                android:text="Execute Action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/task_btn_executeaction" />
+
+            <Button
+                android:text="Delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/task_btn_delete" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

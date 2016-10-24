@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,21 +19,33 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
+
+import de.grau.organizer.classes.Notes;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.interfaces.EventsManager;
 import de.grau.organizer.notification.NotificationAlarmHandler;
+import io.realm.RealmList;
 
 public class TaskActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = TaskActivity.class.getCanonicalName();
     public static final String INTENT_PARAM_ID = "idParameter";
 
     private TextView tv_title;
+    private TextView tv_description;
+    private TextView tv_startDate;
+    private TextView tv_startTime;
+    private TextView tv_endDate;
+    private TextView tv_endTime;
+    private TextView tv_notes;
+
     private Button btn_executeAction;
     private Button btn_delete;
     private FloatingActionButton btn_edit;
+
 
     private EventsManager eventsManager;
     private Event mEvent;
@@ -77,6 +90,12 @@ public class TaskActivity extends AppCompatActivity {
 
     private void initializeGUI() {
         tv_title            =       (TextView) findViewById(R.id.task_tv_title);
+        tv_description      =       (TextView) findViewById(R.id.task_tv_description);
+        tv_startDate        =       (TextView) findViewById(R.id.task_tv_startDate);
+        tv_startTime        =       (TextView) findViewById(R.id.task_tv_startTIme);
+        tv_endDate          =       (TextView) findViewById(R.id.task_tv_endDate);
+        tv_endTime          =       (TextView) findViewById(R.id.task_tv_endTime);
+        tv_notes            =       (TextView) findViewById(R.id.task_tv_notes);
         btn_delete          =       (Button) findViewById(R.id.task_btn_delete);
         btn_executeAction   =       (Button) findViewById(R.id.task_btn_executeaction);
         btn_edit            =       (FloatingActionButton) findViewById(R.id.task_btn_change);
@@ -182,6 +201,26 @@ public class TaskActivity extends AppCompatActivity {
         if(mEvent.getAction() != null && !mEvent.getAction().getData().isEmpty()){
             btn_executeAction.setText("Call: "+mEvent.getAction().getData());
         }
+        if(mEvent.getEventtype()){
+            tv_endTime.setVisibility(View.GONE);
+            tv_endDate.setVisibility(View.GONE);
+        }else{
+            tv_endDate.setText(mEvent.getEnd().getDate()+"."+mEvent.getEnd().getMonth()+"."+( mEvent.getEnd().getYear()+1900));
+            tv_endTime.setText(mEvent.getEnd().getHours()+":"+mEvent.getEnd().getMinutes());
+        }
+        tv_startDate.setText(mEvent.getStart().getDate()+"."+mEvent.getStart().getMonth()+"."+(mEvent.getStart().getYear()+1900));
+        tv_startTime.setText(mEvent.getStart().getHours()+":"+mEvent.getStart().getMinutes());
+        tv_description.setText(mEvent.getDescription());
+        addNotesToGui();
+    }
+
+    private void addNotesToGui() {
+        Log.d(DEBUG_TAG, "Number of Notes is......................................" +  mEvent.getNotes().size());
+        String notes = "";
+        for(int i = 0; i <mEvent.getNotes().size(); i++){
+          notes = notes + "\n" + mEvent.getNotes().get(i).getText();
+        }
+        tv_notes.setText(notes);
     }
 
     private Event getEventFromIntent(Intent intent){
