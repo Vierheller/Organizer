@@ -250,10 +250,13 @@ public class EditorActivity extends AppCompatActivity {
             setCategoryButton(mCategory);
             setTagTextLine();
             mEventtype = realm_event.getEventtype();
+            //setting Buttontext to the Time from the Event, and not just the current one.
             if (!mEventtype) {
                 datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
                 setBtn_pickDateText(btn_pickDate_fin, currentEndDate, realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
             }
+            datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
+            setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //If notificationtime is grater that 0, then there is a notification set for this event
             if(realm_event.getNotificationTime()>=0){
                 useRememberNotification = true;
