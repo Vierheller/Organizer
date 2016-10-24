@@ -1,6 +1,7 @@
 package de.grau.organizer.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,11 @@ import de.grau.organizer.classes.Event;
  */
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+    //Custom ID's to reference menu items. TabActivity Fragments need these to detect longclicks on the items.
+    public static final int ACTION_EDIT_ID = 160002;
+    public static final int ACTION_NOTIFICATION_ID = 160003;
+    public static final int ACTION_DELETE_ID = 160004;
+
     private List<Event> mDataset;
     private RecyclerView mRecyclerView;
     private OnClickListener listener = null;
@@ -27,7 +33,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+        //Each view that can be changed by overwriting a row.
         int mPosition;
         View itemView;
         TextView tv_title;
@@ -44,6 +51,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.tv_endTime = tv_endTime;
             this.tv_category = tv_category;
             this.iv_Priority = iv_Priority;
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            //Draws contextmenus with the below menuitems
+            menu.add(0, ACTION_EDIT_ID, getAdapterPosition(), "Edit");
+            menu.add(0, ACTION_NOTIFICATION_ID, getAdapterPosition(), "Cancel Notification");
+            menu.add(0, ACTION_DELETE_ID, getAdapterPosition(), "Delete");
         }
     }
 
@@ -52,7 +68,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         mDataset = myDataset;
         mRecyclerView = recyclerView;
         mOnCreateContextMenuListener = onCreateContextMenuListener;
-
     }
 
     // Create new views (invoked by the layout manager)
@@ -88,6 +103,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return vh;
     }
 
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -115,8 +131,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     }
 
+    //Set a onItemClick listener on Activity side
     public void setOnClickListener(OnClickListener listener){
         this.listener = listener;
+    }
+
+    //Unsubscribe listener
+    public void detachOnClickListener(){
+        this.listener = null;
     }
 
 

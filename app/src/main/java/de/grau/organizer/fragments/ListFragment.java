@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -157,29 +158,22 @@ public class ListFragment extends Fragment {
         registerForContextMenu(mRecyclerView);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId()==R.id.fragment_list_recycler_view) {
-            MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.menu_month_list, menu);
-        }
-    }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int listElementPosition = info.position;
+        int listElementPosition = item.getOrder();
         Event selectedEvent = eventsDataSet.get(listElementPosition);
         switch(item.getItemId()) {
-            case R.id.action_list_edit:
+            case MyRecyclerViewAdapter.ACTION_EDIT_ID:
                 mActivity.startEditorActivity(selectedEvent.getId());
                 return true;
-            case R.id.action_list_delete:
+            case MyRecyclerViewAdapter.ACTION_NOTIFICATION_ID:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
                 mActivity.eventsManager.deleteEvent(selectedEvent.getId());
                 //Snackbar.make(listView, "Sucessfully deleted!", Snackbar.LENGTH_LONG).show();
                 return true;
-            case R.id.action_list_cancel_notification:
+            case MyRecyclerViewAdapter.ACTION_DELETE_ID:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
                 return true;
             default:
