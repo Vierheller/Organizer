@@ -99,6 +99,7 @@ public class EditorActivity extends AppCompatActivity {
     private Tag mTag;
     private boolean mEventtype;          // true = "Aufgabe", false = "Termin"
     private RealmList<Tag> mTagList;
+    private RealmList<Notes> mNoteList;
     private String eventID = null;
 
     //INTENT
@@ -170,7 +171,8 @@ public class EditorActivity extends AppCompatActivity {
         currentEndDate.set(Calendar.SECOND, 0);
         btn_pickDate_fin.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
 
-        addNote();      //Add a single Note for better user experience.
+        //if(eventID == null)     //If create Mode
+          //  addNote(null);      //Add a single Note for better user experience.
 
         setupDialogsDateAndTime();
         setupDialogRememberTime();
@@ -239,8 +241,6 @@ public class EditorActivity extends AppCompatActivity {
 
             this.setupDialogsDateAndTime();
 
-
-
             //datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             //setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
@@ -250,6 +250,14 @@ public class EditorActivity extends AppCompatActivity {
             setCategoryButton(mCategory);
             setTagTextLine();
             mEventtype = realm_event.getEventtype();
+
+            // Set the notes
+            mNoteList = realm_event.getNotes();
+
+            for(int i=0; i<mNoteList.size(); i++) {
+                addNote(mNoteList.get(i).getText());
+            }
+
             //setting Buttontext to the Time from the Event, and not just the current one.
             if (!mEventtype) {
                 datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
@@ -530,7 +538,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_addNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNote();
+                addNote(null);
             }
         });
 
@@ -617,7 +625,12 @@ public class EditorActivity extends AppCompatActivity {
         btn_priority.setText("Priorität " + String.valueOf(priority));
     }
 
-    private void addNote() {
+    /**
+     * EditText in notecontainer
+     * text = null -> Empty text
+     * @param text
+     */
+    private void addNote(String text) {
         EditText et = new EditText(this);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -626,6 +639,9 @@ public class EditorActivity extends AppCompatActivity {
         layoutParams.setMargins(0, 10, 0, 0);
         et.setLayoutParams(layoutParams);
 
+        if(text != null) {
+            et.setText(text);
+        }
         et.setHint(R.string.layout_editor_notehint);
 
         layout_notelist.add(et);
@@ -760,7 +776,7 @@ public class EditorActivity extends AppCompatActivity {
         for (EditText et_note:
             layout_notelist) {
             //no need to add empty Notes
-            if (et_note.getText().toString().isEmpty())
+            if (et_note.getText().toString().trim().isEmpty())
                 continue;
 
             Notes curNote = new Notes();
@@ -775,7 +791,7 @@ public class EditorActivity extends AppCompatActivity {
      * @return isValid
      */
     private boolean verifyEvent() {
-        return !et_title.getText().toString().isEmpty();
+        return !et_title.getText().toString().trim().isEmpty();
     }
 
     @Override
