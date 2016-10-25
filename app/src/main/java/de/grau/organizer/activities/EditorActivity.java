@@ -97,6 +97,7 @@ public class EditorActivity extends AppCompatActivity {
     private Category mCategory;
     private int mPriority = 4;           //default value
     private Tag mTag;
+    private Action mAction;
     private boolean mEventtype;          // true = "Aufgabe", false = "Termin"
     private RealmList<Tag> mTagList;
     private RealmList<Notes> mNoteList;
@@ -671,11 +672,9 @@ public class EditorActivity extends AppCompatActivity {
                     Action action = new Action();
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
-                    realm_event.setAction(action);
+                    mAction = action;
                     break;
             }
-        } else {
-            //Log.e("MainActivity", "Failed to pick contact");
         }
     }
 
@@ -732,6 +731,9 @@ public class EditorActivity extends AppCompatActivity {
 
         //set category
         temp_event.setCategory(mCategory);
+
+        //set action
+        temp_event.setAction(mAction);
 
         if(realm_event == null) {
             //Save realm_event into Database
