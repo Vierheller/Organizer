@@ -171,9 +171,6 @@ public class EditorActivity extends AppCompatActivity {
         currentEndDate.set(Calendar.SECOND, 0);
         btn_pickDate_fin.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
 
-        //if(eventID == null)     //If create Mode
-          //  addNote(null);      //Add a single Note for better user experience.
-
         setupDialogsDateAndTime();
         setupDialogRememberTime();
         setupDialogPriority();
