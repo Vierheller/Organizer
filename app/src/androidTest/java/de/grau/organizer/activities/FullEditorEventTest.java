@@ -29,13 +29,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CreateCompleteEvent {
+public class FullEditorEventTest {
 
     @Rule
     public ActivityTestRule<TabActivity> mActivityTestRule = new ActivityTestRule<>(TabActivity.class);
 
     @Test
-    public void createCompleteEvent() {
+    public void fullEditorEventTest() {
         ViewInteraction floatingActionButton = onView(
                 allOf(withId(R.id.fab),
                         withParent(allOf(withId(R.id.main_content),
@@ -53,14 +53,22 @@ public class CreateCompleteEvent {
 
         ViewInteraction appCompatEditText2 = onView(
                 withId(R.id.editor_et_title));
-        appCompatEditText2.perform(scrollTo(), replaceText("Test Event"), closeSoftKeyboard());
+        appCompatEditText2.perform(scrollTo(), replaceText("Test"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText3 = onView(
                 withId(R.id.editor_description));
-        appCompatEditText3.perform(scrollTo(), replaceText("Test Description"), closeSoftKeyboard());
+        appCompatEditText3.perform(scrollTo(), replaceText("Test"), closeSoftKeyboard());
+
+        ViewInteraction switch_ = onView(
+                allOf(withId(R.id.sw_allDay), withText("Ganztägiges Ereignis    ")));
+        switch_.perform(scrollTo(), click());
+
+        ViewInteraction switch_2 = onView(
+                allOf(withId(R.id.sw_allDay), withText("Ganztägiges Ereignis    ")));
+        switch_2.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.editor_btn_pickdate), withText("18.10.2016")));
+                allOf(withId(R.id.editor_btn_pickdate)));
         appCompatButton.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton2 = onView(
@@ -71,18 +79,18 @@ public class CreateCompleteEvent {
         appCompatButton2.perform(click());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.editor_btn_picktime), withText("16:30 - 17:30")));
+                allOf(withId(R.id.editor_btn_picktime)));
         appCompatButton3.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton4 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        withParent(allOf(withClassName(is("android.widget.LinearLayout")),
-                                withParent(withClassName(is("android.widget.LinearLayout"))))),
+                allOf(withId(R.id.ok), withText("OK"),
+                        withParent(allOf(withId(R.id.done_background),
+                                withParent(withId(R.id.time_picker_dialog)))),
                         isDisplayed()));
         appCompatButton4.perform(click());
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.editor_btn_pickdate_fin), withText("18.10.2016"),
+                allOf(withId(R.id.editor_btn_pickdate_fin),
                         withParent(withId(R.id.layout_enddate))));
         appCompatButton5.perform(scrollTo(), click());
 
@@ -94,51 +102,61 @@ public class CreateCompleteEvent {
         appCompatButton6.perform(click());
 
         ViewInteraction appCompatButton7 = onView(
-                allOf(withId(R.id.editor_btn_picktime_fin), withText("16:30 - 17:30"),
+                allOf(withId(R.id.editor_btn_picktime_fin),
                         withParent(withId(R.id.layout_enddate))));
         appCompatButton7.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton8 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        withParent(allOf(withClassName(is("android.widget.LinearLayout")),
-                                withParent(withClassName(is("android.widget.LinearLayout"))))),
+                allOf(withId(R.id.ok), withText("OK"),
+                        withParent(allOf(withId(R.id.done_background),
+                                withParent(withId(R.id.time_picker_dialog)))),
                         isDisplayed()));
         appCompatButton8.perform(click());
 
         ViewInteraction appCompatButton9 = onView(
-                allOf(withId(R.id.editor_btn_picknotifydelay), withText("none")));
+                allOf(withId(R.id.editor_btn_category), withText("Allgemein")));
         appCompatButton9.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton10 = onView(
-                allOf(withId(R.id.dialog_numberpicker_accept), withText("Accept"), isDisplayed()));
-        appCompatButton10.perform(click());
-
-        ViewInteraction appCompatButton12 = onView(
-                allOf(withId(R.id.editor_btn_priority), withText("Priorität 4")));
-        appCompatButton12.perform(scrollTo(), click());
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.md_contentRecyclerView),
                         withParent(withId(R.id.md_contentListViewFrame)),
                         isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(2, click()));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction appCompatButton10 = onView(
+                allOf(withId(R.id.editor_btn_priority), withText("Priorität 4")));
+        appCompatButton10.perform(scrollTo(), click());
+
+        ViewInteraction recyclerView2 = onView(
+                allOf(withId(R.id.md_contentRecyclerView),
+                        withParent(withId(R.id.md_contentListViewFrame)),
+                        isDisplayed()));
+        recyclerView2.perform(actionOnItemAtPosition(1, click()));
+
+        ViewInteraction appCompatButton11 = onView(
+                allOf(withId(R.id.editor_btn_picknotifydelay), withText("none")));
+        appCompatButton11.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton12 = onView(
+                allOf(withId(R.id.dialog_numberpicker_accept), withText("Accept"), isDisplayed()));
+        appCompatButton12.perform(click());
+
+        ViewInteraction appCompatButton14 = onView(
+                allOf(withId(R.id.editor_btn_addnote), withText("Notiz hinzufügen")));
+        appCompatButton14.perform(scrollTo(), click());
 
         ViewInteraction editText = onView(
                 allOf(withClassName(is("android.widget.EditText")),
                         withParent(withId(R.id.editor_notecontainer))));
-        editText.perform(scrollTo(), replaceText("Test Notiz"), closeSoftKeyboard());
+        editText.perform(scrollTo(), replaceText("Test"), closeSoftKeyboard());
 
-        ViewInteraction appCompatButton13 = onView(
-                allOf(withId(R.id.editor_btn_addnote), withText("Notiz hinzufügen")));
-        appCompatButton13.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton14 = onView(
-                allOf(withId(R.id.editor_btn_tags), withText("Add Tag")));
-        appCompatButton14.perform(scrollTo(), click());
+        ViewInteraction appCompatButton15 = onView(
+                allOf(withId(R.id.editor_btn_tags_add)));
+        appCompatButton15.perform(scrollTo(), click());
 
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(android.R.id.input), isDisplayed()));
-        appCompatEditText4.perform(replaceText("Test Tag"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("Test"), closeSoftKeyboard());
 
         ViewInteraction mDButton2 = onView(
                 allOf(withId(R.id.md_buttonDefaultPositive), withText("OK"), isDisplayed()));

@@ -2,6 +2,7 @@ package de.grau.organizer.classes;
 
 import android.graphics.Color;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -58,6 +59,15 @@ public class Event extends RealmObject{
                 break;
         }
         return cal.get(calendarUnit);
+    }
+
+    /**
+     * Returns a short String representing a summary for this event
+     * @return summary of content
+     */
+    public String getShortSummary(){
+        SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        return this.name+" | "+this.category.getName()+"\r\n"+this.description+"\r\nStart:"+dt.format(this.start)+"\r\nEnde:"+dt.format(this.end);
     }
 
     /**

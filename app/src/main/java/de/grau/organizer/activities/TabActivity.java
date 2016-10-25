@@ -170,7 +170,8 @@ public class TabActivity extends AppCompatActivity {
 
             List<String> result = new ArrayList<>();
             for(Event e: mSearchResults){
-                result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+                //result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+                result.add(e.getShortSummary());
             }
 
             ShowSearchResults(result);
@@ -187,7 +188,9 @@ public class TabActivity extends AppCompatActivity {
             new MaterialDialog.Builder(this)
                     .title(R.string.search_title)
                     .items(searchResults)
+                    .iconRes(R.drawable.ic_search_black_24dp)
                     .titleColorRes(R.color.colorAccent)
+                    .dividerColorRes(R.color.colorPrimary)
                     //.backgroundColorRes(R.color.colorPrimary)
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override

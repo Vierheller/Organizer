@@ -366,7 +366,7 @@ public class EventsManagerRealm implements EventsManager {
 
         query.contains("name",search, Case.INSENSITIVE)
                 .or().contains("description",search,Case.INSENSITIVE)
-                .or().contains("category",search,Case.INSENSITIVE)
+                .or().contains("category.name",search,Case.INSENSITIVE)
                 .distinct("id");
 
         return query.findAllSorted("name");
