@@ -6,7 +6,8 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by ubuntu on 9/22/16.
+ * Represents a category
+ *
  */
 
 public class Tag extends RealmObject {
@@ -14,6 +15,11 @@ public class Tag extends RealmObject {
     private String id;
     private String name;
 
+    /**
+     * Default constructor
+     * Sets a unique id upon calling
+     * @param name
+     */
     public Tag(String name) {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
@@ -22,6 +28,10 @@ public class Tag extends RealmObject {
         this.name = name;
     }
 
+    /**
+     * Default constructor
+     * Sets a unique id upon calling
+     */
     public Tag() {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();

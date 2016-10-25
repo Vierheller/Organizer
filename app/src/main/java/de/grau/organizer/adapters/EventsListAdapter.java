@@ -19,7 +19,8 @@ import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
 
 /**
- * Created by Vierheller on 27.09.2016.
+ * Simple Adapter for event data, extends ArrayAdapter<Event>
+ * Adapter may be used to fill a list
  */
 
 public class EventsListAdapter extends ArrayAdapter<Event> {
@@ -33,6 +34,13 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         this.eventList = eventList;
     }
 
+    /**
+     * Default constructor for EventListAdapter
+     * List of events is set for this adapter instance
+     * @param context
+     * @param resource
+     * @param objects
+     */
     public EventsListAdapter(Context context, int resource, List<Event> objects) {
         super(context, resource, objects);
         this.eventList = objects;
@@ -43,6 +51,14 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         return eventList.size();
     }
 
+    /**
+     * Overridden getView
+     * Gets all ui Elements for the given rowLayout and sets the data corresponding to the selected event
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,9 +72,7 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         TextView category = (TextView) view.findViewById(R.id.eventlist_category);
         ImageView ivPriority = (ImageView) view.findViewById(R.id.eventlist_priority);
 
-        //ToDo check that we got everything correct here
-        //End date may be null?, category is not even possible to set
-        title.setText(event.getName()); //This is always present
+        title.setText(event.getName());
 
         start.setText("");
         if (event.getStart()!=null){
@@ -72,10 +86,7 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         if(event.getCategory() != null){
             category.setText(event.getCategory().getName());
         }
-
         ivPriority.setBackgroundColor(event.getPriorityColor());
-
         return view;
     }
-
 }
