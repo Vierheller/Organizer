@@ -4,6 +4,7 @@ package de.grau.organizer.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBar;
@@ -18,6 +20,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -42,11 +45,14 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity{
 
     private static EventsManager eventsManager = new EventsManagerRealm();
 
     public static final String DEBUG_TAG = SettingsActivity.class.getCanonicalName();
+
+    SharedPreferences sharedPref = null;
+
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -79,19 +85,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
-            } else if(preference instanceof EditTextPreference) {
-                if(preference.getKey().equals("pref_category_add_cat")) {  // Listener for Add Category
-                    createCategory(stringValue, preference.getContext());
-                    ((EditTextPreference) preference).setText("");
-                }
-                if(preference.getKey().equals("pref_category_delete_cat")) {
-                    // Fill the list
-                }
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
             }
+
+//            else if(preference instanceof EditTextPreference) {
+//                if(preference.getKey().equals("pref_category_add_cat")) {  // Listener for Add Category
+//                    createCategory(stringValue, preference.getContext());
+//                    ((EditTextPreference) preference).setText("");
+//                }
+//                if(preference.getKey().equals("pref_category_delete_cat")) {
+//                    // Fill the list
+//                }
+//            } else {
+//                // For all other preferences, set the summary to the value's
+//                // simple string representation.
+//                preference.setSummary(stringValue);
+//            }
             return true;
         }
     };
@@ -106,33 +114,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Creates a new Category in the Database
-    private static void createCategory(String category_name, Context context) {
-        eventsManager.open();
-        // Check if Category already exists
-        if(!category_name.trim().isEmpty() && eventsManager.getCategoryByName(category_name) == null) {
-            eventsManager.writeCategory(new Category(category_name));
-            Toast.makeText(context, "Category has been saved!", Toast.LENGTH_LONG).show();
-        }
-        eventsManager.close();
-    }
 
-    // Get List of all categorie names
-    private static List<String> getAllCategorieNames() {
-        final List<String> categorie_names;         // saves only category names
-        final List<Category> categories;            // saves the hole category
 
-        eventsManager.open();
-        categorie_names = new ArrayList<>();
-        categories = eventsManager.loadAllCategories();     // get all categories from DB
 
-        for(int i=0; i<categories.size(); i++) {
-            categorie_names.add(categories.get(i).getName());
-        }
-
-        eventsManager.close();
-        return categorie_names;
-    }
 
     // Delete a Categorie
     private static boolean deleteCategory(String categoryId) {
@@ -173,9 +157,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         setupActionBar();
     }
 
