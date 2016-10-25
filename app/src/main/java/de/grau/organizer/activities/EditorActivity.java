@@ -256,6 +256,11 @@ public class EditorActivity extends AppCompatActivity {
                 addNote(mNoteList.get(i).getText());
             }
 
+            // Set the action
+            mAction = realm_event.getAction();
+            if(mAction != null)
+                btn_chooseAction.setText(mAction.getData());
+
             //setting Buttontext to the Time from the Event, and not just the current one.
             if (!mEventtype) {
                 datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
@@ -673,6 +678,7 @@ public class EditorActivity extends AppCompatActivity {
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
                     mAction = action;
+                    btn_chooseAction.setText(mAction.getData());
                     break;
             }
         }
