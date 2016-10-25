@@ -13,10 +13,12 @@ import de.grau.organizer.classes.Tag;
 import io.realm.RealmResults;
 
 /**
- * Created by Vierheller on 27.09.2016.
+ * Interface for an EventsManager
+ * Used to abstract the actual EventsManager instance from a specific database
  */
 
 public interface EventsManager {
+
     List<Event> getEvents(Date startDate, Date endDate);
     List<Event> getEvents(Category category);
     List<Event> getEvents(int month,int year, int priority);

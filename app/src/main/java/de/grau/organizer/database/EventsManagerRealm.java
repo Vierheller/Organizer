@@ -28,6 +28,14 @@ import io.realm.Sort;
 public class EventsManagerRealm implements EventsManager {
     private Realm realm;
 
+    /**
+     * Retrieves a list of events where
+     * date of start is greater than startDate and smaller than endDate
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     @Override
     public List<Event> getEvents(Date startDate, Date endDate) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -41,6 +49,12 @@ public class EventsManagerRealm implements EventsManager {
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
 
+    /**
+     * Retrieves a List of event for given CalendarDay
+     * Used for retrieving List for a selected day in monthfragment
+     * @param calDate
+     * @return
+     */
     @Override
     public List<Event> getEvents(CalendarDay calDate) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -67,6 +81,14 @@ public class EventsManagerRealm implements EventsManager {
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
+
+    /**
+     * Retrieves a list of events where startdate
+     * lies in given year and month
+     * @param year
+     * @param month
+     * @return
+     */
     @Override
     public List<Event> getEvents(int year, int month){
         RealmQuery<Event> query = realm.where(Event.class);
@@ -97,7 +119,11 @@ public class EventsManagerRealm implements EventsManager {
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
 
-
+    /**
+     * Retrieves all events for a given category
+     * @param category
+     * @return
+     */
     @Override
     public List<Event> getEvents(Category category) {
         // Build the query looking at all users:
@@ -107,6 +133,15 @@ public class EventsManagerRealm implements EventsManager {
         return result;
     }
 
+    /**
+     * Retrieves a list of events where
+     * startDate lies in given month and year
+     * and priority equals given priority
+     * @param month
+     * @param year
+     * @param priority
+     * @return
+     */
     @Override
     public List<Event> getEvents(int month,int year, int priority) {
 
@@ -137,17 +172,32 @@ public class EventsManagerRealm implements EventsManager {
         return query;
     }
 
+    /**
+     * Returns a list of events for given list of tags
+     * @param tags
+     * @return
+     */
     @Override
     public List<Event> getEvents(List<Tag> tags) {
         return null;
     }
 
+    /**
+     * Returns a list of all events available in database
+     * For example used in retrieving data for ListFragment
+     * @return
+     */
     @Override
     public List<Event> getEvents() {
         RealmQuery<Event> query = realm.where(Event.class);
         return  query.findAll().sort("start");
     }
 
+    /**
+     * Returns RealmResults of all available events stored in database
+     * Those RealmResults are still activly bound to database and can be watched via Listener
+     * @return
+     */
     @Override
     public RealmResults<Event> getRealmEventList() {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -155,6 +205,12 @@ public class EventsManagerRealm implements EventsManager {
         return events;
     }
 
+    /**
+     * Returns a specific event via given eventID
+     * If no event was found null is returned
+     * @param eventId
+     * @return
+     */
     @Override
     public Event loadEvent(String eventId) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -163,6 +219,12 @@ public class EventsManagerRealm implements EventsManager {
         return result;
     }
 
+    /**
+     * Returns a RealmQuery containing all Category in database
+     * containing the given category
+     * @param category
+     * @return
+     */
     @Override
     public Category getCategoryByName(String category) {
         RealmQuery<Category> query = realm.where(Category.class);
@@ -170,14 +232,23 @@ public class EventsManagerRealm implements EventsManager {
         return query.findFirst();
     }
 
+    /**
+     * Returns a list of all categorys
+     * Sorted by name asc
+     * @return
+     */
     @Override
     public List<Category> loadAllCategories() {
-        List<Category> categories = new RealmList<Category>();
+        List<Category> categories = new RealmList<>();
         RealmQuery<Category> query = realm.where(Category.class);
         categories = query.findAllSorted("name", Sort.ASCENDING);
         return categories;
     }
 
+    /**
+     * Returns the default category "Allgemein"
+     * @return
+     */
     @Override
     public Category getDefaultCategory() {
         RealmQuery<Category> query = realm.where(Category.class);
@@ -185,6 +256,11 @@ public class EventsManagerRealm implements EventsManager {
         return query.findFirst();
     }
 
+    /**
+     * Removes a category for a given id
+     * @param categoryId
+     * @return
+     */
     @Override
     public boolean deleteCategory(String categoryId) {
         RealmQuery<Category> query = realm.where(Category.class);
@@ -200,6 +276,11 @@ public class EventsManagerRealm implements EventsManager {
         }
     }
 
+    /**
+     * Deletes an event from database for given id
+     * @param eventId
+     * @return
+     */
     @Override
     public boolean deleteEvent(String eventId) {
         RealmQuery<Event> query = realm.where(Event.class);
@@ -215,6 +296,10 @@ public class EventsManagerRealm implements EventsManager {
         }
     }
 
+    /**
+     * Writes the given event to database
+     * @param event
+     */
     @Override
     public void writeEvent(final Event event) {
         realm.beginTransaction();
@@ -222,6 +307,11 @@ public class EventsManagerRealm implements EventsManager {
         realm.commitTransaction();
     }
 
+    /**
+     * Updates the event specified by eventId with the data contained in event_data
+     * @param event_data
+     * @param eventId
+     */
     @Override
     public void updateEvent(Event event_data, String eventId) {
         realm.beginTransaction();
@@ -230,6 +320,10 @@ public class EventsManagerRealm implements EventsManager {
         realm.commitTransaction();
     }
 
+    /**
+     * Writes a given category to database
+     * @param category
+     */
     @Override
     public void writeCategory(final Category category) {
         realm.beginTransaction();
@@ -237,6 +331,12 @@ public class EventsManagerRealm implements EventsManager {
         realm.commitTransaction();
     }
 
+    /**
+     * Initializes database with given context
+     * This call is needed once in the lifecycle of the app
+     * There is no migration, changes to database leads to deletion of all present data
+     * @param context
+     */
     public static void init(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
         Realm.init(context);
@@ -244,21 +344,38 @@ public class EventsManagerRealm implements EventsManager {
         Realm.setDefaultConfiguration(config);
     }
 
+    /**
+     * Open the database
+     * Database needs to be open for any transaction
+     */
     @Override
     public void open() {
         this.realm = Realm.getDefaultInstance();
     }
 
 
+    /**
+     * Used to perform a search for events
+     * All events are returned where the field [name, description, category] contains given search string
+     * @param search
+     * @return
+     */
     @Override
     public List<Event> searchEvents(String search){
         RealmQuery<Event> query = realm.where(Event.class);
 
-        query.contains("name",search, Case.INSENSITIVE).or().contains("description",search,Case.INSENSITIVE).distinct("id");
+        query.contains("name",search, Case.INSENSITIVE)
+                .or().contains("description",search,Case.INSENSITIVE)
+                .or().contains("category",search,Case.INSENSITIVE)
+                .distinct("id");
 
         return query.findAllSorted("name");
     }
 
+    /**
+     * Closes the database
+     * All transactions are stopped
+     */
     @Override
     public void close() {
         realm.close();

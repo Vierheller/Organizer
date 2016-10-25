@@ -12,12 +12,20 @@ import java.util.Date;
 import de.grau.organizer.classes.Event;
 
 /**
- * Created by Vierheller on 10.10.2016.
+ * Handler class for Notification Alarm
+ * This class is able to set a notication as well as canceling it
+ *
  */
 
 public class NotificationAlarmHandler {
     public static final String DEBUG_TAG = NotificationBroadcastReceiver.class.getCanonicalName();
 
+    /**
+     * Static method to set a Notification for given event
+     * Notification time is selected using startDate an notifiaction time of given event
+     * @param activityContext
+     * @param event
+     */
     public static void setNotification(Context activityContext, Event event){
         AlarmManager alarmManager = (AlarmManager)activityContext.getSystemService(Context.ALARM_SERVICE);
 
@@ -38,6 +46,12 @@ public class NotificationAlarmHandler {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
+    /**
+     * Static method for canceling an existing notification
+     * Notifcation is canceled for given event data
+     * @param activityContext
+     * @param event
+     */
     public static void cancelNotification(Context activityContext, Event event) {
         AlarmManager alarmManager = (AlarmManager)activityContext.getSystemService(Context.ALARM_SERVICE);
 
@@ -49,6 +63,13 @@ public class NotificationAlarmHandler {
         alarmManager.cancel(pendingIntent);
     }
 
+    /**
+     * Static method for creating an intent based on an event
+     * intent has extra INTENT_PARAM_EVENT_ID with the value of the events id
+     * @param context
+     * @param event
+     * @return
+     */
     private static Intent createIntentByEvent(Context context, Event event){
         //Set an intent to define the target and set necessary parameters
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
@@ -56,6 +77,12 @@ public class NotificationAlarmHandler {
         return intent;
     }
 
+    /**
+     * Static method for updating a given intent
+     * @param context
+     * @param intent
+     * @return
+     */
     private static PendingIntent createPendingIntentWithIntent(Context context, Intent intent){
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }

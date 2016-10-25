@@ -14,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Attix on 9/22/16.
  * Base Class of an Event, it holds all needed Data to work with an particular Event
- * Both actions and notes are lists of RealmObjects (1..n)
+ * Both tags and notes are lists of RealmObjects (1..n)
  */
 
 
@@ -39,6 +39,14 @@ public class Event extends RealmObject{
     private boolean eventtype;      // true = Aufgabe, false = Event
 
     //example: getTime(DateTime.START, Calendar.YEAR)
+
+    /**
+     * Returns an integer representing the data field request
+     * Options are START and END and a given int from Calendar
+     * @param dateTime
+     * @param calendarUnit
+     * @return
+     */
     public int getTime(DateTime dateTime, int calendarUnit) {
         Calendar cal = Calendar.getInstance();
         switch (dateTime) {
@@ -52,6 +60,11 @@ public class Event extends RealmObject{
         return cal.get(calendarUnit);
     }
 
+    /**
+     * Returns a color for visual representing a priority of this event
+     * Range from 1 to 4 with default 4
+     * @return
+     */
     public int getPriorityColor() {
         switch (priority){
             case 4 : return Color.GRAY;
@@ -62,6 +75,10 @@ public class Event extends RealmObject{
         }
     }
 
+    /**
+     * Default constructor for an Event
+     * Upon calling this constructor an unique id as well as default values are set
+     */
     public Event(){
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
@@ -69,6 +86,9 @@ public class Event extends RealmObject{
         setDefaultValues();
     }
 
+    /**
+     * Sets default values for an event, used in constructor
+     */
     private void setDefaultValues() {
         this.notes = new RealmList<Notes>();
         this.priority = 4;      // default value
