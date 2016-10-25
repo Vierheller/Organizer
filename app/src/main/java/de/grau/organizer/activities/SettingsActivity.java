@@ -114,19 +114,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
-    // Delete a Categorie
-    private static boolean deleteCategory(String categoryId) {
-        boolean return_value;
-        eventsManager.open();
-        return_value = eventsManager.deleteCategory(categoryId);
-        eventsManager.close();
-        return return_value;
-    }
-
     /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
