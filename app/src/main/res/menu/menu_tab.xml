@@ -13,4 +13,6 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item android:title="Erzeuge Testevents"
+        android:id="@+id/action_test_events" />
 </menu>
