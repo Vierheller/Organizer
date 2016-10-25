@@ -91,7 +91,7 @@ public class WeekFragment extends Fragment {
         mActivity = (TabActivity) getActivity();
     }
 
-    
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,11 +100,10 @@ public class WeekFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_week, container, false);
         mWeekDays = (LinearLayout) view.findViewById(R.id.week_view_days);
         mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
-        mWeekDays.setBackgroundColor(Color.RED);
-        mWeekTime.setBackgroundColor(Color.GREEN);
 
         mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
 //        mWeekView.setStaticEvent();
+        mWeekView.drawHorizontalSpaces();
         setupWeek();
 
         return view;
@@ -220,6 +219,7 @@ public class WeekFragment extends Fragment {
 class EventWeekView extends RelativeLayout {
 
 
+
     public static final String DEBUG_TAG = EventWeekView.class.getCanonicalName();
 
     public EventWeekView(Context context) {
@@ -248,36 +248,46 @@ class EventWeekView extends RelativeLayout {
         this.addView(week_view, params);
     }
 
+    int mHeight = 510;
 
     public void setupEvents(List<Event> events) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        int width = metrics.widthPixels;
+        //this.setBackgroundColor(Color.GREEN);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        float density = metrics.density;
+        Log.d(DEBUG_TAG, "Density: " + density);
+
+        int width = metrics.widthPixels-(int)(50*density);
 //        int width = this.getWidth();
-        Log.d(DEBUG_TAG, width + "");
-        int height = metrics.heightPixels;;
+
+        Log.d(DEBUG_TAG, "Width: " + width);
+        double eHeight = mHeight*density;
+
 //        int height = this.getHeight();
-        Log.d(DEBUG_TAG, height + "");
+        Log.d(DEBUG_TAG, "Height: " + eHeight);
 
         for (Event event: events) {
             Log.d(DEBUG_TAG, "Adding: " + event);
-            int day = event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) - 1;
+            //returns: Sun: 1, Mon: 2, ...
+            //We want Mon: 0, ..., Sun: 6 so we calc day+5 % 7
+            int day = (event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) + 5) % 7;
             int startHour = event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY);
             int startMinute = event.getTime(Event.DateTime.START, Calendar.MINUTE);
+            Log.d(DEBUG_TAG, "startHour: "  + startHour + " startMinute: " + startMinute);
 
             //the time in between every event:
-            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.HOURS);
-            Log.d(DEBUG_TAG, "day: "  +day);
+            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.MINUTES);
+            Log.d(DEBUG_TAG, "day: "  + day + " duration: " + duration);
 
             //there are 7 days so the width of one event should be equal to a day
             //the height equals the height of the view / 24 (hours per day) times the time of the event
-            int eventWidth = width/7;
-            int eventHeight = (int)height/24*(int)duration;
-            if (eventHeight < 100) {
-                eventHeight = 100;
+            int eventWidth = width/7 - (int)(2*density);
+            int eventHeight = (int)((eHeight/(24*60))*(duration));
+            if (eventHeight < 35) {
+                eventHeight = 35;
             }
-            int leftMargin = day*eventWidth;
-            int topMargin = (int)pixelToDp(WeekFragment.HOUR_HEIGHT * 3 * startHour + (WeekFragment.HOUR_HEIGHT * 3 /60)*startMinute);//(height/24*startHour + height/(24*60)*startMinute);
-            Log.d(DEBUG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
+            int leftMargin = day*(width/7) + (int)density;
+            int topMargin = (int)((eHeight/24) * (startHour) + ((eHeight/(24*60))*startMinute)); //(height/24)*startHour + (height/(24*60))*startMinute;
+            Log.d(DEBUG_TAG, "event Width: " + eventWidth + " event Height: " + eventHeight + " left Margin: " + leftMargin + " top Margin: " + topMargin);
 
 
             WeekViewEvent week_view = new WeekViewEvent(this.getContext(),event);
@@ -290,6 +300,26 @@ class EventWeekView extends RelativeLayout {
         }
     }
 
+    public void drawHorizontalSpaces() {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        float density = metrics.density;
+        double eHeight = (mHeight*density)/24;
+        Log.d(DEBUG_TAG, "eHeight: " + eHeight);
+        for (int x = 0; x<24;x++) {
+            View v = new View(this.getContext());
+            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+            params.topMargin = (int) (eHeight*x);
+            v.setBackgroundColor(Color.parseColor("#B3B3B3"));
+            this.addView(v, params);
+        }
+        View v = new View(this.getContext());
+        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+        Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*24));
+        params.topMargin = (int) ((24*eHeight) - (2*density));
+        v.setBackgroundColor(Color.BLACK);
+        this.addView(v, params);
+    }
+
     /**
      * Get a diff between two dates
      * @param date1 the oldest date
@@ -299,13 +329,6 @@ class EventWeekView extends RelativeLayout {
      */
     public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
-    }
-
-    private float pixelToDp(int pixel){
-        Resources resources = getContext().getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = pixel / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return pixel;
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 }

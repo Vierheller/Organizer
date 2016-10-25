@@ -1,5 +1,6 @@
 package de.grau.organizer.activities;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.fragments.WeekFragment;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -77,8 +79,6 @@ public class TabActivity extends AppCompatActivity {
 
 
     }
-
-
 
     public void setupFragements() {
         // Create the adapter that will return a fragment for each of the three
@@ -227,7 +227,6 @@ public class TabActivity extends AppCompatActivity {
                 searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

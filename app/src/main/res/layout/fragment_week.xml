@@ -7,14 +7,34 @@
     tools:context="de.grau.organizer.fragments.WeekFragment">
 
 
-    <de.grau.organizer.fragments.EventWeekView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
-        android:id="@+id/event_week_view">
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:layout_gravity="fill">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="fill"
+            android:paddingBottom="?android:attr/actionBarSize">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="50dp"
+                android:layout_height="550dp"
+                android:id="@+id/week_view_time"
+                android:layout_gravity="fill"></LinearLayout>
 
-    </de.grau.organizer.fragments.EventWeekView>
+            <de.grau.organizer.fragments.EventWeekView
+                android:layout_width="match_parent"
+                android:layout_height="510dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/event_week_view">
+
+            </de.grau.organizer.fragments.EventWeekView>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -22,14 +42,6 @@
         android:layout_height="50dp"
         android:layout_marginLeft="50dp"
         android:id="@+id/week_view_days">
-
-
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:id="@+id/week_view_time"></LinearLayout>
 </FrameLayout>
