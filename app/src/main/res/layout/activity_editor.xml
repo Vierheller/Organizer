@@ -59,7 +59,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="1">
 
             <EditText
                 android:id="@+id/editor_et_title"
@@ -216,27 +217,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"/>
 
-            <TextView
-                android:text="No Tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/editor_tags" />
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <TextView
+                    android:text="No Tags"
+                    android:layout_width="257dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/editor_tags" />
+
                 <Button
-                    android:drawableLeft="@drawable/ic_add_tag"
-                    android:text="Add Tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_tags"
+                    android:id="@+id/editor_btn_tags_delete"
+                    android:layout_weight="1"
+                    android:drawableStart="@android:drawable/ic_menu_delete"
+                    android:elevation="0dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_tags_add"
+                    android:drawableStart="@drawable/ic_add_white_24dp"
                     android:layout_weight="1" />
-
-
-
             </LinearLayout>
 
 

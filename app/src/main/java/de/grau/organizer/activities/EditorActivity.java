@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -63,7 +62,8 @@ public class EditorActivity extends AppCompatActivity {
     private Button btn_chooseAction;
     private Button btn_pickNotifyDelay;
     private Button btn_priority;
-    private Button btn_tag;
+    private Button btn_tag_add;
+    private Button btn_tag_delete;
     private Button btn_category;
     private Switch sw_allDay;
     private LinearLayout layout_enddate;
@@ -78,7 +78,8 @@ public class EditorActivity extends AppCompatActivity {
     private TimePickerDialog timeEndPickerDialog;
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
-    private MaterialDialog tagDialog;
+    private MaterialDialog tagAddDialog;
+    private MaterialDialog tagDeleteDialog;
     private MaterialDialog categoryDialog;
 
     //VALUES
@@ -153,7 +154,8 @@ public class EditorActivity extends AppCompatActivity {
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
-        btn_tag =               (Button) findViewById(R.id.editor_btn_tags);
+        btn_tag_add =           (Button) findViewById(R.id.editor_btn_tags_add);
+        btn_tag_delete =        (Button) findViewById(R.id.editor_btn_tags_delete);
         btn_category =          (Button) findViewById(R.id.editor_btn_category);
         btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
@@ -172,10 +174,14 @@ public class EditorActivity extends AppCompatActivity {
         currentEndDate.set(Calendar.SECOND, 0);
         btn_pickDate_fin.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
 
+        tv_tags.setHint("No Tags");
+
+        // setupDialogs
         setupDialogsDateAndTime();
         setupDialogRememberTime();
         setupDialogPriority();
-        setupDialogTag();
+        setupDialogAddTag();
+
         setupListeners();
         setPriorityButton(4);           // set default priority
         setCategoryButton(null);        // set default category
@@ -359,9 +365,39 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void setupDialogTag() {
+    private void setupDialogDeleteTag() {
+            List<String> items = new ArrayList<String>();
+
+            for (int i=0; i<mTagList.size(); i++) {       // Generate itemlist for dialog
+                items.add(mTagList.get(i).getName());
+            }
+
+            tagDeleteDialog = new MaterialDialog.Builder(this)
+                    .title("Delete Tag")
+                    .content("Choose the Tags you want to delete.")
+                    .items(items)
+                    .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            for (int i=0; i<mTagList.size(); i++) {         // Loop over all existing Tags
+                                for (int j=0; j<text.length; j++) {         // Loop over the Tags which we want to delete
+                                    if(mTagList.get(i).getName().equals(text[j])) {
+                                        mTagList.remove(i);
+                                    }
+                                }
+                            }
+                            setTagTextLine();       // Refresh TextView for Tags
+                            return true;
+                        }
+                    })
+                    .negativeText("Cancel")
+                    .positiveText("OK")
+                    .build();
+    }
+
+    private void setupDialogAddTag() {
         mTagList = new RealmList<>();
-        tagDialog = new MaterialDialog.Builder(this)
+        tagAddDialog = new MaterialDialog.Builder(this)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .title("Add Tag")
                 .content("Please insert a tag.")
@@ -584,10 +620,22 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
 
-        btn_tag.setOnClickListener(new View.OnClickListener() {
+        btn_tag_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tagDialog.show();
+                tagAddDialog.show();
+            }
+        });
+
+        btn_tag_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mTagList != null && mTagList.size() > 0) {           // If Taglist is empty
+                    setupDialogDeleteTag();         // Refresh the item-list
+                    tagDeleteDialog.show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"Event doesn't have any Tag.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

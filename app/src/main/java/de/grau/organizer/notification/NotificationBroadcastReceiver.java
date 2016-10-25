@@ -32,6 +32,14 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     public static final String INTENT_PARAM_EVENT_ID = "param_title";
     public static final int NOTIFICATION_ORGANIZER_ID = 381237;
     EventsManager eventsManager;
+
+    /**
+     * Handles the intent received
+     * Tries to load the event based on eventId from given intent
+     * If event is found, notifys the NotificationManager with given event
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(DEBUG_TAG, "Received Notification request");
@@ -50,6 +58,13 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         notificationManager.notify(NOTIFICATION_ORGANIZER_ID, notification);
     }
 
+    /**
+     * Method for building a notfication
+     * Uses given event data to create a notifcation to the user
+     * @param context
+     * @param event
+     * @return
+     */
     private Notification buildNotification(Context context, Event event){
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
