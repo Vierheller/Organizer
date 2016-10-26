@@ -41,10 +41,10 @@ public class EventsManagerRealm implements EventsManager {
         RealmQuery<Event> query = realm.where(Event.class);
 
         Log.d("database", startDate.toString());
-        Log.d("db", "hi");
 
         query.greaterThan("start", startDate);
         query.lessThan("start", endDate);
+        query.equalTo("eventtype", false); //event
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }

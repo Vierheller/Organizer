@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -95,7 +96,8 @@ public class WeekFragment extends Fragment {
         mActivity = (TabActivity) getActivity();
     }
 
-
+    private Button mLeftDecrementButton;
+    private Button mRightIncrementButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,6 +107,23 @@ public class WeekFragment extends Fragment {
         mWeekDays = (LinearLayout) view.findViewById(R.id.week_view_days);
         mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
         mScrollView = (ScrollView) view.findViewById(R.id.week_fragment_scroll);
+
+        mLeftDecrementButton = (Button) view.findViewById(R.id.left_decrement_week_button);
+        mRightIncrementButton = (Button) view.findViewById(R.id.right_increment_week_button);
+
+        mLeftDecrementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCalendarWeek(-1);
+            }
+        });
+
+        mRightIncrementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCalendarWeek(1);
+            }
+        });
 
         mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
 //        mWeekView.setStaticEvent();
@@ -172,25 +191,37 @@ public class WeekFragment extends Fragment {
         mWeekTime.setWeightSum(times.size());
     }
 
-    private void setupWeekView() {
-        Calendar calStart = GregorianCalendar.getInstance(Locale.GERMANY);
-        calStart.setFirstDayOfWeek(Calendar.MONDAY);
-        calStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        calStart.set(Calendar.HOUR_OF_DAY, calStart.getActualMinimum(Calendar.HOUR_OF_DAY));
-        calStart.set(Calendar.MINUTE, calStart.getActualMinimum(Calendar.MINUTE));
-        calStart.set(Calendar.SECOND, calStart.getActualMinimum(Calendar.SECOND));
+    private Calendar mCalStart;
+    private Calendar mCalEnd;
 
-        Calendar calEnd = GregorianCalendar.getInstance(Locale.GERMANY);
-        calEnd.setFirstDayOfWeek(Calendar.MONDAY);
-        calEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calEnd.set(Calendar.HOUR_OF_DAY, calEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
-        calEnd.set(Calendar.MINUTE, calEnd.getActualMaximum(Calendar.MINUTE));
-        calEnd.set(Calendar.SECOND, calEnd.getActualMaximum(Calendar.SECOND));
+    private void setCalendar() {
+        mCalStart = GregorianCalendar.getInstance(Locale.GERMANY);
+        mCalStart.setFirstDayOfWeek(Calendar.MONDAY);
+        mCalStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        mCalStart.set(Calendar.HOUR_OF_DAY, mCalStart.getActualMinimum(Calendar.HOUR_OF_DAY));
+        mCalStart.set(Calendar.MINUTE, mCalStart.getActualMinimum(Calendar.MINUTE));
+        mCalStart.set(Calendar.SECOND, mCalStart.getActualMinimum(Calendar.SECOND));
 
-        List<Event> events = mActivity.eventsManager.getEvents(calStart.getTime(), calEnd.getTime());
+        mCalEnd = GregorianCalendar.getInstance(Locale.GERMANY);
+        mCalEnd.setFirstDayOfWeek(Calendar.MONDAY);
+        mCalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        mCalEnd.set(Calendar.HOUR_OF_DAY, mCalEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
+        mCalEnd.set(Calendar.MINUTE, mCalEnd.getActualMaximum(Calendar.MINUTE));
+        mCalEnd.set(Calendar.SECOND, mCalEnd.getActualMaximum(Calendar.SECOND));
+    }
 
+    private void changeCalendarWeek(int weeks) {
+        mCalStart.add(Calendar.WEEK_OF_YEAR, weeks);
+        mCalEnd.add(Calendar.WEEK_OF_YEAR, weeks);
+
+        List<Event> events = mActivity.eventsManager.getEvents(mCalStart.getTime(), mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
         mWeekView.setupEvents(events);
+    }
+
+    private void setupWeekView() {
+        setCalendar();
+        changeCalendarWeek(0);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -237,8 +268,6 @@ public class WeekFragment extends Fragment {
 }
 class EventWeekView extends RelativeLayout {
 
-
-
     public static final String DEBUG_TAG = EventWeekView.class.getCanonicalName();
 
     public EventWeekView(Context context) {
@@ -267,10 +296,18 @@ class EventWeekView extends RelativeLayout {
         this.addView(week_view, params);
     }
 
-    int mHeight = 510;
+    private int mHeight = 510;
+    private ArrayList<WeekViewEvent> eventViews = new ArrayList<>();
+
+    private void removeOldEventViews() {
+        for (WeekViewEvent eventView : eventViews) {
+            this.removeView(eventView);
+        }
+        eventViews.clear();
+    }
 
     public void setupEvents(List<Event> events) {
-        //this.setBackgroundColor(Color.GREEN);
+        removeOldEventViews();
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
         Log.d(DEBUG_TAG, "Density: " + density);
@@ -309,13 +346,14 @@ class EventWeekView extends RelativeLayout {
             Log.d(DEBUG_TAG, "event Width: " + eventWidth + " event Height: " + eventHeight + " left Margin: " + leftMargin + " top Margin: " + topMargin);
 
 
-            WeekViewEvent week_view = new WeekViewEvent(this.getContext(),event);
-            week_view.setBackgroundColor(event.getPriorityColor());
-            week_view.fillGui(event);
+            WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
+            eventView.setBackgroundColor(event.getPriorityColor());
+            eventView.fillGui(event);
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
             params.topMargin = topMargin;
-            this.addView(week_view, params);
+            eventViews.add(eventView);
+            this.addView(eventView, params);
         }
     }
 
