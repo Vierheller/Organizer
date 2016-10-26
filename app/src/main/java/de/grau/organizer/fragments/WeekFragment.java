@@ -62,6 +62,7 @@ public class WeekFragment extends Fragment {
     private LinearLayout mWeekDays;
     private LinearLayout mWeekTime;
     private ScrollView mScrollView;
+    private TextView mWeekInfoTextView;
 
     private TabActivity mActivity;
     public WeekFragment() {
@@ -110,6 +111,7 @@ public class WeekFragment extends Fragment {
 
         mLeftDecrementButton = (Button) view.findViewById(R.id.left_decrement_week_button);
         mRightIncrementButton = (Button) view.findViewById(R.id.right_increment_week_button);
+        mWeekInfoTextView = (TextView) view.findViewById(R.id.week_info_text_view);
 
         mLeftDecrementButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +218,7 @@ public class WeekFragment extends Fragment {
 
         List<Event> events = mActivity.eventsManager.getEvents(mCalStart.getTime(), mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
+        mWeekInfoTextView.setText("Week: " + mCalStart.get(Calendar.WEEK_OF_YEAR));
         mWeekView.setupEvents(events);
     }
 
@@ -338,8 +341,8 @@ class EventWeekView extends RelativeLayout {
             //the height equals the height of the view / 24 (hours per day) times the time of the event
             int eventWidth = width/7 - (int)(2*density);
             int eventHeight = (int)((eHeight/(24*60))*(duration));
-            if (eventHeight < 35) {
-                eventHeight = 35;
+            if (eventHeight < 45) {
+                eventHeight = 45;
             }
             int leftMargin = day*(width/7) + (int)density;
             int topMargin = (int)((eHeight/24) * (startHour) + ((eHeight/(24*60))*startMinute)); //(height/24)*startHour + (height/(24*60))*startMinute;
@@ -362,19 +365,47 @@ class EventWeekView extends RelativeLayout {
         float density = metrics.density;
         double eHeight = (mHeight*density)/24;
         Log.d(DEBUG_TAG, "eHeight: " + eHeight);
-        for (int x = 0; x<24;x++) {
+        for (int x = 1; x<24;x++) {
             View v = new View(this.getContext());
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
             params.topMargin = (int) (eHeight*x);
             v.setBackgroundColor(Color.parseColor("#B3B3B3"));
             this.addView(v, params);
         }
-        View v = new View(this.getContext());
-        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+
+        View topView = new View(this.getContext());
+        EventWeekView.LayoutParams paramsTop = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+        Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*0));
+        paramsTop.topMargin = (int) (0*eHeight);
+        topView.setBackgroundColor(Color.BLACK);
+        this.addView(topView, paramsTop);
+
+        View bottomView = new View(this.getContext());
+        EventWeekView.LayoutParams paramsBot = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
         Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*24));
-        params.topMargin = (int) ((24*eHeight) - (2*density));
-        v.setBackgroundColor(Color.BLACK);
-        this.addView(v, params);
+        paramsBot.topMargin = (int) ((24*eHeight) - (2*density));
+        bottomView.setBackgroundColor(Color.BLACK);
+        this.addView(bottomView, paramsBot);
+
+        currentTimeHorizon();
+    }
+
+    private View mCurrentHorizon;
+
+    private void currentTimeHorizon() {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        float density = metrics.density;
+        double eHeight = (mHeight*density)/24;
+        Calendar cal = Calendar.getInstance();
+        int curMinutes = (int) (cal.get(Calendar.MINUTE));
+        int curHours = (int) (cal.get(Calendar.HOUR_OF_DAY));
+
+        Log.d(DEBUG_TAG, "curMin: " + curMinutes + " curHours: " + curHours);
+        View mCurrentHorizon = new View(this.getContext());
+        EventWeekView.LayoutParams paramsCur = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+        paramsCur.topMargin = (int) ((curHours*eHeight + curMinutes*(eHeight/60)));
+        mCurrentHorizon.setBackgroundColor(Color.MAGENTA);
+        this.addView(mCurrentHorizon, paramsCur);
     }
 
     /**

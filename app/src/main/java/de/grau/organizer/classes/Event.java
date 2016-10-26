@@ -78,11 +78,11 @@ public class Event extends RealmObject{
      */
     public int getPriorityColor() {
         switch (priority){
-            case 4 : return Color.GRAY;
+            case 4 : return Color.parseColor("#3399FF");
             case 3 : return Color.GREEN;
             case 2 : return Color.YELLOW;
             case 1 : return Color.RED;
-            default : return Color.GRAY;
+            default : return Color.BLUE;
         }
     }
 
