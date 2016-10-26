@@ -129,9 +129,6 @@ public class EditorActivity extends AppCompatActivity {
         // check intent for eventID and eventtype
         checkIntent(getIntent(), savedInstanceState);
 
-        // Initialize the default Categories
-        generateDefaultCategories();
-
         // This method references every necessary GUI-Element
         initializeGUI();
 
@@ -181,7 +178,6 @@ public class EditorActivity extends AppCompatActivity {
         setupDialogRememberTime();
         setupDialogPriority();
         setupDialogAddTag();
-
         setupListeners();
         setPriorityButton(4);           // set default priority
         setCategoryButton(null);        // set default category
@@ -210,20 +206,6 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-    }
-
-    // Save the default Categories in Realm
-    private void generateDefaultCategories() {
-        if (eventsManager.getDefaultCategory() == null)  {        // should only be true at the first run of the app
-            saveCategory("Allgemein");      // sample value
-            saveCategory("Freizeit");       // sample value
-            saveCategory("Arbeit");         // sample value
-        }
-    }
-
-    private void saveCategory(String name) {
-        mCategory = new Category(name);
-        eventsManager.writeCategory(mCategory);
     }
 
     private void checkEditorMode() {
@@ -420,6 +402,12 @@ public class EditorActivity extends AppCompatActivity {
 
         categorie_names = new ArrayList<>();
         categories = eventsManager.loadAllCategories();     // get all categories from DB
+
+        if(categories.size()>0){
+            mCategory = categories.get(0);
+        }else{
+
+        }
 
         for(int i=0; i<categories.size(); i++) {
             categorie_names.add(categories.get(i).getName());

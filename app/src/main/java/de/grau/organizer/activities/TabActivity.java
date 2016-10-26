@@ -78,7 +78,10 @@ public class TabActivity extends AppCompatActivity {
         handleIntent(intent);
 
 
+
     }
+
+
 
     public void setupFragements() {
         // Create the adapter that will return a fragment for each of the three
