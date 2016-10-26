@@ -185,6 +185,15 @@ public class ListFragment extends Fragment {
         }*/
     }
 
+    /*
+    * Refreshs the ListFragment
+    */
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
