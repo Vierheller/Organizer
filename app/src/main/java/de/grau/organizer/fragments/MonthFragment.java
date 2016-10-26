@@ -138,7 +138,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         selectDate(CalendarDay.from(Calendar.getInstance()));
 
         setupOnClickListeners();
-        
+
         return view;
     }
 
