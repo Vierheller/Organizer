@@ -14,7 +14,7 @@
             android:layout_height="25dp"
             android:layout_margin="5dp"
             android:id="@+id/eventlist_priority"
-            android:background="@drawable/ic_action_save" />
+            android:background="@drawable/ic_action_save_24dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"

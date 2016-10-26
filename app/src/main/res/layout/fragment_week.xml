@@ -14,7 +14,7 @@
         android:weightSum="7">
 
         <Button
-            android:background="@drawable/ic_week_back"
+            android:background="@drawable/ic_arrow_back_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/left_decrement_week_button"
@@ -33,7 +33,7 @@
 
         <Button
             android:layout_alignParentRight="true"
-            android:background="@drawable/ic_week_forward"
+            android:background="@drawable/ic_arrow_forward_black_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/right_increment_week_button"

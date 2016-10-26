@@ -24,7 +24,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_action_cancel"
+                app:srcCompat="@drawable/ic_cancel_black_24dp"
                 android:id="@+id/editor_toolbar_cancel"
                 android:background="@color/colorPrimary"
                />
@@ -40,7 +40,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_action_save"
+                app:srcCompat="@drawable/ic_action_save_24dp"
                 android:id="@+id/editor_toolbar_save"
                 android:background="@color/colorPrimary"
                 android:layout_marginEnd="20dp"
@@ -98,7 +98,7 @@
                 android:layout_marginTop="10dp">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_event_date"
+                    android:drawableLeft="@drawable/ic_event_date_24dp"
                     android:drawablePadding="20dp"
                     android:id="@+id/editor_btn_pickdate"
                     android:text="@string/datepickPreview"
@@ -120,7 +120,7 @@
                 android:layout_height="40dp">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_event_date_reverse"
+                    android:drawableLeft="@drawable/ic_event_date_reverse_24dp"
                     android:drawablePadding="20dp"
                     android:id="@+id/editor_btn_pickdate_fin"
                     android:text="@string/datepickPreview"
@@ -154,7 +154,7 @@
                     android:drawableLeft="?android:attr/actionModePasteDrawable" />
 
                 <Button
-                    android:drawableLeft="@drawable/ic_priority"
+                    android:drawableLeft="@drawable/ic_priority_24dp"
                     android:text="@string/editor_btn_priority"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_priority"
@@ -175,7 +175,7 @@
                 android:layout_marginTop="5dp">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_add_notification"
+                    android:drawableLeft="@drawable/ic_notification_24dp"
                     android:id="@+id/editor_btn_picknotifydelay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                     android:text="@string/editor_btn_picknotifydelay" />
 
                 <Button
-                    android:drawableLeft="@drawable/ic_action_phone"
+                    android:drawableLeft="@drawable/ic_action_phone_24dp"
                     android:text="@string/editor_btn_chooseaction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -220,14 +220,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_tags_delete"
                     android:layout_weight="1"
-                    android:drawableStart="@android:drawable/ic_menu_delete"
+                    android:background="@drawable/ic_delete_black_24dp"
                     android:elevation="0dp" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_tags_add"
-                    android:drawableStart="@android:drawable/ic_menu_add"
+                    android:background="@drawable/ic_add_circle_black_24dp"
                     android:layout_weight="1" />
 
             </LinearLayout>
@@ -238,7 +238,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:drawableLeft="@drawable/ic_add_note"
+                    android:drawableLeft="@drawable/ic_node_add_black_24dp"
                     android:text="@string/layout_button_addNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
