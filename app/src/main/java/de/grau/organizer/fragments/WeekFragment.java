@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -100,8 +102,8 @@ public class WeekFragment extends Fragment {
         mActivity = (TabActivity) getActivity();
     }
 
-    private Button mLeftDecrementButton;
-    private Button mRightIncrementButton;
+    private ImageButton mLeftDecrementButton;
+    private ImageButton mRightIncrementButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,8 +114,8 @@ public class WeekFragment extends Fragment {
         mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
         mScrollView = (ScrollView) view.findViewById(R.id.week_fragment_scroll);
 
-        mLeftDecrementButton = (Button) view.findViewById(R.id.left_decrement_week_button);
-        mRightIncrementButton = (Button) view.findViewById(R.id.right_increment_week_button);
+        mLeftDecrementButton = (ImageButton) view.findViewById(R.id.left_decrement_week_button);
+        mRightIncrementButton = (ImageButton) view.findViewById(R.id.right_increment_week_button);
         mWeekInfoTextView = (TextView) view.findViewById(R.id.week_info_text_view);
 
         mLeftDecrementButton.setOnClickListener(new View.OnClickListener() {
