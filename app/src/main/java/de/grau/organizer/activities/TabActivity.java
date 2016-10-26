@@ -211,7 +211,7 @@ public class TabActivity extends AppCompatActivity {
                             Log.d(DEBUG_TAG,"Search dialog was canceled");
                         }
                     })
-                    .positiveText(R.string.close)
+                    .positiveText(R.string.search_schließen)
                     .show();
         } else{
             Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();

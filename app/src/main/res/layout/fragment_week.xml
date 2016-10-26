@@ -7,25 +7,24 @@
     tools:context="de.grau.organizer.fragments.WeekFragment">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="40dp">
 
         <Button
-            android:text="left"
+            android:background="@drawable/ic_week_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:id="@+id/left_decrement_week_button"/>
 
         <Button
-            android:text="right"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_week_forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:id="@+id/right_increment_week_button"/>
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"
