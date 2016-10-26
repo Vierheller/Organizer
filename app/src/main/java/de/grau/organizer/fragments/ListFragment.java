@@ -186,7 +186,7 @@ public class ListFragment extends Fragment {
     }
 
     /*
-    * Refreshs the ListFragment
+    * Refresh the ListFragment
     */
     @Override
     public void onResume() {
