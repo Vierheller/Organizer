@@ -86,20 +86,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
                 }
 
             }
-
-//            else if(preference instanceof EditTextPreference) {
-//                if(preference.getKey().equals("pref_category_add_cat")) {  // Listener for Add Category
-//                    createCategory(stringValue, preference.getContext());
-//                    ((EditTextPreference) preference).setText("");
-//                }
-//                if(preference.getKey().equals("pref_category_delete_cat")) {
-//                    // Fill the list
-//                }
-//            } else {
-//                // For all other preferences, set the summary to the value's
-//                // simple string representation.
-//                preference.setSummary(stringValue);
-//            }
             return true;
         }
     };

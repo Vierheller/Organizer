@@ -187,7 +187,7 @@
                     android:text="@string/editor_btn_chooseaction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.54"
                     android:id="@+id/editor_btn_chooseaction" />
 
             </LinearLayout>
@@ -199,19 +199,6 @@
                 android:id="@+id/editor_notecontainer">
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:drawableLeft="@drawable/ic_add_note"
-                    android:text="@string/layout_button_addNote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_addnote"
-                    android:layout_marginTop="10dp" />
-            </LinearLayout>
             <View
                 android:background="@drawable/divider_horizontal"
                 android:layout_width="match_parent"
@@ -240,8 +227,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_tags_add"
-                    android:drawableStart="@drawable/ic_add_white_24dp"
+                    android:drawableStart="@android:drawable/ic_menu_add"
                     android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:drawableLeft="@drawable/ic_add_note"
+                    android:text="@string/layout_button_addNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_addnote"
+                    android:layout_marginTop="10dp" />
             </LinearLayout>
 
 
