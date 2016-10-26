@@ -80,7 +80,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         //large Image for notification
-        Bitmap largeIconBM = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_event_date);
+        Bitmap largeIconBM = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_event_date_24dp);
 
         //building actual Notification
         Notification.Builder notificationBuilder = new Notification.Builder(context)

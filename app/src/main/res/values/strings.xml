@@ -19,7 +19,7 @@
     <string name="layout_editor_notehint">Notiz</string>
     <string name="layout_editor_rememberlable">Benachrichtigungszeit</string>
     <string name="timePreset">12:00</string>
-    <string name="editor_btn_picknotifydelay">Keins</string>
+    <string name="editor_btn_picknotifydelay">Keine</string>
     <string name="editor_btn_chooseaction">Aktion hinzufügen</string>
     <string name="editor_btn_priority">Priorität</string>
     <string name="editor_btn_saveevent">Notiz hinzufügen</string>
