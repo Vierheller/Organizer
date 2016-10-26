@@ -29,7 +29,7 @@
                 android:background="@color/colorPrimary"
                />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_activity_editor"
                 android:textColor="@android:color/white"
@@ -88,7 +88,7 @@
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ganztägiges Ereignis    "
+                android:text="@string/switchAllDayText"
                 android:layout_gravity="center"
                 android:id="@+id/sw_allDay" />
             <LinearLayout
@@ -146,7 +146,7 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp">
                 <Button
-                    android:text="Category"
+                    android:text="@string/categoryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_category"
@@ -223,7 +223,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:text="No Tags"
+                    android:text="@string/tagListEmpty"
                     android:layout_width="257dp"
                     android:layout_height="match_parent"
                     android:id="@+id/editor_tags" />

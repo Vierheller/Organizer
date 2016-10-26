@@ -8,6 +8,7 @@
 
 
     <ScrollView
+        android:id="@+id/week_fragment_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"

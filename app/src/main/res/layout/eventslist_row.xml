@@ -27,13 +27,13 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/eventlist_start"
-            android:text="12:00" />
+            android:text="@string/defaultTime" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/eventlist_end"
-            android:text="13:00" />
+            android:text="@string/defaultTime2" />
 
     </LinearLayout>
 
@@ -51,7 +51,7 @@
 
 
         <TextView
-            android:text="TextView"
+            android:text="@string/eventlist_row_tv_text"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/eventlist_title"
@@ -63,7 +63,7 @@
             android:layout_height="fill_parent"
             android:id="@+id/eventlist_category"
             android:textSize="12sp"
-            android:text="category" />
+            android:text="@string/eventlist_row_category_text" />
 
     </LinearLayout>
 
