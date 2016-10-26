@@ -14,6 +14,7 @@ public class Category extends RealmObject {
     @PrimaryKey
     private String id;
     private String name;
+    private boolean defaultCategory;
 
     /**
      * Default constructor
@@ -23,13 +24,14 @@ public class Category extends RealmObject {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
+        this.defaultCategory = false;
     }
 
     public Category(String name) {
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();
         }
-
+        this.defaultCategory = false;
         this.name = name;
     }
 
@@ -43,6 +45,10 @@ public class Category extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDefaultCategory(boolean value) {
+        this.defaultCategory = value;
     }
 
 }

@@ -53,20 +53,13 @@ public class Organizer extends Application {
     private void generateDefaultCategories() {
         eventsManager.open();
 
-        saveCategory("Allgemein");      // default value
-        saveCategory("Freizeit");       // default value
-        saveCategory("Arbeit");         // default value
+        final Category newCategory = new Category("Allgemein");      // default Category
+        newCategory.setDefaultCategory(true);
+
+        eventsManager.writeCategory(newCategory);                    // default value
+        eventsManager.writeCategory(new Category("Freizeit"));       // default value
+        eventsManager.writeCategory(new Category("Arbeit"));         // default value
 
         eventsManager.close();
     }
-
-    /**
-     * Method to accualy store categorie into database
-     * @param name
-     */
-    private void saveCategory(String name) {
-        Category newCategory = new Category(name);
-        eventsManager.writeCategory(newCategory);
-    }
-
 }

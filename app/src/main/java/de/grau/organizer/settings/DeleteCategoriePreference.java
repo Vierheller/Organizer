@@ -87,15 +87,19 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
      */
     private CharSequence[] getAllCategorieNames() {
         final CharSequence[] categorie_names;         // saves only category names
+        final Category defaultCategory;
 
         eventsManager.open();
 
-        categories = eventsManager.loadAllCategories();         // get all categories from
-        categorie_names = new CharSequence[categories.size()];  //Dialog need an array of CharSequence
+        defaultCategory = eventsManager.getDefaultCategory();
+        categories = eventsManager.loadAllCategories();             // get all categories from
+        categorie_names = new CharSequence[categories.size()-1];    //Dialog need an array of CharSequence
 
-        //Store each categorie names in categore_name array
+        //Store each categorie names in categorie_name array
         for(int i=0; i<categories.size(); i++) {
-            categorie_names[i] = categories.get(i).getName();
+            if(!categories.get(i).getID().equals(defaultCategory.getID())) {         // default Category can't be deleted
+                categorie_names[i-1] = categories.get(i).getName();
+            }
         }
 
         eventsManager.close();
