@@ -211,7 +211,6 @@ public class EditorActivity extends AppCompatActivity {
                 mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
             }
         }
-
     }
 
     @Override

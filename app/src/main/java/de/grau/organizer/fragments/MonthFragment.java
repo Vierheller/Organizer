@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -182,6 +183,17 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         Calendar cal = Calendar.getInstance();
         date.copyTo(cal);
         setupCalendar(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+    }
+
+    /*
+    * Refreshs the MonthFragment
+    */
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCalendarView.refreshDrawableState();
+        mListViewAdapter.notifyDataSetChanged();
+        mListView.refreshDrawableState();
     }
 
     /**
