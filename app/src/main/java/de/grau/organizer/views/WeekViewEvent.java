@@ -1,6 +1,7 @@
 package de.grau.organizer.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +12,14 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import de.grau.organizer.R;
+import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.classes.Event;
 
 /**
  * Created by YannickRave on 22.10.16.
  */
 
-public class WeekViewEvent extends LinearLayout implements View.OnClickListener {
+public class WeekViewEvent extends LinearLayout {
     private TextView eventNameTextView;
     private TextView eventTimeTextView;
     private Event mEvent;
@@ -51,17 +53,25 @@ public class WeekViewEvent extends LinearLayout implements View.OnClickListener 
     void onCreate() {
         eventNameTextView = (TextView) findViewById(R.id.textViewEvent);
         eventTimeTextView = (TextView) findViewById(R.id.textViewTime);
-        this.setOnClickListener(this);
     }
 
     public void fillGui(Event event) {
         mEvent = event;
         eventNameTextView.setText(event.getName());
         eventTimeTextView.setText(event.getCategory().getName());
+
+        this.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //start activity
+                if (mEvent != null ) {
+                    Toast.makeText(getContext(), mEvent.getName(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), "Fehler", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
-        Toast.makeText(getContext(),mEvent.getName(),Toast.LENGTH_LONG).show();
-    }
+
 }
