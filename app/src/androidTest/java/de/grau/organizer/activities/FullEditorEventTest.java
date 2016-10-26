@@ -60,11 +60,11 @@ public class FullEditorEventTest {
         appCompatEditText3.perform(scrollTo(), replaceText("Test"), closeSoftKeyboard());
 
         ViewInteraction switch_ = onView(
-                allOf(withId(R.id.sw_allDay), withText("Ganztägiges Ereignis    ")));
+                allOf(withId(R.id.sw_allDay)));
         switch_.perform(scrollTo(), click());
 
         ViewInteraction switch_2 = onView(
-                allOf(withId(R.id.sw_allDay), withText("Ganztägiges Ereignis    ")));
+                allOf(withId(R.id.sw_allDay)));
         switch_2.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton = onView(

@@ -24,12 +24,15 @@ import android.widget.TextView;
 import de.grau.organizer.views.WeekViewEvent;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import de.grau.organizer.R;
@@ -128,11 +131,8 @@ public class WeekFragment extends Fragment {
         });
 
         mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
-//        mWeekView.setStaticEvent();
-        mWeekView.drawHorizontalSpaces();
+        mWeekView.weekFragment = this;
         setupWeek();
-
-
 
         return view;
     }
@@ -153,9 +153,11 @@ public class WeekFragment extends Fragment {
     }
 
     private void setupWeek() {
+        mWeekView.drawHorizontalSpaces();
         setupWeekTime();
         setupWeekDays();
         setupWeekView();
+        mWeekView.drawCurrentSpace();
     }
 
     private void setupWeekDays() {
@@ -217,9 +219,14 @@ public class WeekFragment extends Fragment {
         mCalEnd.add(Calendar.WEEK_OF_YEAR, weeks);
 
         List<Event> events = mActivity.eventsManager.getEvents(mCalStart.getTime(), mCalEnd.getTime());
+        SimpleDateFormat dt = new SimpleDateFormat("dd.MM");
+        String dateStart = dt.format(mCalStart.getTime());
+        SimpleDateFormat dty = new SimpleDateFormat("dd.MM.yyyy");
+        String dateEnd = dty.format(mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
-        mWeekInfoTextView.setText("Week: " + mCalStart.get(Calendar.WEEK_OF_YEAR));
+        mWeekInfoTextView.setText("Week: " + mCalStart.get(Calendar.WEEK_OF_YEAR) + "\n" + dateStart + " - " + dateEnd);
         mWeekView.setupEvents(events);
+        mWeekView.drawCurrentSpace();
     }
 
     private void setupWeekView() {
@@ -289,16 +296,8 @@ class EventWeekView extends RelativeLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setStaticEvent() {
-        View week_view = this.inflate(this.getContext(), R.layout.week_view_event_layout, null);
-        //there are 7 days so the width of one event should be equal to a day
-        //the height equals the height of the view / 24 (hours per day) times the time of the event
-        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(300, 300);
-        params.leftMargin = 40;
-        params.topMargin = 50;
-        this.addView(week_view, params);
-    }
-
+    public WeekFragment weekFragment;
+    private View mCurrentHorizon;
     private int mHeight = 510;
     private ArrayList<WeekViewEvent> eventViews = new ArrayList<>();
 
@@ -360,6 +359,24 @@ class EventWeekView extends RelativeLayout {
         }
     }
 
+    public void drawCurrentSpace() {
+        currentTimeHorizon();
+        mHorizonTimer = null;
+        mHorizonTimer = new Timer();
+        mHorizonTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                weekFragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentTimeHorizon();
+                    }
+                });
+            }
+        }, 1000*60*10, 1000*60*10);
+    }
+
     public void drawHorizontalSpaces() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
@@ -386,13 +403,15 @@ class EventWeekView extends RelativeLayout {
         paramsBot.topMargin = (int) ((24*eHeight) - (2*density));
         bottomView.setBackgroundColor(Color.BLACK);
         this.addView(bottomView, paramsBot);
-
-        currentTimeHorizon();
     }
 
-    private View mCurrentHorizon;
+    Timer mHorizonTimer;
 
     private void currentTimeHorizon() {
+        if(mCurrentHorizon != null) {
+            this.removeView(mCurrentHorizon);
+        }
+        Log.d(DEBUG_TAG, "draw horizon");
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
         double eHeight = (mHeight*density)/24;
@@ -401,9 +420,10 @@ class EventWeekView extends RelativeLayout {
         int curHours = (int) (cal.get(Calendar.HOUR_OF_DAY));
 
         Log.d(DEBUG_TAG, "curMin: " + curMinutes + " curHours: " + curHours);
-        View mCurrentHorizon = new View(this.getContext());
         EventWeekView.LayoutParams paramsCur = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
         paramsCur.topMargin = (int) ((curHours*eHeight + curMinutes*(eHeight/60)));
+
+        mCurrentHorizon = new View(this.getContext());
         mCurrentHorizon.setBackgroundColor(Color.MAGENTA);
         this.addView(mCurrentHorizon, paramsCur);
     }
