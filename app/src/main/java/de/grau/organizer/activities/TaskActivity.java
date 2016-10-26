@@ -19,6 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
+import java.security.cert.Certificate;
+import java.util.Calendar;
 import java.util.Date;
 
 import de.grau.organizer.classes.Notes;
@@ -198,29 +202,49 @@ public class TaskActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Fills the GUI of TaskAktivity with the Information from the corresponding Event.
+     */
     private void fillGUI(){
         tv_title.setText(mEvent.getName());
         if(mEvent.getAction() != null && !mEvent.getAction().getData().isEmpty()){
             btn_executeAction.setText("Call: "+mEvent.getAction().getData());
         }
+        tv_startDate.setText(mEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.MONTH)) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.YEAR)));
+        setCorrectTime(mEvent.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY)+"", mEvent.getTime(Event.DateTime.START, Calendar.MINUTE)+"", tv_startTime );
         if(mEvent.getEventtype()){
             tv_endTime.setVisibility(View.GONE);
             tv_endDate.setVisibility(View.GONE);
-        }else{
-            tv_endDate.setText(mEvent.getEnd().getDate()+"."+(mEvent.getEnd().getMonth()+1)+"."+( mEvent.getEnd().getYear()+1900));
-            tv_endTime.setText(mEvent.getEnd().getHours()+":"+mEvent.getEnd().getMinutes());
+        }else {
+            tv_endDate.setText(mEvent.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.MONTH)) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.YEAR)));
+            setCorrectTime(mEvent.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY)+"",mEvent.getTime(Event.DateTime.END, Calendar.MINUTE)+"", tv_endTime );
         }
-        tv_startDate.setText(mEvent.getStart().getDate()+"."+(mEvent.getStart().getMonth()+1)+"."+(mEvent.getStart().getYear()+1900));
-        tv_startTime.setText(mEvent.getStart().getHours()+":"+mEvent.getStart().getMinutes());
         tv_description.setText(mEvent.getDescription());
         addNotesToGui();
     }
 
     /**
+     * Displays the current time in HH:mm.
+     * Adds a zero too the String if it has the length one.
+     *
+     * @param hour Hour of Time which should be displayed
+     * @param min   Minute of Time, which should be displayed
+     * @param textView TextView in which the Text is going to be shown.
+     */
+    private void setCorrectTime(String hour, String min, TextView textView ){
+        if(hour.length() < 2){
+            hour = "0"+hour;}
+        if(min.length() < 2){
+            min = "0" + min;
+        }
+        textView.setText(hour +":"+ min);
+    }
+
+    /**
      * Reads all Notes from the Event and adds them to the Notes Textview.
-      */
+     */
     private void addNotesToGui() {
-        Log.d(DEBUG_TAG, "Number of Notes is......................................" +  mEvent.getNotes().size());
+        Log.d(DEBUG_TAG, "Number of Notes is: " +  mEvent.getNotes().size());
         String notes = "";
         for(int i = 0; i <mEvent.getNotes().size(); i++){
           notes = notes + "\n" + mEvent.getNotes().get(i).getText();
