@@ -122,4 +122,5 @@
     <string name="eventlist_row_category_text">category</string>
     <string name="weekViewEventTitle">Event</string>
     <string name="weekViewEventTime">Time</string>
+    <string name="close">Schließen</string>
 </resources>

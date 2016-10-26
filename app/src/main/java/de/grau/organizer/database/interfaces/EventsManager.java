@@ -26,12 +26,10 @@ public interface EventsManager {
     List<Event> getEvents();
     List<Event> getEvents(CalendarDay calDate);
     List<Event> getEvents(int year, int month);
-
+    List<Event> searchEvents(String search, int limit);
     RealmResults<Event> getRealmEventList();
 
     Event loadEvent(String eventId);
-
-    List<Event> searchEvents(String search);
 
     Category getDefaultCategory();
 

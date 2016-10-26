@@ -169,7 +169,9 @@ public class TabActivity extends AppCompatActivity {
         String query = intent.getStringExtra(SearchManager.QUERY);
         if(!query.isEmpty()) {
 
-            mSearchResults = eventsManager.searchEvents(query);
+            mSearchResults = eventsManager.searchEvents(query,50);
+
+            if (mSearchResults.size() == 50) Toast.makeText(this,"Zu viele Suchergebnisse",Toast.LENGTH_LONG).show();
 
             List<String> result = new ArrayList<>();
             for(Event e: mSearchResults){
@@ -209,6 +211,7 @@ public class TabActivity extends AppCompatActivity {
                             Log.d(DEBUG_TAG,"Search dialog was canceled");
                         }
                     })
+                    .positiveText(R.string.close)
                     .show();
         } else{
             Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();

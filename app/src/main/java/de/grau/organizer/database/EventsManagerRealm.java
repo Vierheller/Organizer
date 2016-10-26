@@ -357,11 +357,12 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Used to perform a search for events
      * All events are returned where the field [name, description, category] contains given search string
+     * Search is limited to 50 results
      * @param search
      * @return
      */
     @Override
-    public List<Event> searchEvents(String search){
+    public List<Event> searchEvents(String search, int limit){
         RealmQuery<Event> query = realm.where(Event.class);
 
         query.contains("name",search, Case.INSENSITIVE)
@@ -369,7 +370,7 @@ public class EventsManagerRealm implements EventsManager {
                 .or().contains("category.name",search,Case.INSENSITIVE)
                 .distinct("id");
 
-        return query.findAllSorted("name");
+        return query.findAllSorted("name").subList(0,limit);
     }
 
     /**
