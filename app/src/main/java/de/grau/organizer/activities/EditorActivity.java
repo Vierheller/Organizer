@@ -494,7 +494,7 @@ public class EditorActivity extends AppCompatActivity {
                         btn_pickTime.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
                         if (currentEndDate.before(currentStartDate))  {
                             btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hourOfDay, minute));
-                            currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY));
+                            currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY) <= 22 ? currentStartDate.get(Calendar.HOUR_OF_DAY) + 1 : currentStartDate.get(Calendar.HOUR_OF_DAY) );
                             currentEndDate.set(Calendar.MINUTE, currentStartDate.get(Calendar.HOUR_OF_DAY));
                         }
                         timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
