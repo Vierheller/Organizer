@@ -4,16 +4,16 @@
     <item
         android:id="@+id/action_list_edit"
         android:orderInCategory="100"
-        android:title="Edit"
+        android:title="@string/menuEdit"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_list_delete"
         android:orderInCategory="100"
-        android:title="Delete"
+        android:title="@string/menuDelete"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_list_cancel_notification"
         android:orderInCategory="100"
-        android:title="Cancel Notification"
+        android:title="@string/cancelNotification"
         app:showAsAction="never" />
 </menu>

@@ -32,6 +32,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Tag;
@@ -270,7 +271,7 @@ public class EditorActivity extends AppCompatActivity {
                 //We further need to set the ui of notificationTimeIntervalDialog to display the notificationTime
                 NumberPicker np = (NumberPicker) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_np);
                 np.setValue(notificationTimeInterval/5);
-                btn_pickNotifyDelay.setText(String.format("%d min", notificationTimeInterval));
+                btn_pickNotifyDelay.setText(String.format(Locale.GERMANY,"%d min", notificationTimeInterval));
             }
 
             sw_allDay.setChecked(realm_event.isAllDay());
@@ -489,8 +490,8 @@ public class EditorActivity extends AppCompatActivity {
                         currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentStartDate.set(Calendar.MINUTE, minute);
                         currentEndDate = currentStartDate;
-                        btn_pickTime.setText(String.format("%02d:%02d",hourOfDay,minute));
-                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        btn_pickTime.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
                         timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
                     }
                 },
@@ -501,7 +502,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void initEndTimePicker(int hour, int minute) {
-        btn_pickTime_fin.setText(String.format("%02d:%02d",hour,minute));
+        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hour,minute));
 
         timeEndPickerDialog = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
@@ -509,7 +510,7 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentEndDate.set(Calendar.MINUTE, minute);
-                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
                     }
                 },
                 currentEndDate.get(Calendar.HOUR_OF_DAY),

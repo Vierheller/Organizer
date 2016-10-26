@@ -6,13 +6,13 @@
         android:id="@+id/app_bar_search"
         android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/ic_search_white_24dp"
-        android:title="Search"
+        android:title="@string/search_title"
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <item android:title="Erzeuge Testevents"
+    <item android:title="@string/createTestEvents"
         android:id="@+id/action_test_events" />
 </menu>

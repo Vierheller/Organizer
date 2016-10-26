@@ -5,6 +5,7 @@ import android.graphics.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.Calendar;
 
@@ -66,7 +67,7 @@ public class Event extends RealmObject{
      * @return summary of content
      */
     public String getShortSummary(){
-        SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.GERMANY);
         return this.name+" | "+this.category.getName()+"\r\n"+this.description+"\r\nStart:"+dt.format(this.start)+"\r\nEnde:"+dt.format(this.end);
     }
 

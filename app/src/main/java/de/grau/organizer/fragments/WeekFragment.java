@@ -3,8 +3,10 @@ package de.grau.organizer.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import de.grau.organizer.views.WeekViewEvent;
@@ -57,6 +60,7 @@ public class WeekFragment extends Fragment {
     private EventWeekView mWeekView;
     private LinearLayout mWeekDays;
     private LinearLayout mWeekTime;
+    private ScrollView mScrollView;
 
     private TabActivity mActivity;
     public WeekFragment() {
@@ -100,13 +104,27 @@ public class WeekFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_week, container, false);
         mWeekDays = (LinearLayout) view.findViewById(R.id.week_view_days);
         mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
+        mScrollView = (ScrollView) view.findViewById(R.id.week_fragment_scroll);
 
         mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
 //        mWeekView.setStaticEvent();
         mWeekView.drawHorizontalSpaces();
         setupWeek();
 
+
+
         return view;
+    }
+
+    private void scrollToPosition(final int destinationPos, int delay) {
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.scrollTo(0, destinationPos);
+            }
+        }, delay);
     }
 
     public void completedLayout() {
@@ -126,6 +144,7 @@ public class WeekFragment extends Fragment {
             param.weight = 1;
             TextView dayTV = new TextView(this.getContext());
             dayTV.setText(day);
+            dayTV.setTypeface(null,Typeface.BOLD);
             dayTV.setLayoutParams(param);
             dayTV.setGravity(Gravity.CENTER);
             mWeekDays.addView(dayTV);
@@ -137,7 +156,7 @@ public class WeekFragment extends Fragment {
         int interval = 2;
         ArrayList<String> times = new ArrayList<>();
         for(int x = 0; x <= 24; x+=interval) {
-            String formatted = String.format("%02d", x);
+            String formatted = String.format(Locale.GERMANY,"%02d", x);
             String time = formatted + ":00";
             times.add(time);
         }
