@@ -65,7 +65,9 @@ public class WeekViewEvent extends LinearLayout {
             public void onClick(View v) {
                 //start activity
                 if (mEvent != null ) {
-                    Toast.makeText(getContext(), mEvent.getName(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getContext(), TaskActivity.class);
+                    intent.putExtra(TaskActivity.INTENT_PARAM_ID, mEvent.getId());
+                    getContext().startActivity(intent);
                 } else {
                     Toast.makeText(getContext(), "Fehler", Toast.LENGTH_LONG).show();
                 }
