@@ -26,6 +26,7 @@ import io.realm.Sort;
  */
 
 public class EventsManagerRealm implements EventsManager {
+    public final String DEBUG_TAG =  getClass().getCanonicalName();
     private Realm realm;
 
     /**
@@ -258,8 +259,9 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Removes a category for a given id
+     *
      * @param categoryId
-     * @return
+     * @return false if category is still in use, true if category could be deleted
      */
     @Override
     public boolean deleteCategory(String categoryId) {
@@ -269,10 +271,15 @@ public class EventsManagerRealm implements EventsManager {
         if (result == null) {
             return false;
         } else {
-            realm.beginTransaction();
-            result.deleteFromRealm();
-            realm.commitTransaction();
-            return true;
+            if (this.getEvents(result).size()>0){
+                Log.d(DEBUG_TAG,"Can't delete category ["+result.getName()+"] still in use.");
+                return false;
+            }else {
+                realm.beginTransaction();
+                result.deleteFromRealm();
+                realm.commitTransaction();
+                return true;
+            }
         }
     }
 
