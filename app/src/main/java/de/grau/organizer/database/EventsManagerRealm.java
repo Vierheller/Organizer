@@ -220,6 +220,14 @@ public class EventsManagerRealm implements EventsManager {
         return result;
     }
 
+    @Override
+    public Category getCategory(String categoryId) {
+        RealmQuery<Category> query = realm.where(Category.class);
+        query.equalTo("id", categoryId);
+        Category result = query.findFirst();
+        return result;
+    }
+
     /**
      * Returns a RealmQuery containing all Category in database
      * containing the given category
@@ -240,8 +248,18 @@ public class EventsManagerRealm implements EventsManager {
      */
     @Override
     public List<Category> loadAllCategories() {
-        List<Category> categories = new RealmList<>();
+        List<Category> categories;
         RealmQuery<Category> query = realm.where(Category.class);
+        categories = query.findAllSorted("name", Sort.ASCENDING);
+        return categories;
+    }
+
+    // All categories without default category
+    @Override
+    public List<Category> loadAllDeleteableCategories() {
+        List<Category> categories;
+        RealmQuery<Category> query = realm.where(Category.class);
+        query.equalTo("defaultCategory", false);
         categories = query.findAllSorted("name", Sort.ASCENDING);
         return categories;
     }
@@ -268,18 +286,13 @@ public class EventsManagerRealm implements EventsManager {
         RealmQuery<Category> query = realm.where(Category.class);
         query.equalTo("id", categoryId);
         Category result = query.findFirst();
-        if (result == null) {
+        if(result == null) {
             return false;
         } else {
-            if (this.getEvents(result).size()>0){
-                Log.d(DEBUG_TAG,"Can't delete category ["+result.getName()+"] still in use.");
-                return false;
-            }else {
-                realm.beginTransaction();
-                result.deleteFromRealm();
-                realm.commitTransaction();
-                return true;
-            }
+            realm.beginTransaction();
+            result.deleteFromRealm();
+            realm.commitTransaction();
+            return true;
         }
     }
 
@@ -324,6 +337,14 @@ public class EventsManagerRealm implements EventsManager {
         realm.beginTransaction();
         event_data.setId(eventId);
         realm.copyToRealmOrUpdate(event_data);
+        realm.commitTransaction();
+    }
+
+    @Override
+    public void updateCategoryOfEvent(Event event, Category category) {
+        realm.beginTransaction();
+        event.setCategory(category);
+        realm.copyToRealmOrUpdate(event);
         realm.commitTransaction();
     }
 

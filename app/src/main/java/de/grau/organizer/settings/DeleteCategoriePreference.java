@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.grau.organizer.classes.Category;
+import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
 
@@ -58,7 +59,7 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
             for (int i = 0; i<entryChecked.length; i++){
                 if(entryChecked[i]==true){
                     Category clickedCategorie = categories.get(i);
-                    Log.d(DEBUG_TAG,  clickedCategorie.getName());
+                    Log.d(DEBUG_TAG, clickedCategorie.getName());
                     deleteCategory(clickedCategorie.getID());
                 }
             }
@@ -90,17 +91,12 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
         final Category defaultCategory;
 
         eventsManager.open();
-
-        defaultCategory = eventsManager.getDefaultCategory();
-        categories = eventsManager.loadAllCategories();             // get all categories from
-        categorie_names = new CharSequence[categories.size()-1];    //Dialog need an array of CharSequence
+        categories = eventsManager.loadAllDeleteableCategories();     // get all categories from DB
+        categorie_names = new CharSequence[categories.size()];    //Dialog need an array of CharSequence
 
         //Store each categorie names in categorie_name array
-        for(int i=0; i<categories.size(); i++) {
-            if(!categories.get(i).getID().equals(defaultCategory.getID())) {         // default Category can't be deleted
-                categorie_names[i-1] = categories.get(i).getName();
-            }
-        }
+        for(int i=0; i<categories.size(); i++)
+            categorie_names[i] = categories.get(i).getName();
 
         eventsManager.close();
         return categorie_names;
@@ -114,9 +110,19 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
     private boolean deleteCategory(String categoryId) {
         boolean return_value;
         eventsManager.open();
+        deleteCategoryFromEvents(eventsManager.getCategory(categoryId));
         return_value = eventsManager.deleteCategory(categoryId);
         eventsManager.close();
         return return_value;
+    }
+
+    private void deleteCategoryFromEvents(Category category) {
+        List<Event> events = eventsManager.getEvents(category);
+        Category defaultCategory = eventsManager.getDefaultCategory();
+
+        for(int i=0; i<events.size(); i++) {
+            eventsManager.updateCategoryOfEvent(events.get(i), defaultCategory);
+        }
     }
 
     /**

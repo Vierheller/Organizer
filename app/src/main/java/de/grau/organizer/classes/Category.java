@@ -51,4 +51,14 @@ public class Category extends RealmObject {
         this.defaultCategory = value;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Category)) {
+            return false;
+        } else if (this.id.equals(((Category) obj).getID())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

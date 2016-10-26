@@ -33,9 +33,13 @@ public interface EventsManager {
 
     Category getDefaultCategory();
 
+    Category getCategory(String categoryId);
+
     Category getCategoryByName(String name);
 
     List<Category> loadAllCategories();
+
+    List<Category> loadAllDeleteableCategories();
 
     boolean deleteCategory(String categoryId);
 
@@ -44,6 +48,8 @@ public interface EventsManager {
     void writeEvent(Event event);
 
     void updateEvent(Event event, String eventId);
+
+    void updateCategoryOfEvent(Event event, Category category);
 
     void writeCategory(Category category);
 
