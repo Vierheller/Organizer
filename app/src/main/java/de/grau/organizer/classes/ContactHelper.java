@@ -76,6 +76,7 @@ public class ContactHelper {
                         emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
             }
             emailCur.close();
+            cur.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

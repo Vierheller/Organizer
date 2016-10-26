@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_task_activity"
                 android:textColor="@android:color/white"
@@ -58,7 +58,7 @@
             android:paddingTop="56dp">
 
             <TextView
-                android:text="Title"
+                android:text="@string/eventtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -73,7 +73,7 @@
                 android:layout_height="2dp"/>
 
             <TextView
-                android:text="Description"
+                android:text="@string/eventdescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -165,13 +165,13 @@
                 android:textSize="20sp" />
 
             <Button
-                android:text="Execute Action"
+                android:text="@string/execute_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/task_btn_executeaction" />
 
             <Button
-                android:text="Delete"
+                android:text="@string/delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/task_btn_delete" />

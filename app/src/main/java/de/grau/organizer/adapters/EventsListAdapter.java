@@ -14,6 +14,7 @@ import org.w3c.dom.Text;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
@@ -76,11 +77,11 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
 
         start.setText("");
         if (event.getStart()!=null){
-            start.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
+            start.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
         }
         end.setText("");
         if (event.getEnd()!=null){
-            end.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
+            end.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
         }
         category.setText("");
         if(event.getCategory() != null){

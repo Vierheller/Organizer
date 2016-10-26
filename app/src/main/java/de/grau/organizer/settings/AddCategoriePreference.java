@@ -14,7 +14,6 @@ import de.grau.organizer.database.interfaces.EventsManager;
  * Created by Vierheller on 25.10.2016.
  */
 public class AddCategoriePreference extends EditTextPreference {
-    private String mCurrentValue = null;
     private static final String DEBUG_TAG = AddCategoriePreference.class.getCanonicalName();
     private static EventsManager eventsManager = new EventsManagerRealm();
 
@@ -22,18 +21,11 @@ public class AddCategoriePreference extends EditTextPreference {
         super(context, attrs);
     }
 
-    public AddCategoriePreference(Context context) {
-        super(context);
-    }
-
-    public AddCategoriePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public AddCategoriePreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
+    /**
+     * Executed when either "close" or "ok" is clicked in dialog screen
+     * Save categorie if ok is clicked
+     * @param positiveResult
+     */
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if(positiveResult){
@@ -44,7 +36,11 @@ public class AddCategoriePreference extends EditTextPreference {
         }
     }
 
-    // Creates a new Category in the Database
+    /**
+     *   Creates a new Category in the Database
+     * @param category_name
+     * @param context
+     */
     private static void createCategory(String category_name, Context context) {
         eventsManager.open();
         // Check if Category already exists
@@ -53,13 +49,6 @@ public class AddCategoriePreference extends EditTextPreference {
             Toast.makeText(context, "Category has been saved!", Toast.LENGTH_LONG).show();
         }
         eventsManager.close();
-    }
-
-
-
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-       mCurrentValue = "";
     }
 
 }

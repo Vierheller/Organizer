@@ -102,4 +102,24 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="timeEndPickerTitle">Ende</string>
+    <string name="menuEdit">Edit</string>
+    <string name="menuDelete">Löschen</string>
+    <string name="cancelNotification">Benachrichtigung entfernen</string>
+    <string name="createTestEvents">Erzeuge Testevents</string>
+    <string name="switchAllDayText">Ganztägiges Ereignis</string>
+    <string name="categoryText">Kategorie</string>
+    <string name="tagListEmpty">Keine Tags</string>
+    <string name="eventtitle">Title</string>
+    <string name="eventdescription">Description</string>
+    <string name="execute_action">Execute Action</string>
+    <string name="delete">Delete</string>
+    <string name="remember_interval_min">Remember interval (min)</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
+    <string name="defaultTime">12:00</string>
+    <string name="defaultTime2">13:00</string>
+    <string name="eventlist_row_tv_text">TextView</string>
+    <string name="eventlist_row_category_text">category</string>
+    <string name="weekViewEventTitle">Event</string>
+    <string name="weekViewEventTime">Time</string>
 </resources>
