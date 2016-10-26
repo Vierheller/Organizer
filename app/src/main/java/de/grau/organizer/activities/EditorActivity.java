@@ -323,7 +323,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_pickNotifyDelay.setText("None");
+                btn_pickNotifyDelay.setText(getString(R.string.editor_btn_picknotifydelay));
                 useRememberNotification = false;
                 notificationTimeInterval = -1;
                 notificationTimeIntervalDialog.dismiss();
