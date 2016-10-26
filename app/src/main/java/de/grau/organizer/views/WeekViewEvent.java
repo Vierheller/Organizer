@@ -58,7 +58,9 @@ public class WeekViewEvent extends LinearLayout {
     public void fillGui(Event event) {
         mEvent = event;
         eventNameTextView.setText(event.getName());
-        eventTimeTextView.setText(event.getCategory().getName());
+        if (event.getCategory() != null) {
+            eventTimeTextView.setText(event.getCategory().getName());
+        }
 
         this.setOnClickListener(new OnClickListener() {
             @Override
