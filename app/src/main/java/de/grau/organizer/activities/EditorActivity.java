@@ -465,6 +465,9 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
                 setBtn_pickDateText(btn_pickDateStart, currentStartDate, year, month, day_of_month);
+                if(!mEventtype && currentEndDate.before(currentStartDate)) {
+                    setBtn_pickDateText(btn_pickDateEnd, currentEndDate, year, month, day_of_month);
+                }
             }
         },startyear, startmonth, startday);
 
@@ -488,9 +491,12 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentStartDate.set(Calendar.MINUTE, minute);
-                        currentEndDate = currentStartDate;
                         btn_pickTime.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
-                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
+                        if (currentEndDate.before(currentStartDate))  {
+                            btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hourOfDay, minute));
+                            currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY));
+                            currentEndDate.set(Calendar.MINUTE, currentStartDate.get(Calendar.HOUR_OF_DAY));
+                        }
                         timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
                     }
                 },
