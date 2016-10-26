@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
 
@@ -16,12 +18,13 @@ import de.grau.organizer.classes.Event;
  */
 
 public class WeekViewEvent extends LinearLayout implements View.OnClickListener {
-    private TextView eventTextView;
+    private TextView eventNameTextView;
+    private TextView eventTimeTextView;
     private Event mEvent;
 
     public WeekViewEvent(Context context, Event event) {
         super(context);
-        this.mEvent = event;
+
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.week_view_event_layout, this, true);
@@ -46,12 +49,15 @@ public class WeekViewEvent extends LinearLayout implements View.OnClickListener 
 
 
     void onCreate() {
-        eventTextView = (TextView) findViewById(R.id.textViewEvent);
+        eventNameTextView = (TextView) findViewById(R.id.textViewEvent);
+        eventTimeTextView = (TextView) findViewById(R.id.textViewTime);
         this.setOnClickListener(this);
     }
 
     public void fillGui(Event event) {
-        eventTextView.setText(event.getName());
+        mEvent = event;
+        eventNameTextView.setText(event.getName());
+        eventTimeTextView.setText(event.getCategory().getName());
     }
 
     @Override

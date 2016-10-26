@@ -3,8 +3,10 @@ package de.grau.organizer.fragments;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -13,8 +15,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import de.grau.organizer.views.WeekViewEvent;
@@ -57,6 +61,7 @@ public class WeekFragment extends Fragment {
     private EventWeekView mWeekView;
     private LinearLayout mWeekDays;
     private LinearLayout mWeekTime;
+    private ScrollView mScrollView;
 
     private TabActivity mActivity;
     public WeekFragment() {
@@ -91,7 +96,8 @@ public class WeekFragment extends Fragment {
         mActivity = (TabActivity) getActivity();
     }
 
-    
+    private Button mLeftDecrementButton;
+    private Button mRightIncrementButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,14 +106,44 @@ public class WeekFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_week, container, false);
         mWeekDays = (LinearLayout) view.findViewById(R.id.week_view_days);
         mWeekTime = (LinearLayout) view.findViewById(R.id.week_view_time);
-        mWeekDays.setBackgroundColor(Color.RED);
-        mWeekTime.setBackgroundColor(Color.GREEN);
+        mScrollView = (ScrollView) view.findViewById(R.id.week_fragment_scroll);
+
+        mLeftDecrementButton = (Button) view.findViewById(R.id.left_decrement_week_button);
+        mRightIncrementButton = (Button) view.findViewById(R.id.right_increment_week_button);
+
+        mLeftDecrementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCalendarWeek(-1);
+            }
+        });
+
+        mRightIncrementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCalendarWeek(1);
+            }
+        });
 
         mWeekView = (EventWeekView) view.findViewById(R.id.event_week_view);
 //        mWeekView.setStaticEvent();
+        mWeekView.drawHorizontalSpaces();
         setupWeek();
 
+
+
         return view;
+    }
+
+    private void scrollToPosition(final int destinationPos, int delay) {
+        Handler h = new Handler();
+
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.scrollTo(0, destinationPos);
+            }
+        }, delay);
     }
 
     public void completedLayout() {
@@ -127,6 +163,7 @@ public class WeekFragment extends Fragment {
             param.weight = 1;
             TextView dayTV = new TextView(this.getContext());
             dayTV.setText(day);
+            dayTV.setTypeface(null,Typeface.BOLD);
             dayTV.setLayoutParams(param);
             dayTV.setGravity(Gravity.CENTER);
             mWeekDays.addView(dayTV);
@@ -138,7 +175,7 @@ public class WeekFragment extends Fragment {
         int interval = 2;
         ArrayList<String> times = new ArrayList<>();
         for(int x = 0; x <= 24; x+=interval) {
-            String formatted = String.format("%02d", x);
+            String formatted = String.format(Locale.GERMANY,"%02d", x);
             String time = formatted + ":00";
             times.add(time);
         }
@@ -154,25 +191,37 @@ public class WeekFragment extends Fragment {
         mWeekTime.setWeightSum(times.size());
     }
 
-    private void setupWeekView() {
-        Calendar calStart = GregorianCalendar.getInstance(Locale.GERMANY);
-        calStart.setFirstDayOfWeek(Calendar.MONDAY);
-        calStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        calStart.set(Calendar.HOUR_OF_DAY, calStart.getActualMinimum(Calendar.HOUR_OF_DAY));
-        calStart.set(Calendar.MINUTE, calStart.getActualMinimum(Calendar.MINUTE));
-        calStart.set(Calendar.SECOND, calStart.getActualMinimum(Calendar.SECOND));
+    private Calendar mCalStart;
+    private Calendar mCalEnd;
 
-        Calendar calEnd = GregorianCalendar.getInstance(Locale.GERMANY);
-        calEnd.setFirstDayOfWeek(Calendar.MONDAY);
-        calEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calEnd.set(Calendar.HOUR_OF_DAY, calEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
-        calEnd.set(Calendar.MINUTE, calEnd.getActualMaximum(Calendar.MINUTE));
-        calEnd.set(Calendar.SECOND, calEnd.getActualMaximum(Calendar.SECOND));
+    private void setCalendar() {
+        mCalStart = GregorianCalendar.getInstance(Locale.GERMANY);
+        mCalStart.setFirstDayOfWeek(Calendar.MONDAY);
+        mCalStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        mCalStart.set(Calendar.HOUR_OF_DAY, mCalStart.getActualMinimum(Calendar.HOUR_OF_DAY));
+        mCalStart.set(Calendar.MINUTE, mCalStart.getActualMinimum(Calendar.MINUTE));
+        mCalStart.set(Calendar.SECOND, mCalStart.getActualMinimum(Calendar.SECOND));
 
-        List<Event> events = mActivity.eventsManager.getEvents(calStart.getTime(), calEnd.getTime());
+        mCalEnd = GregorianCalendar.getInstance(Locale.GERMANY);
+        mCalEnd.setFirstDayOfWeek(Calendar.MONDAY);
+        mCalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        mCalEnd.set(Calendar.HOUR_OF_DAY, mCalEnd.getActualMaximum(Calendar.HOUR_OF_DAY));
+        mCalEnd.set(Calendar.MINUTE, mCalEnd.getActualMaximum(Calendar.MINUTE));
+        mCalEnd.set(Calendar.SECOND, mCalEnd.getActualMaximum(Calendar.SECOND));
+    }
 
+    private void changeCalendarWeek(int weeks) {
+        mCalStart.add(Calendar.WEEK_OF_YEAR, weeks);
+        mCalEnd.add(Calendar.WEEK_OF_YEAR, weeks);
+
+        List<Event> events = mActivity.eventsManager.getEvents(mCalStart.getTime(), mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
         mWeekView.setupEvents(events);
+    }
+
+    private void setupWeekView() {
+        setCalendar();
+        changeCalendarWeek(0);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -219,7 +268,6 @@ public class WeekFragment extends Fragment {
 }
 class EventWeekView extends RelativeLayout {
 
-
     public static final String DEBUG_TAG = EventWeekView.class.getCanonicalName();
 
     public EventWeekView(Context context) {
@@ -248,46 +296,85 @@ class EventWeekView extends RelativeLayout {
         this.addView(week_view, params);
     }
 
+    private int mHeight = 510;
+    private ArrayList<WeekViewEvent> eventViews = new ArrayList<>();
+
+    private void removeOldEventViews() {
+        for (WeekViewEvent eventView : eventViews) {
+            this.removeView(eventView);
+        }
+        eventViews.clear();
+    }
 
     public void setupEvents(List<Event> events) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        int width = metrics.widthPixels;
+        removeOldEventViews();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        float density = metrics.density;
+        Log.d(DEBUG_TAG, "Density: " + density);
+
+        int width = metrics.widthPixels-(int)(50*density);
 //        int width = this.getWidth();
-        Log.d(DEBUG_TAG, width + "");
-        int height = metrics.heightPixels;;
+
+        Log.d(DEBUG_TAG, "Width: " + width);
+        double eHeight = mHeight*density;
+
 //        int height = this.getHeight();
-        Log.d(DEBUG_TAG, height + "");
+        Log.d(DEBUG_TAG, "Height: " + eHeight);
 
         for (Event event: events) {
             Log.d(DEBUG_TAG, "Adding: " + event);
-            int day = event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) - 1;
+            //returns: Sun: 1, Mon: 2, ...
+            //We want Mon: 0, ..., Sun: 6 so we calc day+5 % 7
+            int day = (event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) + 5) % 7;
             int startHour = event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY);
             int startMinute = event.getTime(Event.DateTime.START, Calendar.MINUTE);
+            Log.d(DEBUG_TAG, "startHour: "  + startHour + " startMinute: " + startMinute);
 
             //the time in between every event:
-            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.HOURS);
-            Log.d(DEBUG_TAG, "day: "  +day);
+            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.MINUTES);
+            Log.d(DEBUG_TAG, "day: "  + day + " duration: " + duration);
 
             //there are 7 days so the width of one event should be equal to a day
             //the height equals the height of the view / 24 (hours per day) times the time of the event
-            int eventWidth = width/7;
-            int eventHeight = (int)height/24*(int)duration;
-            if (eventHeight < 100) {
-                eventHeight = 100;
+            int eventWidth = width/7 - (int)(2*density);
+            int eventHeight = (int)((eHeight/(24*60))*(duration));
+            if (eventHeight < 35) {
+                eventHeight = 35;
             }
-            int leftMargin = day*eventWidth;
-            int topMargin = (int)pixelToDp(WeekFragment.HOUR_HEIGHT * 3 * startHour + (WeekFragment.HOUR_HEIGHT * 3 /60)*startMinute);//(height/24*startHour + height/(24*60)*startMinute);
-            Log.d(DEBUG_TAG, "eW: " + eventWidth + " eH: " + eventHeight + " lM: " + leftMargin + " tM: " + topMargin);
+            int leftMargin = day*(width/7) + (int)density;
+            int topMargin = (int)((eHeight/24) * (startHour) + ((eHeight/(24*60))*startMinute)); //(height/24)*startHour + (height/(24*60))*startMinute;
+            Log.d(DEBUG_TAG, "event Width: " + eventWidth + " event Height: " + eventHeight + " left Margin: " + leftMargin + " top Margin: " + topMargin);
 
 
-            WeekViewEvent week_view = new WeekViewEvent(this.getContext(),event);
-            week_view.setBackgroundColor(event.getPriorityColor());
-            week_view.fillGui(event);
+            WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
+            eventView.setBackgroundColor(event.getPriorityColor());
+            eventView.fillGui(event);
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
             params.topMargin = topMargin;
-            this.addView(week_view, params);
+            eventViews.add(eventView);
+            this.addView(eventView, params);
         }
+    }
+
+    public void drawHorizontalSpaces() {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        float density = metrics.density;
+        double eHeight = (mHeight*density)/24;
+        Log.d(DEBUG_TAG, "eHeight: " + eHeight);
+        for (int x = 0; x<24;x++) {
+            View v = new View(this.getContext());
+            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
+            params.topMargin = (int) (eHeight*x);
+            v.setBackgroundColor(Color.parseColor("#B3B3B3"));
+            this.addView(v, params);
+        }
+        View v = new View(this.getContext());
+        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+        Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*24));
+        params.topMargin = (int) ((24*eHeight) - (2*density));
+        v.setBackgroundColor(Color.BLACK);
+        this.addView(v, params);
     }
 
     /**
@@ -299,13 +386,6 @@ class EventWeekView extends RelativeLayout {
      */
     public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
-    }
-
-    private float pixelToDp(int pixel){
-        Resources resources = getContext().getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = pixel / ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return pixel;
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 }

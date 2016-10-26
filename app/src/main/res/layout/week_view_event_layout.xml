@@ -6,13 +6,14 @@
     android:id="@+id/week_view_event_layout">
 
     <TextView
-        android:text="Event"
+        android:text="@string/weekViewEventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewEvent" />
+        android:id="@+id/textViewEvent"
+        android:textStyle="bold"/>
 
     <TextView
-        android:text="Time"
+        android:text="@string/weekViewEventTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textViewTime" />

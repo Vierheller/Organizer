@@ -29,7 +29,7 @@
                 android:background="@color/colorPrimary"
                />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_activity_editor"
                 android:textColor="@android:color/white"
@@ -59,7 +59,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:weightSum="1">
 
             <EditText
                 android:id="@+id/editor_et_title"
@@ -87,7 +88,7 @@
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ganztägiges Ereignis    "
+                android:text="@string/switchAllDayText"
                 android:layout_gravity="center"
                 android:id="@+id/sw_allDay" />
             <LinearLayout
@@ -145,7 +146,7 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp">
                 <Button
-                    android:text="Category"
+                    android:text="@string/categoryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_category"
@@ -186,7 +187,7 @@
                     android:text="@string/editor_btn_chooseaction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.54"
                     android:id="@+id/editor_btn_chooseaction" />
 
             </LinearLayout>
@@ -198,6 +199,39 @@
                 android:id="@+id/editor_notecontainer">
             </LinearLayout>
 
+            <View
+                android:background="@drawable/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:text="@string/tagListEmpty"
+                    android:layout_width="257dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/editor_tags" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_tags_delete"
+                    android:layout_weight="1"
+                    android:drawableStart="@android:drawable/ic_menu_delete"
+                    android:elevation="0dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editor_btn_tags_add"
+                    android:drawableStart="@android:drawable/ic_menu_add"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -206,37 +240,10 @@
                 <Button
                     android:drawableLeft="@drawable/ic_add_note"
                     android:text="@string/layout_button_addNote"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_addnote"
                     android:layout_marginTop="10dp" />
-            </LinearLayout>
-            <View
-                android:background="@drawable/divider_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"/>
-
-            <TextView
-                android:text="No Tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/editor_tags" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:drawableLeft="@drawable/ic_add_tag"
-                    android:text="Add Tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editor_btn_tags"
-                    android:layout_weight="1" />
-
-
-
             </LinearLayout>
 
 

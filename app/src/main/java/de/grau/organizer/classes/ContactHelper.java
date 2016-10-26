@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 /**
- * Created by ubuntu on 9/28/16.
+ * Helper class for extracting needed information for an action
  */
 
 public class ContactHelper {
@@ -33,6 +33,12 @@ public class ContactHelper {
         return email;
     }
 
+    /**
+     * Extracts data from given intent in given context
+     * data retrieved is stored in this class
+     * @param context
+     * @param data
+     */
     public void contactPicked(Context context, Intent data) {
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -70,6 +76,7 @@ public class ContactHelper {
                         emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
             }
             emailCur.close();
+            cur.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

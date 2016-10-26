@@ -14,12 +14,14 @@ import org.w3c.dom.Text;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Event;
 
 /**
- * Created by Vierheller on 27.09.2016.
+ * Simple Adapter for event data, extends ArrayAdapter<Event>
+ * Adapter may be used to fill a list
  */
 
 public class EventsListAdapter extends ArrayAdapter<Event> {
@@ -33,6 +35,13 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         this.eventList = eventList;
     }
 
+    /**
+     * Default constructor for EventListAdapter
+     * List of events is set for this adapter instance
+     * @param context
+     * @param resource
+     * @param objects
+     */
     public EventsListAdapter(Context context, int resource, List<Event> objects) {
         super(context, resource, objects);
         this.eventList = objects;
@@ -43,6 +52,14 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         return eventList.size();
     }
 
+    /**
+     * Overridden getView
+     * Gets all ui Elements for the given rowLayout and sets the data corresponding to the selected event
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,26 +73,21 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         TextView category = (TextView) view.findViewById(R.id.eventlist_category);
         ImageView ivPriority = (ImageView) view.findViewById(R.id.eventlist_priority);
 
-        //ToDo check that we got everything correct here
-        //End date may be null?, category is not even possible to set
-        title.setText(event.getName()); //This is always present
+        title.setText(event.getName());
 
         start.setText("");
         if (event.getStart()!=null){
-            start.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
+            start.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
         }
         end.setText("");
         if (event.getEnd()!=null){
-            end.setText(String.format("%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
+            end.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
         }
         category.setText("");
         if(event.getCategory() != null){
             category.setText(event.getCategory().getName());
         }
-
         ivPriority.setBackgroundColor(event.getPriorityColor());
-
         return view;
     }
-
 }

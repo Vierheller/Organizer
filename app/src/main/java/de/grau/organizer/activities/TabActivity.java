@@ -1,5 +1,6 @@
 package de.grau.organizer.activities;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.fragments.WeekFragment;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -74,6 +76,7 @@ public class TabActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
+
 
 
     }
@@ -170,7 +173,8 @@ public class TabActivity extends AppCompatActivity {
 
             List<String> result = new ArrayList<>();
             for(Event e: mSearchResults){
-                result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+                //result.add(e.getName()+" | "+e.getStart()+" "+e.getEnd());
+                result.add(e.getShortSummary());
             }
 
             ShowSearchResults(result);
@@ -187,7 +191,9 @@ public class TabActivity extends AppCompatActivity {
             new MaterialDialog.Builder(this)
                     .title(R.string.search_title)
                     .items(searchResults)
+                    .iconRes(R.drawable.ic_search_black_24dp)
                     .titleColorRes(R.color.colorAccent)
+                    .dividerColorRes(R.color.colorPrimary)
                     //.backgroundColorRes(R.color.colorPrimary)
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
@@ -224,7 +230,6 @@ public class TabActivity extends AppCompatActivity {
                 searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

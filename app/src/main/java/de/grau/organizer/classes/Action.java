@@ -7,6 +7,8 @@ import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Attix on 9/22/16.
+ * Represents an action which is embedded in an event
+ * Contains action type and data to perform an action
  */
 
 public class Action extends RealmObject {
@@ -17,6 +19,10 @@ public class Action extends RealmObject {
     private String type;
     private String Data;
 
+    /**
+     * Default constructor
+     * set id to an unique identifier
+     */
     public Action(){
         if (this.id == null) {
             this.id = UUID.randomUUID().toString();

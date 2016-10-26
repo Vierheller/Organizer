@@ -118,20 +118,23 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Action action = mEvent.getAction();
-                Snackbar snackbar = null;
 
                 if (action == null) {
+                    Snackbar snackbar = null;
                     snackbar = Snackbar.make(v, "No Action set for this Event!", Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 } else {
                     switch (action.getType()) {
                         case Action.TYPE_CALL:
                             call();
                             break;
                         default:
+                            Snackbar snackbar = null;
                             snackbar = Snackbar.make(v, "Action found but not executable!", Snackbar.LENGTH_LONG);
+                            snackbar.show();
                     }
                 }
-                snackbar.show();
+
             }
         });
 
@@ -139,7 +142,6 @@ public class TaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String cur_eventName = mEvent.getName();
-
 
                 //TODO: Decide when there is a notification-alarm -- for now 0
                 if(mEvent.getNotificationTime() != 0){

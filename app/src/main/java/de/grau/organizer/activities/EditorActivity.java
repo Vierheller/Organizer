@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,6 +32,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Tag;
@@ -57,13 +57,14 @@ public class EditorActivity extends AppCompatActivity {
     private ImageButton btn_cancel;
     private Button btn_pickDateStart;
     private Button btn_pickTime;
-    private Button btn_pickDate_fin;
+    private Button btn_pickDateEnd;
     private Button btn_pickTime_fin;
     private Button btn_addNote;
     private Button btn_chooseAction;
     private Button btn_pickNotifyDelay;
     private Button btn_priority;
-    private Button btn_tag;
+    private Button btn_tag_add;
+    private Button btn_tag_delete;
     private Button btn_category;
     private Switch sw_allDay;
     private LinearLayout layout_enddate;
@@ -78,7 +79,8 @@ public class EditorActivity extends AppCompatActivity {
     private TimePickerDialog timeEndPickerDialog;
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
-    private MaterialDialog tagDialog;
+    private MaterialDialog tagAddDialog;
+    private MaterialDialog tagDeleteDialog;
     private MaterialDialog categoryDialog;
 
     //VALUES
@@ -97,8 +99,10 @@ public class EditorActivity extends AppCompatActivity {
     private Category mCategory;
     private int mPriority = 4;           //default value
     private Tag mTag;
+    private Action mAction;
     private boolean mEventtype;          // true = "Aufgabe", false = "Termin"
     private RealmList<Tag> mTagList;
+    private RealmList<Notes> mNoteList;
     private String eventID = null;
 
     //INTENT
@@ -126,9 +130,6 @@ public class EditorActivity extends AppCompatActivity {
         // check intent for eventID and eventtype
         checkIntent(getIntent(), savedInstanceState);
 
-        // Initialize the default Categories
-        generateDefaultCategories();
-
         // This method references every necessary GUI-Element
         initializeGUI();
 
@@ -145,13 +146,14 @@ public class EditorActivity extends AppCompatActivity {
         sw_allDay   =           (Switch) findViewById(R.id.sw_allDay);
         btn_pickDateStart =     (Button) findViewById(R.id.editor_btn_pickdate);
         btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
-        btn_pickDate_fin =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
+        btn_pickDateEnd =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
         btn_pickTime_fin =      (Button) findViewById(R.id.editor_btn_picktime_fin);
         btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
         btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
         btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
         btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
-        btn_tag =               (Button) findViewById(R.id.editor_btn_tags);
+        btn_tag_add =           (Button) findViewById(R.id.editor_btn_tags_add);
+        btn_tag_delete =        (Button) findViewById(R.id.editor_btn_tags_delete);
         btn_category =          (Button) findViewById(R.id.editor_btn_category);
         btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
         btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
@@ -161,25 +163,33 @@ public class EditorActivity extends AppCompatActivity {
         layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
 
-        //TODO This is only for testing
+        tv_tags.setHint("No Tags");
+
+        initilizeDefaultDate();
+
+        // setupDialogs
+        setupDialogsDateAndTime();
+        setupDialogRememberTime();
+        setupDialogPriority();
+        setupDialogAddTag();
+        setupListeners();
+        setPriorityButton(4);           // set default priority
+        setCategoryButton(null);        // set default category
+        setTagTextLine();
+    }
+
+    /*
+       Sets the date and time pickers to their default values
+     */
+    private void initilizeDefaultDate() {
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
 
         currentEndDate = Calendar.getInstance();
         currentEndDate.set(Calendar.SECOND, 0);
-        btn_pickDate_fin.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
-
-        addNote();      //Add a single Note for better user experience.
-
-        setupDialogsDateAndTime();
-        setupDialogRememberTime();
-        setupDialogPriority();
-        setupDialogTag();
-        setupListeners();
-        setPriorityButton(4);           // set default priority
-        setCategoryButton(null);        // set default category
-        setTagTextLine();
+        currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY)+1);         // Enddate is 1h in future by default
+        btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
     }
 
     // check intent for eventID and eventtype
@@ -206,20 +216,6 @@ public class EditorActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    // Save the default Categories in Realm
-    private void generateDefaultCategories() {
-        if (eventsManager.getDefaultCategory() == null)  {        // should only be true at the first run of the app
-            saveCategory("Allgemein");      // sample value
-            saveCategory("Freizeit");       // sample value
-            saveCategory("Arbeit");         // sample value
-        }
-    }
-
-    private void saveCategory(String name) {
-        mCategory = new Category(name);
-        eventsManager.writeCategory(mCategory);
-    }
-
     private void checkEditorMode() {
         if (eventID != null) {                          // true = Editmode, false = Createmode
             Log.d(DEBUG_TAG, "ID: " + eventID);
@@ -239,8 +235,6 @@ public class EditorActivity extends AppCompatActivity {
 
             this.setupDialogsDateAndTime();
 
-
-
             //datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //I want to call the listener with the updateDate method so I do not have to set the btnDateText explicitly
             //setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
@@ -250,10 +244,23 @@ public class EditorActivity extends AppCompatActivity {
             setCategoryButton(mCategory);
             setTagTextLine();
             mEventtype = realm_event.getEventtype();
+
+            // Set the notes
+            mNoteList = realm_event.getNotes();
+
+            for(int i=0; i<mNoteList.size(); i++) {
+                addNote(mNoteList.get(i).getText());
+            }
+
+            // Set the action
+            mAction = realm_event.getAction();
+            if(mAction != null)
+                btn_chooseAction.setText(mAction.getData());
+
             //setting Buttontext to the Time from the Event, and not just the current one.
             if (!mEventtype) {
                 datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
-                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
+                setBtn_pickDateText(btn_pickDateEnd, currentEndDate, realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
             }
             datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
@@ -264,7 +271,7 @@ public class EditorActivity extends AppCompatActivity {
                 //We further need to set the ui of notificationTimeIntervalDialog to display the notificationTime
                 NumberPicker np = (NumberPicker) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_np);
                 np.setValue(notificationTimeInterval/5);
-                btn_pickNotifyDelay.setText(String.format("%d min", notificationTimeInterval));
+                btn_pickNotifyDelay.setText(String.format(Locale.GERMANY,"%d min", notificationTimeInterval));
             }
 
             sw_allDay.setChecked(realm_event.isAllDay());
@@ -275,7 +282,7 @@ public class EditorActivity extends AppCompatActivity {
     private void hideEndTime() {
         if(mEventtype) {            // if realm_event is a task
             sw_allDay.setVisibility(View.GONE);
-            btn_pickDate_fin.setVisibility(View.GONE);
+            btn_pickDateEnd.setVisibility(View.GONE);
             btn_pickTime_fin.setVisibility(View.GONE);
             layout_enddate.setVisibility(View.GONE);
         }
@@ -348,9 +355,39 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void setupDialogTag() {
+    private void setupDialogDeleteTag() {
+            List<String> items = new ArrayList<String>();
+
+            for (int i=0; i<mTagList.size(); i++) {       // Generate itemlist for dialog
+                items.add(mTagList.get(i).getName());
+            }
+
+            tagDeleteDialog = new MaterialDialog.Builder(this)
+                    .title("Delete Tag")
+                    .content("Choose the Tags you want to delete.")
+                    .items(items)
+                    .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            for (int i=0; i<mTagList.size(); i++) {         // Loop over all existing Tags
+                                for (int j=0; j<text.length; j++) {         // Loop over the Tags which we want to delete
+                                    if(mTagList.get(i).getName().equals(text[j])) {
+                                        mTagList.remove(i);
+                                    }
+                                }
+                            }
+                            setTagTextLine();       // Refresh TextView for Tags
+                            return true;
+                        }
+                    })
+                    .negativeText("Cancel")
+                    .positiveText("OK")
+                    .build();
+    }
+
+    private void setupDialogAddTag() {
         mTagList = new RealmList<>();
-        tagDialog = new MaterialDialog.Builder(this)
+        tagAddDialog = new MaterialDialog.Builder(this)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .title("Add Tag")
                 .content("Please insert a tag.")
@@ -373,6 +410,12 @@ public class EditorActivity extends AppCompatActivity {
 
         categorie_names = new ArrayList<>();
         categories = eventsManager.loadAllCategories();     // get all categories from DB
+
+        if(categories.size()>0){
+            mCategory = categories.get(0);
+        }else{
+
+        }
 
         for(int i=0; i<categories.size(); i++) {
             categorie_names.add(categories.get(i).getName());
@@ -419,7 +462,6 @@ public class EditorActivity extends AppCompatActivity {
         int endhour = currentEndDate.get(Calendar.HOUR_OF_DAY);
         int endminute = currentEndDate.get(Calendar.MINUTE);
 
-
         datePickerDialogStart = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
@@ -430,7 +472,7 @@ public class EditorActivity extends AppCompatActivity {
         datePickerDialogEnd = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
-                setBtn_pickDateText(btn_pickDate_fin, currentEndDate, year, month, day_of_month);
+                setBtn_pickDateText(btn_pickDateEnd, currentEndDate, year, month, day_of_month);
             }
         },endyear, endmonth, endday);
 
@@ -448,8 +490,8 @@ public class EditorActivity extends AppCompatActivity {
                         currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentStartDate.set(Calendar.MINUTE, minute);
                         currentEndDate = currentStartDate;
-                        btn_pickTime.setText(String.format("%02d:%02d",hourOfDay,minute));
-                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        btn_pickTime.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
                         timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
                     }
                 },
@@ -460,7 +502,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void initEndTimePicker(int hour, int minute) {
-        btn_pickTime_fin.setText(String.format("%02d:%02d",hour,minute));
+        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hour,minute));
 
         timeEndPickerDialog = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
@@ -468,7 +510,7 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentEndDate.set(Calendar.MINUTE, minute);
-                        btn_pickTime_fin.setText(String.format("%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
                     }
                 },
                 currentEndDate.get(Calendar.HOUR_OF_DAY),
@@ -505,7 +547,7 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
 
-        btn_pickDate_fin.setOnClickListener(new View.OnClickListener() {
+        btn_pickDateEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 datePickerDialogEnd.getDatePicker().setMinDate(currentStartDate.getTime().getTime());
@@ -530,7 +572,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_addNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNote();
+                addNote(null);
             }
         });
 
@@ -573,10 +615,22 @@ public class EditorActivity extends AppCompatActivity {
             }
         });
 
-        btn_tag.setOnClickListener(new View.OnClickListener() {
+        btn_tag_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tagDialog.show();
+                tagAddDialog.show();
+            }
+        });
+
+        btn_tag_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mTagList != null && mTagList.size() > 0) {           // If Taglist is empty
+                    setupDialogDeleteTag();         // Refresh the item-list
+                    tagDeleteDialog.show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"Event doesn't have any Tag.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -617,7 +671,12 @@ public class EditorActivity extends AppCompatActivity {
         btn_priority.setText("Priorität " + String.valueOf(priority));
     }
 
-    private void addNote() {
+    /**
+     * EditText in notecontainer
+     * text = null -> Empty text
+     * @param text
+     */
+    private void addNote(String text) {
         EditText et = new EditText(this);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -626,6 +685,9 @@ public class EditorActivity extends AppCompatActivity {
         layoutParams.setMargins(0, 10, 0, 0);
         et.setLayoutParams(layoutParams);
 
+        if(text != null) {
+            et.setText(text);
+        }
         et.setHint(R.string.layout_editor_notehint);
 
         layout_notelist.add(et);
@@ -658,11 +720,10 @@ public class EditorActivity extends AppCompatActivity {
                     Action action = new Action();
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
-                    realm_event.setAction(action);
+                    mAction = action;
+                    btn_chooseAction.setText(mAction.getData());
                     break;
             }
-        } else {
-            //Log.e("MainActivity", "Failed to pick contact");
         }
     }
 
@@ -720,6 +781,9 @@ public class EditorActivity extends AppCompatActivity {
         //set category
         temp_event.setCategory(mCategory);
 
+        //set action
+        temp_event.setAction(mAction);
+
         if(realm_event == null) {
             //Save realm_event into Database
             realm_event = new Event();
@@ -760,7 +824,7 @@ public class EditorActivity extends AppCompatActivity {
         for (EditText et_note:
             layout_notelist) {
             //no need to add empty Notes
-            if (et_note.getText().toString().isEmpty())
+            if (et_note.getText().toString().trim().isEmpty())
                 continue;
 
             Notes curNote = new Notes();
@@ -775,7 +839,7 @@ public class EditorActivity extends AppCompatActivity {
      * @return isValid
      */
     private boolean verifyEvent() {
-        return !et_title.getText().toString().isEmpty();
+        return !et_title.getText().toString().trim().isEmpty();
     }
 
     @Override
