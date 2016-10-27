@@ -43,8 +43,8 @@ public class EventsManagerRealm implements EventsManager {
 
         Log.d("database", startDate.toString());
 
-        query.greaterThan("start", startDate);
-        query.lessThan("start", endDate);
+        query.greaterThanOrEqualTo("start", startDate);
+        query.lessThanOrEqualTo("start", endDate);
         query.equalTo("isTask", false); //event
 
         return  query.findAll().sort("start", Sort.ASCENDING);
@@ -77,8 +77,8 @@ public class EventsManagerRealm implements EventsManager {
 
         Date dateEnd = cal.getTime();
 
-        query.greaterThan("start", dateStart);
-        query.lessThan("start", dateEnd);
+        query.greaterThanOrEqualTo("start", dateStart);
+        query.lessThanOrEqualTo("start", dateEnd);
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }
@@ -113,8 +113,8 @@ public class EventsManagerRealm implements EventsManager {
 
         Date dateEnd = cal.getTime();
 
-        query.greaterThan("start", dateStart);
-        query.lessThan("start", dateEnd);
+        query.greaterThanOrEqualTo("start", dateStart);
+        query.lessThanOrEqualTo("start", dateEnd);
         query.isNotNull("end");
 
         return  query.findAll().sort("start", Sort.ASCENDING);
@@ -166,8 +166,8 @@ public class EventsManagerRealm implements EventsManager {
         RealmResults<Event> query = realm
                 .where(Event.class)
                 .equalTo("priority",priority)
-                .greaterThan("start", dateStart)
-                .lessThan("start", dateEnd)
+                .greaterThanOrEqualTo("start", dateStart)
+                .lessThanOrEqualTo("start", dateEnd)
                 .findAll()
                 .sort("start", Sort.ASCENDING);
         return query;
