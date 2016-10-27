@@ -1,81 +1,100 @@
 <resources>
     <string name="app_name">Organizer</string>
     <string name="title_activity_tab">TabActivity</string>
-    <string name="title_task_activity">Details</string>
-    <string name="title_activity_editor">Event Editor</string>
-    <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_task">TaskActivity</string>
+    <string name="title_task_activity">Details</string>
+    <string name="title_activity_editor_termin">Termin Editor</string>
+    <string name="title_activity_editor_exercise">Aufgaben Editor</string>
+    <string name="action_settings">Einstellungen</string>
+
+
     <string name="search_title">Suche</string>
-    <string name="search_schließen">Schließenquit</string>
+    <string name="search_schließen">Schließen</string>
     <string name="search_hint">Suchabfrage</string>
-    <string name="layout_eventName">Name des Eintrags</string>
-    <string name="layout_hint_eventName">Name</string>
-    <string name="layout_dateTime">Datum und Uhrzeit</string>
-    <string name="layout_button_addNote">Notiz hinzufügen</string>
-    <string name="layout_button_addAction">Aktion hinzufügen</string>
-    <string name="layout_editor_descriptionhint">Beschreibung</string>
-    <string name="layout_editor_notehint">Notiz</string>
-    <string name="layout_editor_rememberlable">Benachrichtigungszeit</string>
-    <string name="timePreset">12:00</string>
-    <string name="editor_btn_picknotifydelay">Keine</string>
-    <string name="editor_btn_chooseaction">Aktion hinzufügen</string>
-    <string name="editor_btn_priority">Priorität</string>
-    <string name="editor_btn_saveevent">Notiz hinzufügen</string>
-    <string name="editor_dialog_priority_title">Priorität</string>
 
-
-    <string name="datepickPreview">27.09.2016</string>
-    <string name="title_activity_settings">Einstellungen</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_category">Kategorien</string>
-
-
-    <!-- Example settings for Data & Sync -->
     <string-array name="list_preference_entries">
         <item>Entry 1</item>
         <item>Entry 2</item>
         <item>Entry 3</item>
     </string-array>
 
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Benachrichtigung</string>
+    <string name="layout_editor_rememberlable">Benachrichtigungszeit</string>
+    <string name="pref_title_new_message_notifications">Push-Nachrichten empfangen?</string>
+    <string name="cancelNotification">Benachrichtigung entfernen</string>
 
-    <string name="pref_title_new_message_notifications">Neuer Benachrichtigungstext</string>
     <string name="pref_title_ringtone">Klingelton</string>
     <string name="pref_ringtone_silent">Stumm</string>
     <string name="pref_title_vibrate">Vibration</string>
 
-    <string name="timeEndPickerTitle">Ende</string>
+
     <string name="menuEdit">Bearbeiten</string>
-    <string name="menuDelete">Löschen</string>
-    <string name="cancelNotification">Benachrichtigung entfernen</string>
-    <string name="createTestEvents">Erzeuge Testevents</string>
-    <string name="switchAllDayText">Ganztägiges Ereignis</string>
-    <string name="categoryText">Kategorie</string>
-    <string name="tagListEmpty">Keine Tags</string>
-    <string name="eventtitle">Title</string>
-    <string name="eventdescription">Beschreibung</string>
-    <string name="execute_action">Aktion durchführen</string>
     <string name="delete">Löschen</string>
-    <string name="remember_interval_min">Erinnerungsintervall (min)</string>
     <string name="cancel">Abbrechen</string>
     <string name="accept">Akzeptieren</string>
+    <string name="ok">OK</string>
+
+    <string name="layout_button_addAction">Aktion hinzufügen</string>
+    <string name="execute_action">Aktion durchführen</string>
+
+    <string name="createTestEvents">Erzeuge Testevents</string>
+
+
+    <string name="eventtitle">Title</string>
+    <string name="eventdescription">Beschreibung</string>
+    <string name="layout_editor_descriptionhint">Beschreibung</string>
+    <string name="layout_eventName">Name des Eintrags</string>
+    <string name="layout_hint_eventName">Name</string>
+
+    <string name="layout_button_addNote">Notiz hinzufügen</string>
+    <string name="layout_editor_notehint">Notiz</string>
+
+    <string name="remember_interval_min">Erinnerungsintervall (min)</string>
+    <string name="editor_btn_picknotifydelay">Keine</string>
+
+    <string name="layout_dateTime">Datum und Uhrzeit</string>
+    <string name="weekViewEventTime">Zeit</string>
     <string name="defaultTime">12:00</string>
     <string name="defaultTime2">13:00</string>
+    <string name="minutes">Minute(n)</string>
+    <string name="hours">Stunde(n)</string>
+    <string name="defaultDate">24.12.2016</string>
+    <string name="defaultDate2">24.12.2016</string>
+    <string name="days">Tage</string>
+    <string name="switchAllDayText">Ganztägiges Ereignis</string>
+    <string name="timeEndPickerTitle">Ende</string>
+
     <string name="eventlist_row_tv_text">Textansicht</string>
-    <string name="eventlist_row_category_text">Kategorie</string>
     <string name="weekViewEventTitle">Event</string>
-    <string name="weekViewEventTime">Zeit</string>
+
+
+    <string name="monday">Mo</string>
+    <string name="tuesday">Di</string>
+    <string name="wednesday">Mi</string>
+    <string name="thursday">Do</string>
+    <string name="friday">Fr</string>
+    <string name="saturday">Sa</string>
+    <string name="sunday">So</string>
+
+
+
+    <string name="tagListEmpty">Keine Tags</string>
+    <string name="deleteTag">Tag löschen</string>
+    <string name="tagToDelete">Welcher Tag soll gelöscht werden</string>
+    <string name="addTag">Tag hinzufügen</string>
+    <string name="insertTag">Tragen Sie einen Tag ein.</string>
+
+    <string name="pref_header_category">Kategorien</string>
+    <string name="category">Kategorie</string>
+    <string name="chooseCategory">Wählen Sie eine Kategorie.</string>
+
+    <string name="editor_btn_priority">Priorität</string>
+    <string name="choosePriority">Wählen Sie eine Priorität.</string>
+
+    <string name="duration">Dauer</string>
+    <string name="time_to_event">Zeit bis Termin</string>
+    <string name="event_is_active">aktiv</string>
+    <string name="event_in_past">in Vergangenheit</string>
 
     <string name="search_no_resultToast">Kein Suchergebnis für die Suchkriterien</string>
     <string name="search_no_queryToast">Query was empty</string>
@@ -92,15 +111,9 @@
     <string name="NoActionSetSnack">Keine Aktion für dieses Event gesetzt!</string>
     <string name="ActionNotExecSnack">Aktion kann nicht durchgeführt werden!</string>
     <string name="deletedSnack">Löschen erfolgreich!</string>
-    <string name="defaultDate">24.12.2016</string>
-    <string name="defaultDate2">24.12.2016</string>
-    <string name="duration">Dauer</string>
-    <string name="time_to_event">Zeit bis Termin</string>
-    <string name="minutes">Minute(n)</string>
-    <string name="hours">Stunde(n)</string>
-    <string name="event_is_active">aktiv</string>
-    <string name="event_in_past">in Vergangenheit</string>
-    <string name="days">Tage</string>
     <string name="editor_error_contact">Problem während der Kontaktwahl</string>
+
+
+
 </resources>
  

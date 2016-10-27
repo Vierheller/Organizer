@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/title_activity_editor"
+                android:text="@string/title_activity_editor_termin"
                 android:textColor="@android:color/white"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_gravity="center"
@@ -101,14 +101,14 @@
                     android:drawableLeft="@drawable/ic_event_date_24dp"
                     android:drawablePadding="20dp"
                     android:id="@+id/editor_btn_pickdate"
-                    android:text="@string/datepickPreview"
+                    android:text="@string/defaultDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
                 <Button
                     android:id="@+id/editor_btn_picktime"
-                    android:text="@string/timePreset"
+                    android:text="@string/defaultTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
@@ -123,14 +123,14 @@
                     android:drawableLeft="@drawable/ic_event_date_reverse_24dp"
                     android:drawablePadding="20dp"
                     android:id="@+id/editor_btn_pickdate_fin"
-                    android:text="@string/datepickPreview"
+                    android:text="@string/defaultDate2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
 
                 <Button
                     android:id="@+id/editor_btn_picktime_fin"
-                    android:text="@string/timePreset"
+                    android:text="@string/defaultTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"/>
@@ -146,7 +146,7 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp">
                 <Button
-                    android:text="@string/categoryText"
+                    android:text="@string/category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/editor_btn_category"
@@ -184,7 +184,7 @@
 
                 <Button
                     android:drawableLeft="@drawable/ic_action_phone_24dp"
-                    android:text="@string/editor_btn_chooseaction"
+                    android:text="@string/layout_button_addAction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.54"

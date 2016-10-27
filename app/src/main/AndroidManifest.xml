@@ -42,7 +42,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:parentActivityName=".activities.TabActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/action_settings"
             android:theme="@style/AppTheme.ActionBar">
 
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for

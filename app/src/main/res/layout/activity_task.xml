@@ -99,7 +99,7 @@
 
                     <TextView
                         android:drawableLeft="@drawable/ic_event_date_24dp"
-                        android:text="@string/datepickPreview"
+                        android:text="@string/defaultDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -110,7 +110,7 @@
 
 
                     <TextView
-                        android:text="@string/timePreset"
+                        android:text="@string/defaultTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -130,7 +130,7 @@
 
                 <TextView
                     android:drawableLeft="@drawable/ic_event_date_reverse_24dp"
-                    android:text="@string/datepickPreview"
+                    android:text="@string/defaultDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -140,7 +140,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:text="@string/timePreset"
+                    android:text="@string/defaultTime2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

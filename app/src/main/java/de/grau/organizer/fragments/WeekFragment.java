@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -160,7 +161,9 @@ public class WeekFragment extends Fragment {
     }
 
     private void setupWeekDays() {
-        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        String[] days = {getString(R.string.monday), getString(R.string.tuesday),
+                getString(R.string.wednesday), getString(R.string.thursday),
+                getString(R.string.friday), getString(R.string.saturday), getString(R.string.sunday)};
         for(String day: days) {
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(50, 50);
             param.weight = 1;
@@ -304,21 +307,26 @@ class EventWeekView extends RelativeLayout {
         eventViews.clear();
     }
 
+    /**
+     * This method draws the events on the view
+     * @param events A list of events that you want to draw on the view
+     */
     public void setupEvents(List<Event> events) {
         removeOldEventViews();
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
         Log.d(DEBUG_TAG, "Density: " + density);
 
-        int width = metrics.widthPixels-(int)(50*density);
-//        int width = this.getWidth();
+        //The widths of the whole device in dp minus the 50density pixels because the view has a leftMargin of 50dp
+        float width = metrics.widthPixels-(int)(50*density);
 
         Log.d(DEBUG_TAG, "Width: " + width);
+        //the mHeight of the view is not in dp so we multiply it with the density
         double eHeight = mHeight*density;
 
-//        int height = this.getHeight();
         Log.d(DEBUG_TAG, "Height: " + eHeight);
 
+        //a loop that draws every event in the events array
         for (Event event: events) {
             Log.d(DEBUG_TAG, "Adding: " + event);
             //returns: Sun: 1, Mon: 2, ...
@@ -329,39 +337,136 @@ class EventWeekView extends RelativeLayout {
             Log.d(DEBUG_TAG, "startHour: "  + startHour + " startMinute: " + startMinute);
 
             //the time in between every event:
-            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.MINUTES);
+            Date startDateEvent = event.getStart();
+            long duration = getDateDiff(startDateEvent, event.getEnd(), TimeUnit.MINUTES);
             Log.d(DEBUG_TAG, "day: "  + day + " duration: " + duration);
 
             //there are 7 days so the width of one event should be equal to a day
             //the height equals the height of the view / 24 (hours per day) times the time of the event
-            int eventWidth = width/7 - (int)(2*density);
-            int eventHeight = (int)((eHeight/(24*60))*(duration));
-            if (eventHeight < 45) {
-                eventHeight = 45;
-            }
-            int leftMargin = day*(width/7) + (int)density;
-            int topMargin = (int)((eHeight/24) * (startHour) + ((eHeight/(24*60))*startMinute)); //(height/24)*startHour + (height/(24*60))*startMinute;
+            int eventWidth = calcEventWidth(width, density);
+            int eventHeight = calcEventHeight(eHeight, duration);
+            int leftMargin = calcLeftMargin(day, width, density);
+            int topMargin =  calcTopMargin(eHeight, startHour, startMinute);
             Log.d(DEBUG_TAG, "event Width: " + eventWidth + " event Height: " + eventHeight + " left Margin: " + leftMargin + " top Margin: " + topMargin);
 
 
-            WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
-            eventView.setBackgroundColor( event.getPriorityColor() );
 
-            //int alpha = (int)((((-event.getPriority()) + 5f)/6f) * 255f);
-            int alpha = 255/3;
-            Log.d(DEBUG_TAG, "alpha: " + alpha);
-            eventView.getBackground().setAlpha( alpha );
-            eventView.fillGui(event);
-            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
-            params.leftMargin = leftMargin;
-            params.topMargin = topMargin;
-            eventViews.add(eventView);
-            this.addView(eventView, params);
+            drawEventWeekView(event, leftMargin, topMargin, eventWidth, eventHeight);
+            //the event is higher than the view -> the event goes over more than one day -> draw the event on the next column
+            while(topMargin + eventHeight > eHeight && day != 6) {
+                topMargin = 0;
+
+                //set the startDate to the next day and 00:00:00 so we can calculate a new duration from this date and the event's end date
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(startDateEvent);
+                cal.add(Calendar.DAY_OF_WEEK, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                startDateEvent = cal.getTime();
+                duration = getDateDiff(startDateEvent, event.getEnd(), TimeUnit.MINUTES);
+                topMargin = 0;
+                eventHeight = calcEventHeight(eHeight, duration);
+                day += 1;
+                leftMargin = calcLeftMargin(day, width, density);
+
+
+                drawEventWeekView(event, leftMargin, topMargin, eventWidth, eventHeight);
+            }
+
         }
+    }
+
+    /**
+     * Calculates the top Margin
+     * Divides the height by 24 and multiplies the hour
+     * Divides the height by 24*60 and multiplies it with the minutes
+     * @param height
+     * @param startHour
+     * @param startMinute
+     * @return
+     */
+    private int calcTopMargin(double height, int startHour, int startMinute) {
+        return (int)((height/24) * (startHour) + ((height/(24*60))*startMinute));
+    }
+
+    /**
+     * Calculates the event width of the whole view
+     * Divides the width by 7 and substracts the density to not fill up the whole width
+     * @param width the width of the whole view
+     * @param density the density of the view that can be substracted so that the events do not take up the complete width
+     * @return the calculated width
+     */
+    private int calcEventWidth(float width, @Nullable Float density) {
+        if (density == null) {
+            density = new Float(0);
+        }
+        return (int)(width/7 - (int)(2*density));
+    }
+
+    /**
+     * calculates the leftMargin of an event relative to the width of the whole view
+     * Divides the width by 7 and multiplies the days
+     * @param day the day (Mon 0, ..., Sun 6) of when the view starts
+     * @param width the width of the whole view
+     * @param density the density of the view that can be added so that they are not aligned to the complete left
+     * @return the calculated margin
+     */
+    private int calcLeftMargin(int day, float width, @Nullable Float density) {
+        if (density == null) {
+            density = new Float(0);
+        }
+        return (int)(day*(width/7) + density);
+    }
+
+    /**
+     * Calculates the height of an event relative to the whole view
+     * Divides the view's height by hour and minute (24*60) and multiplies the duration
+     * @param eHeight The height of the complete view
+     * @param duration The length of the event in minutes
+     * @return the height calculated
+     */
+    private int calcEventHeight(double eHeight, long duration) {
+        int height = (int)((eHeight/(24*60))*(duration));
+        if (height < 45) {
+            height = 45;
+        }
+        return height;
+    }
+
+    /**
+     * draws the event on the view
+     * this creates an instance of WeekViewEvent that displays the event
+     * @param event the event to draw
+     * @param leftMargin
+     * @param topMargin
+     * @param eventWidth
+     * @param eventHeight
+     */
+    private void drawEventWeekView(Event event, int leftMargin, int topMargin, int eventWidth, int eventHeight) {
+        WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
+        eventView.setBackgroundColor( event.getPriorityColor() );
+
+        //set the alpha of the view
+        int alpha = 255/3;
+        Log.d(DEBUG_TAG, "alpha: " + alpha);
+        eventView.getBackground().setAlpha( alpha );
+        //fills the eventView with the events (sets the name and the category)
+        eventView.fillGui(event);
+        //set the parameter so the eventWeekView is aligned correctly
+        EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
+        params.leftMargin = leftMargin;
+        params.topMargin = topMargin;
+
+        eventViews.add(eventView);
+        this.addView(eventView, params);
     }
 
     Timer mHorizonTimer;
 
+    /**
+     * timer that draws the currentHorizon and updates it every 10 minutes
+     */
     public void drawCurrentSpace() {
         currentTimeHorizon();
         if( mHorizonTimer == null ) {
@@ -376,21 +481,32 @@ class EventWeekView extends RelativeLayout {
             @Override
             public void run() {
                 Log.d(DEBUG_TAG, "Changing to UI Thread");
-                weekFragment.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
+                if(weekFragment!= null ){
+                    if(weekFragment.getActivity() != null){
+                        weekFragment.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
 
-                        currentTimeHorizon();
-                        Log.d(DEBUG_TAG, "drew horizon on UI Thread");
+                                currentTimeHorizon();
+                                Log.d(DEBUG_TAG, "drew horizon on UI Thread");
+                            }
+                        });
+                    }else{
+                        Log.d(DEBUG_TAG, "weekfragment is not null, but there is no parent activity");
                     }
-                });
+                }else{
+                    Log.d(DEBUG_TAG, "weekfragment is null");
+                }
             }
         }, mHorizonInterval, mHorizonInterval);
     }
 
     int mHorizonInterval = 1000*60*10;
 
+    /**
+     * draws 25 (from 00:00 to 24:00) lines with equal spacing
+     */
     public void drawHorizontalSpaces() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
@@ -419,6 +535,9 @@ class EventWeekView extends RelativeLayout {
         this.addView(bottomView, paramsBot);
     }
 
+    /**
+     * draws a horizontal magenta line that displays the current time of the device
+     */
     private void currentTimeHorizon() {
         Log.d(DEBUG_TAG, "draw horizon");
         DisplayMetrics metrics = getResources().getDisplayMetrics();
