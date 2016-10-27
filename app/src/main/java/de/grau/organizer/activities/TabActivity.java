@@ -22,6 +22,7 @@ import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +55,7 @@ public class TabActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Context activityContext;
     public EventsManager eventsManager;
+    public CalendarDay mCalDay = null;
     private List<Event> mSearchResults;
     private MaterialDialog md_event_selector;
 
@@ -76,12 +78,7 @@ public class TabActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
-
-
-
     }
-
-
 
     public void setupFragements() {
         // Create the adapter that will return a fragment for each of the three
@@ -146,6 +143,7 @@ public class TabActivity extends AppCompatActivity {
     public void startEditorActivity(boolean eventtype){
         Intent intent = new Intent(activityContext, EditorActivity.class);
         intent.putExtra(EditorActivity.INTENT_PARAM_EVENTTYPE, eventtype);
+        //intent.putExtra(EditorActivity.INTENT_PARAM_CALLENDAR_DAY, mCalDay.getCalendar().getTimeInMillis());
         startActivity(intent);
     }
 

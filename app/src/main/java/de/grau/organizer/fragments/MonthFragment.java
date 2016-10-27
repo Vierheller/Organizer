@@ -83,9 +83,9 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
         Log.d(DEBUG_TAG, "Item selected: "+date);
+        mActivity.mCalDay = date;       // Remember date for floating action button
         selectDate(date);
     }
-
 
     private void selectDate(CalendarDay date){
         currentEventsInListView = mActivity.eventsManager.getEvents(date);

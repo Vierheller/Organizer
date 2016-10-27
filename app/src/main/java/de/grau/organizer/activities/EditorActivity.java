@@ -108,10 +108,12 @@ public class EditorActivity extends AppCompatActivity {
     //INTENT
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
     public static final String INTENT_PARAM_EVENTTYPE = "intent_eventType";
+    public static final String INTENT_PARAM_CALLENDAR_DAY = "intent_calendar_day";
 
     //HELPERS
     private Calendar currentStartDate;
     private Calendar currentEndDate;
+    //private Calendar currentStartDateFromIntent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,13 +177,14 @@ public class EditorActivity extends AppCompatActivity {
         setupListeners();
         setPriorityButton(4);           // set default priority
         setCategoryButton(null);        // set default category
-        setTagTextLine();
+        setTagTextView();
     }
 
     /*
        Sets the date and time pickers to their default values
      */
     private void initilizeDefaultDate() {
+        //currentStartDate = currentStartDateFromIntent;
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
@@ -194,6 +197,7 @@ public class EditorActivity extends AppCompatActivity {
 
     // check intent for eventID and eventtype
     private void checkIntent(Intent intent, Bundle savedInstanceState) {
+        //currentStartDateFromIntent = Calendar.getInstance();
         if (savedInstanceState == null) {                                                   // ToDo are those checks really necessary????
             Bundle extras = intent.getExtras();
             if(extras == null) {
@@ -201,11 +205,15 @@ public class EditorActivity extends AppCompatActivity {
             } else {
                 eventID = extras.getString(INTENT_PARAM_EVENTID);
                 mEventtype = extras.getBoolean(INTENT_PARAM_EVENTTYPE);
+                //if(extras.getLong(INTENT_PARAM_CALLENDAR_DAY) != 0)
+                  //  currentStartDateFromIntent.setTimeInMillis(extras.getLong(INTENT_PARAM_CALLENDAR_DAY));
             }
         } else {
             if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
                 eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
                 mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
+                //if(savedInstanceState.getLong(INTENT_PARAM_CALLENDAR_DAY) != 0)
+                  //  currentStartDateFromIntent.setTimeInMillis((long) savedInstanceState.getLong(INTENT_PARAM_CALLENDAR_DAY));
             }
         }
     }
@@ -241,7 +249,7 @@ public class EditorActivity extends AppCompatActivity {
             setPriorityButton(realm_event.getPriority());
             mCategory = realm_event.getCategory();
             setCategoryButton(mCategory);
-            setTagTextLine();
+            setTagTextView();
             mEventtype = realm_event.getTask();
 
             // Set the notes
@@ -375,7 +383,7 @@ public class EditorActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                            setTagTextLine();       // Refresh TextView for Tags
+                            setTagTextView();       // Refresh TextView for Tags
                             return true;
                         }
                     })
@@ -393,14 +401,30 @@ public class EditorActivity extends AppCompatActivity {
                 .input("my tag...", "", new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
-                        mTag = new Tag(input.toString());
-                        mTagList.add(mTag);
-                        Log.d(DEBUG_TAG, "Tag hinzugefügt: "+mTag.getName());
-                        setTagTextLine();
+                        addTagToList(input.toString().trim());
                     }
                 })
                 .negativeText("Cancel")
                 .build();
+    }
+
+    // Adds a Tag to the List
+    private void addTagToList(String inputTag) {
+        boolean tagIsNew = true;
+
+        for(int i=0; i<mTagList.size(); i++) {
+            if(mTagList.get(i).getName().equals(inputTag)) {
+                tagIsNew = false;
+                break;
+            }
+        }
+
+        if(tagIsNew) {
+            mTag = new Tag(inputTag);
+            mTagList.add(mTag);
+            setTagTextView();
+            Toast.makeText(getApplicationContext(),"Tag hinzugefügt.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setupDialogCategory() {
@@ -661,7 +685,7 @@ public class EditorActivity extends AppCompatActivity {
         categoryDialog.show();
     }
 
-    private void setTagTextLine() {
+    private void setTagTextView() {
         tv_tags.setText("");
 
         if(mTagList != null) {
