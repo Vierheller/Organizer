@@ -313,6 +313,13 @@ public class TaskActivity extends AppCompatActivity {
         tv_notes.setText(notes);
     }
 
+    /**
+     * This method takes the Intent and tries to get the ID from Event that is delivered by Intent.
+     * If method finds the id of the event, it loads it from databse and returns the Event.
+     *
+     * @param intent
+     * @return
+     */
     private Event getEventFromIntent(Intent intent){
         //Get the EventId from the previous mActivity
         String id = intent.getStringExtra(INTENT_PARAM_ID);
