@@ -37,13 +37,13 @@
                 android:id="@+id/week_view_time"
                 android:layout_gravity="fill"></LinearLayout>
 
-            <de.grau.organizer.fragments.EventWeekView
+            <de.grau.organizer.views.EventWeekView
                 android:layout_width="match_parent"
                 android:layout_height="510dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/event_week_view">
 
-            </de.grau.organizer.fragments.EventWeekView>
+            </de.grau.organizer.views.EventWeekView>
         </LinearLayout>
     </ScrollView>
 

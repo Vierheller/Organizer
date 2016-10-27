@@ -1,14 +1,12 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IntRange;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,11 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import de.grau.organizer.views.WeekViewEvent;
+import de.grau.organizer.views.EventWeekView;
 
 
 import java.text.SimpleDateFormat;
@@ -28,11 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Date;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
@@ -215,7 +208,11 @@ public class WeekFragment extends Fragment {
         mCalEnd.set(Calendar.SECOND, mCalEnd.getActualMaximum(Calendar.SECOND));
     }
 
-    private void changeCalendarWeek(int weeks) {
+    /**
+     * This method can be used to redraw the events or increment, decrement the view
+     * @param weeks 0 to redraw, 1 to go to the next week, -1 is the week before the current set week
+     */
+    public void changeCalendarWeek(@IntRange(from=-1,to=1) int weeks) {
         mCalStart.add(Calendar.WEEK_OF_YEAR, weeks);
         mCalEnd.add(Calendar.WEEK_OF_YEAR, weeks);
 
@@ -225,7 +222,7 @@ public class WeekFragment extends Fragment {
         SimpleDateFormat dty = new SimpleDateFormat("dd.MM.yyyy");
         String dateEnd = dty.format(mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
-        mWeekInfoTextView.setText("Week: " + mCalStart.get(Calendar.WEEK_OF_YEAR) + "\n" + dateStart + " - " + dateEnd);
+        mWeekInfoTextView.setText("Woche: " + mCalStart.get(Calendar.WEEK_OF_YEAR) + "\n" + dateStart + " - " + dateEnd);
         mWeekView.setupEvents(events);
         mWeekView.drawCurrentSpace();
     }
@@ -272,194 +269,5 @@ public class WeekFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-}
-class EventWeekView extends RelativeLayout {
-
-    public static final String DEBUG_TAG = EventWeekView.class.getCanonicalName();
-
-    public EventWeekView(Context context) {
-        super(context);
-    }
-
-    public EventWeekView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public EventWeekView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public EventWeekView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public WeekFragment weekFragment;
-    private View mCurrentHorizon;
-    private int mHeight = 510;
-    private ArrayList<WeekViewEvent> eventViews = new ArrayList<>();
-
-    private void removeOldEventViews() {
-        for (WeekViewEvent eventView : eventViews) {
-            this.removeView(eventView);
-        }
-        eventViews.clear();
-    }
-
-    public void setupEvents(List<Event> events) {
-        removeOldEventViews();
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float density = metrics.density;
-        Log.d(DEBUG_TAG, "Density: " + density);
-
-        int width = metrics.widthPixels-(int)(50*density);
-//        int width = this.getWidth();
-
-        Log.d(DEBUG_TAG, "Width: " + width);
-        double eHeight = mHeight*density;
-
-//        int height = this.getHeight();
-        Log.d(DEBUG_TAG, "Height: " + eHeight);
-
-        for (Event event: events) {
-            Log.d(DEBUG_TAG, "Adding: " + event);
-            //returns: Sun: 1, Mon: 2, ...
-            //We want Mon: 0, ..., Sun: 6 so we calc day+5 % 7
-            int day = (event.getTime(Event.DateTime.START, Calendar.DAY_OF_WEEK) + 5) % 7;
-            int startHour = event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY);
-            int startMinute = event.getTime(Event.DateTime.START, Calendar.MINUTE);
-            Log.d(DEBUG_TAG, "startHour: "  + startHour + " startMinute: " + startMinute);
-
-            //the time in between every event:
-            long duration = getDateDiff(event.getStart(), event.getEnd(), TimeUnit.MINUTES);
-            Log.d(DEBUG_TAG, "day: "  + day + " duration: " + duration);
-
-            //there are 7 days so the width of one event should be equal to a day
-            //the height equals the height of the view / 24 (hours per day) times the time of the event
-            int eventWidth = width/7 - (int)(2*density);
-            int eventHeight = (int)((eHeight/(24*60))*(duration));
-            if (eventHeight < 45) {
-                eventHeight = 45;
-            }
-            int leftMargin = day*(width/7) + (int)density;
-            int topMargin = (int)((eHeight/24) * (startHour) + ((eHeight/(24*60))*startMinute)); //(height/24)*startHour + (height/(24*60))*startMinute;
-            Log.d(DEBUG_TAG, "event Width: " + eventWidth + " event Height: " + eventHeight + " left Margin: " + leftMargin + " top Margin: " + topMargin);
-
-
-            WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
-            eventView.setBackgroundColor( event.getPriorityColor() );
-
-            //int alpha = (int)((((-event.getPriority()) + 5f)/6f) * 255f);
-            int alpha = 255/3;
-            Log.d(DEBUG_TAG, "alpha: " + alpha);
-            eventView.getBackground().setAlpha( alpha );
-            eventView.fillGui(event);
-            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
-            params.leftMargin = leftMargin;
-            params.topMargin = topMargin;
-            eventViews.add(eventView);
-            this.addView(eventView, params);
-        }
-    }
-
-    Timer mHorizonTimer;
-
-    public void drawCurrentSpace() {
-        currentTimeHorizon();
-        if( mHorizonTimer == null ) {
-            mHorizonTimer = new Timer();
-        } else {
-            mHorizonTimer.cancel();
-            mHorizonTimer.purge();
-            mHorizonTimer = null;
-            mHorizonTimer = new Timer();
-        }
-        mHorizonTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Log.d(DEBUG_TAG, "Changing to UI Thread");
-                if(weekFragment!= null ){
-                    if(weekFragment.getActivity() != null){
-                        weekFragment.getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
-
-                                currentTimeHorizon();
-                                Log.d(DEBUG_TAG, "drew horizon on UI Thread");
-                            }
-                        });
-                    }else{
-                        Log.d(DEBUG_TAG, "weekfragment is not null, but there is no parent activity");
-                    }
-                }else{
-                    Log.d(DEBUG_TAG, "weekfragment is null");
-                }
-            }
-        }, mHorizonInterval, mHorizonInterval);
-    }
-
-    int mHorizonInterval = 1000*60*10;
-
-    public void drawHorizontalSpaces() {
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float density = metrics.density;
-        double eHeight = (mHeight*density)/24;
-        Log.d(DEBUG_TAG, "eHeight: " + eHeight);
-        for (int x = 1; x<24;x++) {
-            View v = new View(this.getContext());
-            EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
-            params.topMargin = (int) (eHeight*x);
-            v.setBackgroundColor(Color.parseColor("#B3B3B3"));
-            this.addView(v, params);
-        }
-
-        View topView = new View(this.getContext());
-        EventWeekView.LayoutParams paramsTop = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5);
-        Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*0));
-        paramsTop.topMargin = (int) (0*eHeight);
-        topView.setBackgroundColor(Color.BLACK);
-        this.addView(topView, paramsTop);
-
-        View bottomView = new View(this.getContext());
-        EventWeekView.LayoutParams paramsBot = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
-        Log.d(DEBUG_TAG, "Last space is " + (int) (eHeight*24));
-        paramsBot.topMargin = (int) ((24*eHeight) - (2*density));
-        bottomView.setBackgroundColor(Color.BLACK);
-        this.addView(bottomView, paramsBot);
-    }
-
-    private void currentTimeHorizon() {
-        Log.d(DEBUG_TAG, "draw horizon");
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float density = metrics.density;
-        double eHeight = (mHeight*density)/24;
-        Calendar cal = Calendar.getInstance();
-        int curMinutes = cal.get(Calendar.MINUTE);
-        int curHours = cal.get(Calendar.HOUR_OF_DAY);
-
-        Log.d(DEBUG_TAG, "curMin: " + curMinutes + " curHours: " + curHours);
-        EventWeekView.LayoutParams paramsCur = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
-        paramsCur.topMargin = (int) ((curHours*eHeight + curMinutes*(eHeight/60)));
-
-        if(mCurrentHorizon != null) {
-            this.removeView(mCurrentHorizon);
-        }
-        mCurrentHorizon = new View(this.getContext());
-        mCurrentHorizon.setBackgroundColor(Color.MAGENTA);
-        mCurrentHorizon.setAlpha(0.5f);
-        this.addView(mCurrentHorizon, paramsCur);
-    }
-
-    /**
-     * Get a diff between two dates
-     * @param date1 the oldest date
-     * @param date2 the newest date
-     * @param timeUnit the unit in which you want the diff
-     * @return the diff value, in the provided unit
-     */
-    public long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 }
