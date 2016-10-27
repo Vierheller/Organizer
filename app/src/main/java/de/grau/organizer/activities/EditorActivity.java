@@ -80,7 +80,7 @@ public class EditorActivity extends AppCompatActivity {
     //DIALOGS
     private DatePickerDialog datePickerDialogStart;
     private DatePickerDialog datePickerDialogEnd;
-    private TimePickerDialog timePickerDialog;
+    private TimePickerDialog timeStartPickerDialog;
     private TimePickerDialog timeEndPickerDialog;
     private Dialog notificationTimeIntervalDialog;
     private MaterialDialog priorityDialog;
@@ -92,10 +92,6 @@ public class EditorActivity extends AppCompatActivity {
     //notificationTimeInterval is the
     private int notificationTimeInterval = -1;      //-1 no notification, positive exists notification
     private boolean useRememberNotification = false;
-
-    //INTENT ACTIONS AND PERMISSIONS
-    private final static int CONTACT_PICKER = 1;
-    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     //INTERNAL EVENT REPRESENTATION
     private EventsManager eventsManager = new EventsManagerRealm();
@@ -111,6 +107,9 @@ public class EditorActivity extends AppCompatActivity {
     private String eventID = null;
 
     //INTENT
+    private static final int CONTACT_PICKER = 1;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+
     public static final String INTENT_PARAM_EVENTID = "intent_eventID";
     public static final String INTENT_PARAM_EVENTTYPE = "intent_eventType";
     public static final String INTENT_PARAM_CALLENDAR_DAY = "intent_calendar_day";
@@ -154,7 +153,10 @@ public class EditorActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    // This method references every necessary GUI-Element
+    /**
+     * This method references every necessary GUI-Element
+     * It also starts the setup Methods for the Dialogs and Listeners
+     */
     private void initializeGUI() {
         et_title = (EditText) findViewById(R.id.editor_et_title);
         sw_allDay = (Switch) findViewById(R.id.sw_allDay);
@@ -196,7 +198,6 @@ public class EditorActivity extends AppCompatActivity {
        Sets the date and time pickers to their default values
      */
     private void initilizeDefaultDate() {
-        //currentStartDate = currentStartDateFromIntent;
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
         btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentStartDate.get(Calendar.MONTH) + 1) + "." + currentStartDate.get(Calendar.YEAR));
@@ -207,7 +208,11 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentEndDate.get(Calendar.MONTH) + 1) + "." + currentEndDate.get(Calendar.YEAR));
     }
 
-    // check intent for eventID and eventtype
+    /**
+     * Checks an intent for eventID and eventtype
+     * @param intent
+     * @param savedInstanceState
+     */
     private void checkIntent(Intent intent, Bundle savedInstanceState) {
         //currentStartDateFromIntent = Calendar.getInstance();
         if (savedInstanceState == null) {                                                   // ToDo are those checks really necessary????
@@ -233,13 +238,18 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
-// See https://g.co/AppIndexing/AndroidStudio for more information.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
+    /**
+     * It checks if this activity runs in edit mode or create mode
+     * If the activity runs in edit mode, this method will start the
+     * setupGUIForUpdatingEvent() method.
+     */
     private void checkEditorMode() {
         if (eventID != null) {                          // true = Editmode, false = Createmode
             Log.d(DEBUG_TAG, "ID: " + eventID);
@@ -250,6 +260,10 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * It setups the GUI elements with the correct event data from the currently loaded event
+     * This method will be only started in the edit mode. It will be called from checkEditorMode()
+     */
     private void setupGUIForUpdatingEvent() {       // It is only for edit mode
         if (realm_event != null) {
             et_title.setText(realm_event.getName(), TextView.BufferType.NORMAL);
@@ -286,6 +300,7 @@ public class EditorActivity extends AppCompatActivity {
                 datePickerDialogEnd.updateDate(realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
                 setBtn_pickDateText(btn_pickDateEnd, currentEndDate, realm_event.getTime(Event.DateTime.END, Calendar.YEAR), realm_event.getTime(Event.DateTime.END, Calendar.MONTH), realm_event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH));
             }
+
             datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //If notificationtime is grater that 0, then there is a notification set for this event
@@ -302,7 +317,9 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    // Hide some layout components for tasks
+    /**
+     * Hide some layout components for tasks
+     */
     private void hideEndTime() {
         if (mEventtype) {            // if realm_event is a task
             sw_allDay.setVisibility(View.GONE);
@@ -312,6 +329,10 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * It setups the remember time Materialdialog and creates
+     * its numberpicker, buttons and their onClickListeners
+     */
     private void setupDialogRememberTime() {
         notificationTimeIntervalDialog = new Dialog(this);
         notificationTimeIntervalDialog.setTitle("NumberPicker");
@@ -335,7 +356,6 @@ public class EditorActivity extends AppCompatActivity {
         btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setRememberTimeForEvent();
                 //getValue returns the selected row. need to map to actual value that is based on array "numbers".
                 String selectedNumber = numbers[np.getValue()];
                 notificationTimeInterval = Integer.valueOf(selectedNumber);
@@ -356,6 +376,9 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * It setups the Materialdialog for the priorityselection and adds the priorities to it
+     */
     private void setupDialogPriority() {
         List<Integer> priorities = new ArrayList<Integer>() {{
             add(1);
@@ -380,6 +403,9 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
+    /**
+     * It setups the Materialdialog to delete #Tags from the event
+     */
     private void setupDialogDeleteTag() {
         List<String> items = new ArrayList<String>();
 
@@ -410,6 +436,9 @@ public class EditorActivity extends AppCompatActivity {
                     .build();
     }
 
+    /**
+     * It setups the Materialdialog to add #Tags
+     */
     private void setupDialogAddTag() {
         mTagList = new RealmList<>();
         tagAddDialog = new MaterialDialog.Builder(this)
@@ -426,7 +455,11 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
-    // Adds a Tag to the List
+    /**
+     * Adds a #Tag to the internal List mTagList
+     * It checks if the new #Tags has already been added to the list,
+     * so every tag will be in the list only once
+     */
     private void addTagToList(String inputTag) {
         boolean tagIsNew = true;
 
@@ -446,6 +479,9 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * It setups the Materialdialog for the categoryselection
+     */
     private void setupDialogCategory() {
         final List<String> categorie_names;         // saves only category names
         final List<Category> categories;            // saves the hole category
@@ -455,8 +491,6 @@ public class EditorActivity extends AppCompatActivity {
 
         if (categories.size() > 0) {
             mCategory = categories.get(0);
-        } else {
-
         }
 
         for (int i = 0; i < categories.size(); i++) {
@@ -478,6 +512,10 @@ public class EditorActivity extends AppCompatActivity {
                 .build();
     }
 
+    /**
+     * It sets the category Buttontext to the text of the overgiven parameter value
+     * @param category
+     */
     private void setCategoryButton(Category category) {
         if (category == null) {
             category = eventsManager.getDefaultCategory();     // search Default Category
@@ -487,10 +525,9 @@ public class EditorActivity extends AppCompatActivity {
         btn_category.setText(category.getName());
     }
 
-    private void setRememberTimeForEvent() {
-        // ToDo?
-    }
-
+    /**
+     * It setups the Materialdialog for the date and time pickers
+     */
     private void setupDialogsDateAndTime() {
         final int startyear = currentStartDate.get(Calendar.YEAR);
         final int startmonth = currentStartDate.get(Calendar.MONTH);
@@ -525,10 +562,15 @@ public class EditorActivity extends AppCompatActivity {
         initEndTimePicker(endhour, endminute);
     }
 
+    /**
+     * It initializes the timeStartPickerDialog to the time of the values of the parameters
+     * @param hour
+     * @param minute
+     */
     private void initStartTimePicker(int hour, int minute) {
         btn_pickTime.setText(String.format("%02d:%02d", hour, minute));
 
-        timePickerDialog = TimePickerDialog.newInstance(
+        timeStartPickerDialog = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
@@ -549,6 +591,11 @@ public class EditorActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * It initializes the timeEndPickerDialog to the time of the values of the parameters
+     * @param hour
+     * @param minute
+     */
     private void initEndTimePicker(int hour, int minute) {
         btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hour, minute));
 
@@ -568,7 +615,14 @@ public class EditorActivity extends AppCompatActivity {
         timeEndPickerDialog.setMinTime(currentStartDate.get(Calendar.HOUR_OF_DAY), currentStartDate.get(Calendar.MINUTE), currentStartDate.get(Calendar.SECOND));
     }
 
-
+    /**
+     * Sets the text of the datepicker button
+     * @param button
+     * @param date
+     * @param year
+     * @param month
+     * @param dayOfMonth
+     */
     private void setBtn_pickDateText(Button button, Calendar date, int year, int month, int dayOfMonth) {
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
@@ -576,6 +630,9 @@ public class EditorActivity extends AppCompatActivity {
         button.setText(dayOfMonth + "." + (int) (month + 1) + "." + year);
     }
 
+    /**
+     * Setup all Listeners. They will be binded to their custom action methods.
+     */
     private void setupListeners() {
         btn_pickDateStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -606,7 +663,7 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timePickerDialog.show(getFragmentManager(), "timeStartPickerDialog");
+                timeStartPickerDialog.show(getFragmentManager(), "timeStartPickerDialog");
             }
         });
 
@@ -635,7 +692,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (verifyEvent()) {
-                    saveEvent();
+                    saveOrUpdateEvent();
                 } else {
                     Snackbar.make(EditorActivity.this.btn_save, R.string.noTitelChoosenToast, Snackbar.LENGTH_SHORT).show();
                 }
@@ -690,20 +747,32 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method will hide the enddate pickers.
+     * We need this in the taskmode.
+     * @param msg
+     * @param invisible
+     * @param enabled
+     */
     private void changeVisibilityofTimePicker(String msg, int invisible, boolean enabled) {
-        Log.d(DEBUG_TAG, msg);
         btn_pickTime_fin.setVisibility(invisible);
         btn_pickTime_fin.setEnabled(enabled);
         btn_pickTime.setVisibility(invisible);
         btn_pickTime.setEnabled(enabled);
     }
 
-    // set Category to the current event
+    /**
+     * opens a Materialdialog to set the category to the current event
+     */
     private void chooseCategory() {
         setupDialogCategory();
         categoryDialog.show();
     }
 
+    /**
+     * It manages the TextView which is used to show the #Tags
+     * #Tags will be also binded to their prefix "#" in the outputlist.
+     */
     private void setTagTextView() {
         tv_tags.setText("");
 
@@ -714,6 +783,10 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * sets the priority button the selected priority which comes with the parameter
+     * @param priority
+     */
     private void setPriorityButton(int priority) {
         this.mPriority = priority;
         btn_priority.setText("Priorität " + String.valueOf(priority));
@@ -743,6 +816,9 @@ public class EditorActivity extends AppCompatActivity {
         layout_notecontainer.addView(et);
     }
 
+    /**
+     * starts the contact picker to get a contact from the default addressbook
+     */
     private void getContactInfo() {
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -756,6 +832,14 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Executed when getting back from ContactPicker.
+     * Will read the information of the selected Contact and will update the view.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check whether the result is ok
@@ -763,19 +847,30 @@ public class EditorActivity extends AppCompatActivity {
             // Check for the request code, we might be using multiple startActivityForReslut
             switch (requestCode) {
                 case CONTACT_PICKER:
-                    btn_chooseAction.setText("Action: CALL");
+                    //ContactHelper has every Infomation about selected contact
                     ContactHelper c = new ContactHelper();
                     c.contactPicked(getApplicationContext(), data);
                     Action action = new Action();
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
                     mAction = action;
+                    //Update UI.
                     btn_chooseAction.setText(mAction.getData());
                     break;
             }
+        } else {
+            // Something went wrong while picking contact
+            Snackbar.make(btn_chooseAction, R.string.editor_error_contact, Snackbar.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * Reads the contact from the adressbook when the permissions are given
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -791,8 +886,11 @@ public class EditorActivity extends AppCompatActivity {
         }
     }
 
-    // This method calls the EventsManager to store the current Event
-    private void saveEvent() {
+    /**
+     * This method calls the EventsManager to store the current Event
+     * The event will become saved or updated
+     */
+    private void saveOrUpdateEvent() {
         //Extra temp_event to save an update into realm. We cannot overwrite an already existing realm_event
         temp_event = new Event();
 
@@ -867,7 +965,12 @@ public class EditorActivity extends AppCompatActivity {
         finish();
     }
 
-    //Method to filter notes with text. We don't want to store empty notes
+    /**
+     * Method to filter notes with text. We don't want to store empty notes
+     * It returns a List of the filtered and clean notes
+     *
+     * @return
+     */
     private List<Notes> filterNotes() {
         List<Notes> retNotes = new ArrayList<Notes>();
         for (EditText et_note :
@@ -902,7 +1005,7 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        eventsManager.close();
+        eventsManager.close();          // closes the database connection
     }
 
     /**

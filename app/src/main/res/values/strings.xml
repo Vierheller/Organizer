@@ -101,5 +101,6 @@
     <string name="event_is_active">aktiv</string>
     <string name="event_in_past">in Vergangenheit</string>
     <string name="days">Tage</string>
+    <string name="editor_error_contact">Problem während der Kontaktwahl</string>
 </resources>
  
