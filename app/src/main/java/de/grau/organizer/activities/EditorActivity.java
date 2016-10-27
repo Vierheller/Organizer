@@ -242,7 +242,7 @@ public class EditorActivity extends AppCompatActivity {
             mCategory = realm_event.getCategory();
             setCategoryButton(mCategory);
             setTagTextLine();
-            mEventtype = realm_event.getEventtype();
+            mEventtype = realm_event.getTask();
 
             // Set the notes
             mNoteList = realm_event.getNotes();
@@ -778,7 +778,7 @@ public class EditorActivity extends AppCompatActivity {
         temp_event.setPriority(mPriority);
 
         //set eventtype
-        temp_event.setEventtype(mEventtype);
+        temp_event.setTask(mEventtype);
 
         //set tags
         temp_event.setTags(mTagList);

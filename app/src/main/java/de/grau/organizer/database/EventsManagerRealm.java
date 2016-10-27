@@ -45,7 +45,7 @@ public class EventsManagerRealm implements EventsManager {
 
         query.greaterThan("start", startDate);
         query.lessThan("start", endDate);
-        query.equalTo("eventtype", false); //event
+        query.equalTo("isTask", false); //event
 
         return  query.findAll().sort("start", Sort.ASCENDING);
     }

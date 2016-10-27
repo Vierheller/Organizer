@@ -38,7 +38,7 @@ public class Event extends RealmObject{
     private RealmList<Notes> notes;     //List of all notes corresponding to an Event instance
     private RealmList<Tag> tags;
     private Category category;
-    private boolean eventtype;      // true = Aufgabe, false = Event
+    private boolean isTask;      // true = Aufgabe, false = Event
 
     //example: getTime(DateTime.START, Calendar.YEAR)
 
@@ -68,7 +68,11 @@ public class Event extends RealmObject{
      */
     public String getShortSummary(){
         SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.GERMANY);
-        return this.name+" | "+this.category.getName()+"\r\n"+this.description+"\r\nStart:"+dt.format(this.start)+"\r\nEnde:"+dt.format(this.end);
+        if (isTask){
+            return this.name + " | " + this.category.getName() + "\r\n" + this.description + "\r\nStart:" + dt.format(this.start);
+        }else {
+            return this.name + " | " + this.category.getName() + "\r\n" + this.description + "\r\nStart:" + dt.format(this.start) + "\r\nEnde:" + dt.format(this.end);
+        }
     }
 
     /**
@@ -103,7 +107,7 @@ public class Event extends RealmObject{
     private void setDefaultValues() {
         this.notes = new RealmList<Notes>();
         this.priority = 4;      // default value
-        this.eventtype = false; // default value
+        this.isTask = false; // default value
         this.start = new Date();
         this.end = new Date();
         this.notificationTime = -1;
@@ -118,12 +122,12 @@ public class Event extends RealmObject{
         return id;
     }
 
-    public boolean getEventtype() {
-        return eventtype;
+    public boolean getTask() {
+        return isTask;
     }
 
-    public void setEventtype(boolean eventtype) {
-        this.eventtype = eventtype;
+    public void setTask(boolean task) {
+        this.isTask = task;
     }
 
     public String getName() {
