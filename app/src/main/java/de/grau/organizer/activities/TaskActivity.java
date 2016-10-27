@@ -38,6 +38,8 @@ public class TaskActivity extends AppCompatActivity {
     private TextView tv_endDate;
     private TextView tv_endTime;
     private TextView tv_notes;
+    private TextView tv_duration_value;
+    private TextView tv_timeToEvent_value;
 
     private Button btn_executeAction;
     private Button btn_delete;
@@ -93,6 +95,8 @@ public class TaskActivity extends AppCompatActivity {
         tv_endDate          =       (TextView) findViewById(R.id.task_tv_endDate);
         tv_endTime          =       (TextView) findViewById(R.id.task_tv_endTime);
         tv_notes            =       (TextView) findViewById(R.id.task_tv_notes);
+        tv_duration_value   =       (TextView) findViewById(R.id.task_tv_duration_value);
+        tv_timeToEvent_value=       (TextView) findViewById(R.id.task_tv_time_to_event_value);
         btn_delete          =       (Button) findViewById(R.id.task_btn_delete);
         btn_executeAction   =       (Button) findViewById(R.id.task_btn_executeaction);
         btn_edit            =       (FloatingActionButton) findViewById(R.id.task_btn_change);
@@ -213,7 +217,62 @@ public class TaskActivity extends AppCompatActivity {
             setCorrectTime(mEvent.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY)+"",mEvent.getTime(Event.DateTime.END, Calendar.MINUTE)+"", tv_endTime );
         }
         tv_description.setText(mEvent.getDescription());
+        tv_duration_value.setText(getDurationOfEvent(mEvent));
+        tv_timeToEvent_value.setText(getTimeUntilEventStarts(mEvent, Calendar.getInstance()));
         addNotesToGui();
+    }
+
+
+    private String getTimeUntilEventStarts(Event event, Calendar nowTime){
+        long startTime = event.getStart().getTime();
+        long endTime = event.getEnd().getTime();
+        long currentTimeInMillis = nowTime.getTimeInMillis();
+        String timeString = "";
+        if(startTime < currentTimeInMillis){ //Event is in the past or currently active
+            if(currentTimeInMillis < endTime){ //Event currently active
+                timeString = getResources().getString(R.string.event_is_active);
+            }else{  //Event is in past
+                timeString = getResources().getString(R.string.event_in_past);
+            }
+        }else{
+            long minutesTillEvent = (startTime - currentTimeInMillis)/60000;
+            if(minutesTillEvent < 60) {   //less than an our till event
+                timeString = minutesTillEvent + " " + getResources().getString(R.string.minutes);
+            }else if(minutesTillEvent < 60*24*2){ // less than a day until event
+                int hours = (int) (minutesTillEvent / 60);
+                int minutesRemaining = (int) (minutesTillEvent - hours * 60);
+                timeString = hours+":"+String.format("%02d", minutesRemaining)+ " "+ getResources().getString(R.string.hours);
+            }else{ // more than two days
+                int daysTillEvent = (int) (minutesTillEvent / 60 / 24);
+                timeString = daysTillEvent +" "+ getResources().getString(R.string.days);
+            }
+        }
+        return timeString;
+    }
+
+    /**
+     * This method tasked a event and computes the duration of the event.
+     * @param event
+     * @return String that represents the duration of the event
+     */
+    private String getDurationOfEvent(Event event){
+        String timeString = "";
+        long startTime = event.getStart().getTime();
+        long endTime = event.getEnd().getTime();
+
+        long durationInMillis = endTime - startTime;
+
+        long minutes = durationInMillis / 60000;
+
+        if(minutes<60){
+            timeString = minutes + " " + getResources().getString(R.string.minutes);
+        }else{
+            int hours = (int) (minutes / 60);
+            int minutesRemaining = (int) (minutes - hours * 60);
+            timeString = hours+":"+String.format("%02d", minutesRemaining)+ " "+ getResources().getString(R.string.hours);
+        }
+
+        return timeString;
     }
 
     /**
