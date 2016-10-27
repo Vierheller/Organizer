@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import de.grau.organizer.BuildConfig;
 import de.grau.organizer.R;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
 import de.grau.organizer.classes.Category;
@@ -335,9 +336,11 @@ public class TabActivity extends AppCompatActivity {
         }
 
         // This is only a developer option
-        if (id == R.id.action_test_events) {
-            generateTestEvents(100);
-            Toast.makeText(this, R.string.createTestEventsToast,Toast.LENGTH_LONG).show();
+        if (BuildConfig.DEBUG) {
+            if (id == R.id.action_test_events) {
+                generateTestEvents(100);
+                Toast.makeText(this, R.string.createTestEventsToast, Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);

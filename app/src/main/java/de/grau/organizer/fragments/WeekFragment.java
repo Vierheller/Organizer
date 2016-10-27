@@ -129,6 +129,12 @@ public class WeekFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeCalendarWeek(0);
+    }
+
     private void scrollToPosition(final int destinationPos, int delay) {
         Handler h = new Handler();
 

@@ -164,7 +164,7 @@ public class FullEditorEventTest {
             if(currentStep <= proceedTillStep){
 
         ViewInteraction appCompatButton10 = onView(
-                allOf(withId(R.id.editor_btn_priority), withText("Priorität 4")));
+                allOf(withId(R.id.editor_btn_priority)));
         appCompatButton10.perform(scrollTo(), click());
 
         ViewInteraction recyclerView2 = onView(
