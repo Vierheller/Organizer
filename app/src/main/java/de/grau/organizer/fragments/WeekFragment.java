@@ -274,9 +274,6 @@ public class WeekFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
-
 }
 class EventWeekView extends RelativeLayout {
 
@@ -351,7 +348,12 @@ class EventWeekView extends RelativeLayout {
 
 
             WeekViewEvent eventView = new WeekViewEvent(this.getContext(),event);
-            eventView.setBackgroundColor(event.getPriorityColor());
+            eventView.setBackgroundColor( event.getPriorityColor() );
+
+            //int alpha = (int)((((-event.getPriority()) + 5f)/6f) * 255f);
+            int alpha = 255/3;
+            Log.d(DEBUG_TAG, "alpha: " + alpha);
+            eventView.getBackground().setAlpha( alpha );
             eventView.fillGui(event);
             EventWeekView.LayoutParams params = new EventWeekView.LayoutParams(eventWidth, eventHeight);
             params.leftMargin = leftMargin;
@@ -361,23 +363,36 @@ class EventWeekView extends RelativeLayout {
         }
     }
 
+    Timer mHorizonTimer;
+
     public void drawCurrentSpace() {
         currentTimeHorizon();
-        mHorizonTimer = null;
-        mHorizonTimer = new Timer();
+        if( mHorizonTimer == null ) {
+            mHorizonTimer = new Timer();
+        } else {
+            mHorizonTimer.cancel();
+            mHorizonTimer.purge();
+            mHorizonTimer = null;
+            mHorizonTimer = new Timer();
+        }
         mHorizonTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-
+                Log.d(DEBUG_TAG, "Changing to UI Thread");
                 weekFragment.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
+
                         currentTimeHorizon();
+                        Log.d(DEBUG_TAG, "drew horizon on UI Thread");
                     }
                 });
             }
-        }, 1000*60*10, 1000*60*10);
+        }, mHorizonInterval, mHorizonInterval);
     }
+
+    int mHorizonInterval = 1000*60*10;
 
     public void drawHorizontalSpaces() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -407,12 +422,7 @@ class EventWeekView extends RelativeLayout {
         this.addView(bottomView, paramsBot);
     }
 
-    Timer mHorizonTimer;
-
     private void currentTimeHorizon() {
-        if(mCurrentHorizon != null) {
-            this.removeView(mCurrentHorizon);
-        }
         Log.d(DEBUG_TAG, "draw horizon");
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         float density = metrics.density;
@@ -425,8 +435,12 @@ class EventWeekView extends RelativeLayout {
         EventWeekView.LayoutParams paramsCur = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
         paramsCur.topMargin = (int) ((curHours*eHeight + curMinutes*(eHeight/60)));
 
+        if(mCurrentHorizon != null) {
+            this.removeView(mCurrentHorizon);
+        }
         mCurrentHorizon = new View(this.getContext());
         mCurrentHorizon.setBackgroundColor(Color.MAGENTA);
+        mCurrentHorizon.setAlpha(0.5f);
         this.addView(mCurrentHorizon, paramsCur);
     }
 

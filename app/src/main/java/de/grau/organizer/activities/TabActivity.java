@@ -192,8 +192,9 @@ public class TabActivity extends AppCompatActivity {
                     .title(R.string.search_title)
                     .items(searchResults)
                     .iconRes(R.drawable.ic_search_black_24dp)
-                    .titleColorRes(R.color.colorAccent)
-                    .dividerColorRes(R.color.colorPrimary)
+                    .titleColorRes(R.color.colorPrimary)
+                    .dividerColorRes(R.color.colorAccent)
+                    .positiveColorRes(R.color.colorPrimary)
                     //.backgroundColorRes(R.color.colorPrimary)
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
