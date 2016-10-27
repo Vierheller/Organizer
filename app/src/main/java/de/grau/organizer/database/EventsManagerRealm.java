@@ -16,7 +16,6 @@ import de.grau.organizer.database.interfaces.EventsManager;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -132,8 +131,7 @@ public class EventsManagerRealm implements EventsManager {
         // Build the query looking at all users:
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("category.id", category.getID());
-        List<Event> result = query.findAll().sort("start", Sort.ASCENDING);
-        return result;
+        return query.findAll().sort("start", Sort.ASCENDING);
     }
 
     /**
@@ -165,14 +163,13 @@ public class EventsManagerRealm implements EventsManager {
 
         Date dateEnd = cal.getTime();
 
-        RealmResults<Event> query = realm
+        return realm
                 .where(Event.class)
                 .equalTo("priority",priority)
                 .greaterThanOrEqualTo("start", dateStart)
                 .lessThanOrEqualTo("start", dateEnd)
                 .findAll()
                 .sort("start", Sort.ASCENDING);
-        return query;
     }
 
     /**
@@ -204,8 +201,7 @@ public class EventsManagerRealm implements EventsManager {
     @Override
     public RealmResults<Event> getRealmEventList() {
         RealmQuery<Event> query = realm.where(Event.class);
-        RealmResults events = query.findAll().sort("start");
-        return events;
+        return query.findAll().sort("start");
     }
 
     /**
@@ -218,8 +214,7 @@ public class EventsManagerRealm implements EventsManager {
     public Event loadEvent(String eventId) {
         RealmQuery<Event> query = realm.where(Event.class);
         query.equalTo("id", eventId);
-        Event result = query.findFirst();
-        return result;
+        return query.findFirst();
     }
 
     /**
@@ -231,8 +226,7 @@ public class EventsManagerRealm implements EventsManager {
     public Category getCategory(String categoryId) {
         RealmQuery<Category> query = realm.where(Category.class);
         query.equalTo("id", categoryId);
-        Category result = query.findFirst();
-        return result;
+        return query.findFirst();
     }
 
     /**

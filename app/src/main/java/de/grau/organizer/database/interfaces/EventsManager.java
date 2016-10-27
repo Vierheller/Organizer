@@ -1,7 +1,5 @@
 package de.grau.organizer.database.interfaces;
 
-import android.content.Context;
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.Date;
@@ -10,7 +8,6 @@ import java.util.List;
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.classes.Tag;
-import io.realm.RealmResults;
 
 /**
  * Interface for an EventsManager

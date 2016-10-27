@@ -1,10 +1,8 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +14,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -428,8 +425,8 @@ class EventWeekView extends RelativeLayout {
         float density = metrics.density;
         double eHeight = (mHeight*density)/24;
         Calendar cal = Calendar.getInstance();
-        int curMinutes = (int) (cal.get(Calendar.MINUTE));
-        int curHours = (int) (cal.get(Calendar.HOUR_OF_DAY));
+        int curMinutes = cal.get(Calendar.MINUTE);
+        int curHours = cal.get(Calendar.HOUR_OF_DAY);
 
         Log.d(DEBUG_TAG, "curMin: " + curMinutes + " curHours: " + curHours);
         EventWeekView.LayoutParams paramsCur = new EventWeekView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
