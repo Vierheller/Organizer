@@ -163,7 +163,9 @@ public class WeekFragment extends Fragment {
     }
 
     private void setupWeekDays() {
-        String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        String[] days = {getString(R.string.monday), getString(R.string.tuesday),
+                getString(R.string.wednesday), getString(R.string.thursday),
+                getString(R.string.friday), getString(R.string.saturday), getString(R.string.sunday)};
         for(String day: days) {
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(50, 50);
             param.weight = 1;

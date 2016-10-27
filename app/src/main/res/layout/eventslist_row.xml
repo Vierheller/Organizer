@@ -63,7 +63,7 @@
             android:layout_height="fill_parent"
             android:id="@+id/eventlist_category"
             android:textSize="12sp"
-            android:text="@string/eventlist_row_category_text" />
+            android:text="@string/category" />
 
     </LinearLayout>
 

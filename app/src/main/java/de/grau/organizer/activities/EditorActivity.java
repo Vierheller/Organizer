@@ -179,7 +179,7 @@ public class EditorActivity extends AppCompatActivity {
         layout_notecontainer = (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
 
-        tv_tags.setHint("No Tags");
+        tv_tags.setHint(R.string.tagListEmpty);
 
         initilizeDefaultDate();
 
@@ -388,8 +388,8 @@ public class EditorActivity extends AppCompatActivity {
         }};
 
         priorityDialog = new MaterialDialog.Builder(this)
-                .title(R.string.editor_dialog_priority_title)
-                .content("Please choose a priority.")
+                .title(R.string.editor_btn_priority)
+                .content(R.string.choosePriority)
                 .titleColorRes(R.color.colorAccent)
                 .items(priorities)
                 .itemsCallback(new MaterialDialog.ListCallback() {
@@ -414,8 +414,8 @@ public class EditorActivity extends AppCompatActivity {
         }
 
             tagDeleteDialog = new MaterialDialog.Builder(this)
-                    .title("Delete Tag")
-                    .content("Choose the Tags you want to delete.")
+                    .title(R.string.deleteTag)
+                    .content(R.string.tagToDelete)
                     .items(items)
                     .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                         @Override
@@ -431,8 +431,8 @@ public class EditorActivity extends AppCompatActivity {
                             return true;
                         }
                     })
-                    .negativeText("Cancel")
-                    .positiveText("OK")
+                    .negativeText(getString(R.string.cancel))
+                    .positiveText(R.string.ok)
                     .build();
     }
 
@@ -443,15 +443,15 @@ public class EditorActivity extends AppCompatActivity {
         mTagList = new RealmList<>();
         tagAddDialog = new MaterialDialog.Builder(this)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .title("Add Tag")
-                .content("Please insert a tag.")
+                .title(R.string.addTag)
+                .content(R.string.insertTag)
                 .input("my tag...", "", new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         addTagToList(input.toString().trim());
                     }
                 })
-                .negativeText("Cancel")
+                .negativeText(getString(R.string.cancel))
                 .build();
     }
 
@@ -498,8 +498,8 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         categoryDialog = new MaterialDialog.Builder(this)
-                .title("Category")
-                .content("Please choose a category.")
+                .title(R.string.category)
+                .content(R.string.chooseCategory)
                 .items(categorie_names)
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
@@ -508,7 +508,7 @@ public class EditorActivity extends AppCompatActivity {
                         setCategoryButton(mCategory);
                     }
                 })
-                .negativeText("Cancel")
+                .negativeText(getString(R.string.cancel))
                 .build();
     }
 
@@ -789,7 +789,7 @@ public class EditorActivity extends AppCompatActivity {
      */
     private void setPriorityButton(int priority) {
         this.mPriority = priority;
-        btn_priority.setText("Priorität " + String.valueOf(priority));
+        btn_priority.setText(getString(R.string.editor_btn_priority) + String.valueOf(priority));
     }
 
     /**
