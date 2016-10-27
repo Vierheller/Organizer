@@ -8,7 +8,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_task">TaskActivity</string>
     <string name="search_title">Suche</string>
-    <string name="search_schließen">Schließen</string>
+    <string name="search_schließen">Schließenquit</string>
     <string name="search_hint">Search Query</string>
     <string name="layout_eventName">Name des Eintrags</string>
     <string name="layout_hint_eventName">Name</string>
@@ -24,8 +24,8 @@
     <string name="editor_btn_priority">Priorität</string>
     <string name="editor_btn_saveevent">Notiz hinzufügen</string>
     <string name="editor_dialog_priority_title">Priorität</string>
-    <string name="search_no_result">Kein Suchergebnis für die Suchkriterien</string>
-    <string name="search_no_query">Query was empty</string>
+
+
     <string name="datepickPreview">27.09.2016</string>
     <string name="title_activity_settings">Einstellungen</string>
 
@@ -76,6 +76,22 @@
     <string name="eventlist_row_category_text">Kategorie</string>
     <string name="weekViewEventTitle">Event</string>
     <string name="weekViewEventTime">Zeit</string>
+
+    <string name="search_no_resultToast">Kein Suchergebnis für die Suchkriterien</string>
+    <string name="search_no_queryToast">Query was empty</string>
+    <string name="contactPickerDeniedToast">Keine Berechtigungen zum Anzeigen der Kontakte</string>
+    <string name="saveEventToast">Event gespeichert</string>
+    <string name="updateEventToast">Event aktualisiert</string>
+    <string name="noTitelChoosenToast">Jedes Event benötigt einen Titel</string>
+    <string name="noTagsToast">Es wurden noch keine Tags hinzugefügt</string>
+    <string name="SearchResultsToast">Zu viele Suchergebnisse</string>
+    <string name="createTestEventsToast">100 Testevents wurden erstellt</string>
+    <string name="permissionCallPhoneToast">Keine Berechtigungen zum anrufen</string>
+    <string name="categorySavedToast">Kategorie wurde erstellt!</string>
+    <string name="ErrorToast">Fehler</string>
+    <string name="NoActionSetSnack">Keine Aktion für dieses Event gesetzt!</string>
+    <string name="ActionNotExecSnack">Aktion kann nicht durchgeführt werden!</string>
+    <string name="deletedSnack">Löschen erfolgreich!</string>
     <string name="defaultDate">24.12.2016</string>
     <string name="defaultDate2">24.12.2016</string>
     <string name="duration">Dauer</string>
@@ -86,3 +102,4 @@
     <string name="event_in_past">in Vergangenheit</string>
     <string name="days">Tage</string>
 </resources>
+ 

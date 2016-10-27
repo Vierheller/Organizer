@@ -71,7 +71,7 @@ public class WeekViewEvent extends LinearLayout {
                     intent.putExtra(TaskActivity.INTENT_PARAM_ID, mEvent.getId());
                     getContext().startActivity(intent);
                 } else {
-                    Toast.makeText(getContext(), "Fehler", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.ErrorToast, Toast.LENGTH_LONG).show();
                 }
             }
         });

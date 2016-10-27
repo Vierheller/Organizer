@@ -100,7 +100,7 @@
                     <TextView
                         android:drawableLeft="@drawable/ic_event_date_24dp"
                         android:text="@string/datepickPreview"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:id="@+id/task_tv_startDate"
@@ -111,7 +111,7 @@
 
                     <TextView
                         android:text="@string/timePreset"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:id="@+id/task_tv_startTIme"
@@ -131,7 +131,7 @@
                 <TextView
                     android:drawableLeft="@drawable/ic_event_date_reverse_24dp"
                     android:text="@string/datepickPreview"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:id="@+id/task_tv_endDate"
@@ -141,7 +141,7 @@
 
                 <TextView
                     android:text="@string/timePreset"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:id="@+id/task_tv_endTime"
@@ -153,7 +153,6 @@
             <View
                 android:background="@drawable/divider_horizontal"
                 android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_height="2dp"/>
 
             <TextView
@@ -227,17 +226,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"/>
 
-            <Button
-                android:text="@string/execute_action"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/task_btn_executeaction" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:text="@string/delete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/task_btn_delete" />
+                <Button
+                    android:drawableLeft="@drawable/ic_action_phone_24dp"
+                    android:text="@string/execute_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/task_btn_executeaction"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:drawableLeft="@drawable/ic_delete_black_24dp"
+                    android:text="@string/delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/task_btn_delete"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

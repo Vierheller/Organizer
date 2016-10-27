@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import de.grau.organizer.R;
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
@@ -46,7 +47,7 @@ public class AddCategoriePreference extends EditTextPreference {
         // Check if Category already exists
         if(!category_name.trim().isEmpty() && eventsManager.getCategoryByName(category_name) == null) {
             eventsManager.writeCategory(new Category(category_name));
-            Toast.makeText(context, "Category has been saved!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.categorySavedToast, Toast.LENGTH_LONG).show();
         }
         eventsManager.close();
     }
