@@ -210,13 +210,13 @@ public class TaskActivity extends AppCompatActivity {
         if(mEvent.getAction() != null && !mEvent.getAction().getData().isEmpty()){
             btn_executeAction.setText("Call: "+mEvent.getAction().getData());
         }
-        tv_startDate.setText(mEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.MONTH)) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.YEAR)));
+        tv_startDate.setText((mEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH)) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.MONTH)+1) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.YEAR)));
         setCorrectTime(mEvent.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY)+"", mEvent.getTime(Event.DateTime.START, Calendar.MINUTE)+"", tv_startTime );
         if(mEvent.getEventtype()){
             tv_endTime.setVisibility(View.GONE);
             tv_endDate.setVisibility(View.GONE);
         }else {
-            tv_endDate.setText(mEvent.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.MONTH)) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.YEAR)));
+            tv_endDate.setText((mEvent.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH)) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.MONTH)+1) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.YEAR)));
             setCorrectTime(mEvent.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY)+"",mEvent.getTime(Event.DateTime.END, Calendar.MINUTE)+"", tv_endTime );
         }
         tv_description.setText(mEvent.getDescription());
