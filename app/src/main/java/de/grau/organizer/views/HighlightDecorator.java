@@ -1,19 +1,13 @@
 package de.grau.organizer.views;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 

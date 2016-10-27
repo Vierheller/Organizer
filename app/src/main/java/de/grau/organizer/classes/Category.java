@@ -55,10 +55,6 @@ public class Category extends RealmObject {
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof Category)) {
             return false;
-        } else if (this.id.equals(((Category) obj).getID())) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return this.id.equals(((Category) obj).getID());
     }
 }

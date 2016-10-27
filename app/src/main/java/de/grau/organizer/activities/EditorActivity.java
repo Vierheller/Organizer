@@ -200,12 +200,12 @@ public class EditorActivity extends AppCompatActivity {
     private void initilizeDefaultDate() {
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
-        btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentStartDate.get(Calendar.MONTH) + 1) + "." + currentStartDate.get(Calendar.YEAR));
+        btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH) + "." + (currentStartDate.get(Calendar.MONTH) + 1) + "." + currentStartDate.get(Calendar.YEAR));
 
         currentEndDate = Calendar.getInstance();
         currentEndDate.set(Calendar.SECOND, 0);
-        currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY) + 1);         // Enddate is 1h in future by default
-        btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentEndDate.get(Calendar.MONTH) + 1) + "." + currentEndDate.get(Calendar.YEAR));
+        currentEndDate.set(Calendar.HOUR_OF_DAY, (currentStartDate.get(Calendar.HOUR_OF_DAY) + 1));         // Enddate is 1h in future by default
+        btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH) + "." + (currentEndDate.get(Calendar.MONTH) + 1) + "." + currentEndDate.get(Calendar.YEAR));
     }
 
     /**
@@ -627,7 +627,7 @@ public class EditorActivity extends AppCompatActivity {
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        button.setText(dayOfMonth + "." + (int) (month + 1) + "." + year);
+        button.setText(dayOfMonth + "." + month + 1 + "." + year);
     }
 
     /**

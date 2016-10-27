@@ -1,6 +1,5 @@
 package de.grau.organizer.classes;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

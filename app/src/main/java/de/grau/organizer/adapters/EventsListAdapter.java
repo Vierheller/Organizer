@@ -2,7 +2,6 @@ package de.grau.organizer.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
