@@ -387,6 +387,7 @@ public class EventsManagerRealm implements EventsManager {
      * All events are returned where the field [name, description, category] contains given search string
      * Search is limited to 50 results
      * @param search
+     * @param limit
      * @return
      */
     @Override
@@ -397,8 +398,10 @@ public class EventsManagerRealm implements EventsManager {
                 .or().contains("description",search,Case.INSENSITIVE)
                 .or().contains("category.name",search,Case.INSENSITIVE)
                 .distinct("id");
-
-        return query.findAllSorted("name").subList(0,limit);
+        if(query.findAllSorted("name").size() > limit)
+            return query.findAllSorted("name").subList(0,limit);
+        else
+            return query.findAllSorted("name");
     }
 
     /**
