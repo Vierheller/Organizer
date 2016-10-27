@@ -92,5 +92,7 @@
     <string name="NoActionSetSnack">Keine Aktion für dieses Event gesetzt!</string>
     <string name="ActionNotExecSnack">Aktion kann nicht durchgeführt werden!</string>
     <string name="deletedSnack">Löschen erfolgreich!</string>
+    <string name="defaultDate">24.12.2016</string>
+    <string name="defaultDate2">24.12.2016</string>
 </resources>
  
