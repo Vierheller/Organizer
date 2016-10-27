@@ -171,7 +171,7 @@ public class ListFragment extends Fragment {
             case R.id.action_list_delete:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);
                 mActivity.eventsManager.deleteEvent(selectedEvent.getId());
-                Snackbar.make(listView, "Sucessfully deleted!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(listView, R.string.deletedSnack, Snackbar.LENGTH_LONG).show();
                 return true;
             case R.id.action_list_cancel_notification:
                 NotificationAlarmHandler.cancelNotification(mActivity, selectedEvent);

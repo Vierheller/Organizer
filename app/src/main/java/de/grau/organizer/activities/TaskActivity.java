@@ -125,7 +125,7 @@ public class TaskActivity extends AppCompatActivity {
 
                 if (action == null) {
                     Snackbar snackbar = null;
-                    snackbar = Snackbar.make(v, "No Action set for this Event!", Snackbar.LENGTH_LONG);
+                    snackbar = Snackbar.make(v, R.string.NoActionSetSnack, Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
                     switch (action.getType()) {
@@ -134,7 +134,7 @@ public class TaskActivity extends AppCompatActivity {
                             break;
                         default:
                             Snackbar snackbar = null;
-                            snackbar = Snackbar.make(v, "Action found but not executable!", Snackbar.LENGTH_LONG);
+                            snackbar = Snackbar.make(v, R.string.ActionNotExecSnack, Snackbar.LENGTH_LONG);
                             snackbar.show();
                     }
                 }
@@ -153,7 +153,7 @@ public class TaskActivity extends AppCompatActivity {
                 }
                 eventsManager.deleteEvent(mEvent.getId());
                 finish();
-                Toast.makeText(getApplicationContext(),"Event "+cur_eventName+" deleted", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Event "+cur_eventName+" gelöscht", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -186,7 +186,7 @@ public class TaskActivity extends AppCompatActivity {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             call();
         } else {
-            Toast.makeText(this, "Permission not granted cannot proceed with executing action", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.permissionCallPhoneToast, Toast.LENGTH_SHORT).show();
         }
     }
 
