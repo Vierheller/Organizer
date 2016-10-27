@@ -627,7 +627,7 @@ public class EditorActivity extends AppCompatActivity {
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        button.setText(dayOfMonth + "." + month + 1 + "." + year);
+        button.setText(dayOfMonth + "." +(month + 1) + "." + year);
     }
 
     /**
