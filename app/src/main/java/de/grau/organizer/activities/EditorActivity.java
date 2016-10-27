@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -636,7 +637,7 @@ public class EditorActivity extends AppCompatActivity {
                 if (verifyEvent()) {
                     saveEvent();
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.noTitelChoosenToast, Toast.LENGTH_LONG).show();
+                    Snackbar.make(EditorActivity.this.btn_save, R.string.noTitelChoosenToast, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -676,7 +677,7 @@ public class EditorActivity extends AppCompatActivity {
                     setupDialogDeleteTag();         // Refresh the item-list
                     tagDeleteDialog.show();
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.noTagsToast, Toast.LENGTH_LONG).show();
+                    Snackbar.make(EditorActivity.this.btn_tag_delete, R.string.noTagsToast, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
@@ -785,7 +786,7 @@ public class EditorActivity extends AppCompatActivity {
                         new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                 startActivityForResult(contactPickerIntent, CONTACT_PICKER);
             } else {
-                Toast.makeText(this, R.string.contactPickerDeniedToast, Toast.LENGTH_SHORT).show();
+                Snackbar.make(EditorActivity.this.btn_chooseAction, R.string.contactPickerDeniedToast, Snackbar.LENGTH_LONG).show();
             }
         }
     }
