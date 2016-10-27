@@ -20,7 +20,7 @@
 
     <string name="pref_header_notifications">Benachrichtigung</string>
     <string name="layout_editor_rememberlable">Benachrichtigungszeit</string>
-    <string name="pref_title_new_message_notifications">Neuer Benachrichtigungstext</string>
+    <string name="pref_title_new_message_notifications">Push-Nachrichten empfangen?</string>
     <string name="cancelNotification">Benachrichtigung entfernen</string>
 
     <string name="pref_title_ringtone">Klingelton</string>
