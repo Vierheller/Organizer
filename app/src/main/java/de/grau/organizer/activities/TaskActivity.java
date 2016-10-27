@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,20 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.security.cert.Certificate;
 import java.util.Calendar;
-import java.util.Date;
 
-import de.grau.organizer.classes.Notes;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.R;
 import de.grau.organizer.classes.Action;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.interfaces.EventsManager;
 import de.grau.organizer.notification.NotificationAlarmHandler;
-import io.realm.RealmList;
 
 public class TaskActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = TaskActivity.class.getCanonicalName();
@@ -212,7 +205,7 @@ public class TaskActivity extends AppCompatActivity {
         }
         tv_startDate.setText((mEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH)) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.MONTH)+1) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.YEAR)));
         setCorrectTime(mEvent.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY)+"", mEvent.getTime(Event.DateTime.START, Calendar.MINUTE)+"", tv_startTime );
-        if(mEvent.getEventtype()){
+        if(mEvent.getTask()){
             tv_endTime.setVisibility(View.GONE);
             tv_endDate.setVisibility(View.GONE);
         }else {

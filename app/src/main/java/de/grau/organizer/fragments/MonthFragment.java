@@ -37,7 +37,7 @@ import de.grau.organizer.classes.Event;
  * create an instance of this fragment.
  */
 public class MonthFragment extends Fragment implements OnDateSelectedListener, OnMonthChangedListener {
-    private static final String LOG_TAG = MonthFragment.class.getCanonicalName();
+    private static final String DEBUG_TAG = MonthFragment.class.getCanonicalName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,6 +82,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        Log.d(DEBUG_TAG, "Item selected: "+date);
         selectDate(date);
     }
 
@@ -89,11 +90,9 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     private void selectDate(CalendarDay date){
         currentEventsInListView = mActivity.eventsManager.getEvents(date);
         //TODO: Load events into listView
-        for (Event event : currentEventsInListView) {
-            Log.d(LOG_TAG, event.toString());
-        }
-        if ( currentEventsInListView != null ) {
+        if (currentEventsInListView != null) {
             mListViewAdapter.setEventList(currentEventsInListView);
+            Log.d(DEBUG_TAG, "Current Events in List not null. Number of Events: "+mListViewAdapter.getCount());
         } else {
             mListViewAdapter.setEventList(new ArrayList<Event>());
         }
@@ -128,7 +127,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
         mListView = (ListView) view.findViewById(R.id.month_list_view);
 
-        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>());
+        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>(), false);
 
         mListView.setAdapter(mListViewAdapter);
 
@@ -154,16 +153,16 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
     }
 
     private void setupCalendarDecorators(int month, int year) {
-        Log.d(LOG_TAG, "Started Setup Calendar for Month"+month+" year "+year);
+        Log.d(DEBUG_TAG, "Started Setup Calendar for Month"+month+" year "+year);
         HighlightDecorator prio4 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,4));
         HighlightDecorator prio3 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,3));
         HighlightDecorator prio2 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,2));
         HighlightDecorator prio1 = new HighlightDecorator(mActivity.eventsManager.getEvents(month,year,1));
-        Log.d(LOG_TAG, "Initialized Hightlighter");
+        Log.d(DEBUG_TAG, "Initialized Hightlighter");
 
         mCalendarView.removeDecorators();
         mCalendarView.addDecorators(prio4,prio3,prio2,prio1);
-        Log.d(LOG_TAG, "Ended Setup");
+        Log.d(DEBUG_TAG, "Ended Setup");
     }
 
     // TODO: Rename method, update argument and hook method into UI event

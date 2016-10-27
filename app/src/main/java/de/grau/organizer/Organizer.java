@@ -59,6 +59,8 @@ public class Organizer extends Application {
         eventsManager.writeCategory(newCategory);                    // default value
         eventsManager.writeCategory(new Category("Freizeit"));       // default value
         eventsManager.writeCategory(new Category("Arbeit"));         // default value
+        eventsManager.writeCategory(new Category("Sport"));          // default value
+        eventsManager.writeCategory(new Category("Vorlesung"));      // default value
 
         eventsManager.close();
     }

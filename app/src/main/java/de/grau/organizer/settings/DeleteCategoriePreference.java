@@ -3,6 +3,7 @@ package de.grau.organizer.settings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Debug;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -35,6 +36,7 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
         setValues();
         setPositiveButtonText("Delete");
         setOnPreferenceClickListener(this);
+        Log.d(DEBUG_TAG, "DeleteCategoriePreference has been started.");
     }
 
     /**
@@ -43,7 +45,6 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
     private void setValues(){
         mEntries = getAllCategorieNames();
         entryChecked = new boolean[mEntries.length];
-
         setEntries(mEntries);
         setEntryValues(mEntries);
     }
@@ -133,7 +134,6 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
     @Override
     public boolean onPreferenceClick(Preference preference) {
         if(preference == this){
-            Log.d(DEBUG_TAG, "Clicked deleteDialog");
             setValues();
         }
         return true;

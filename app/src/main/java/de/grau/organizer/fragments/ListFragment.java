@@ -1,7 +1,6 @@
 package de.grau.organizer.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import de.grau.organizer.R;
 import de.grau.organizer.activities.TabActivity;
-import de.grau.organizer.activities.TaskActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.notification.NotificationAlarmHandler;
@@ -115,7 +113,7 @@ public class ListFragment extends Fragment {
             }
         });
 
-        mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events);
+        mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events, true);
 
         listView.setAdapter(mAdapter);
 
