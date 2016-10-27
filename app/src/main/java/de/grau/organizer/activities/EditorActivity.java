@@ -429,6 +429,7 @@ public class EditorActivity extends AppCompatActivity {
     private void addTagToList(String inputTag) {
         boolean tagIsNew = true;
 
+
         for(int i=0; i<mTagList.size(); i++) {
             if(mTagList.get(i).getName().equals(inputTag)) {
                 tagIsNew = false;
