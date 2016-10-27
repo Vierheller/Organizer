@@ -175,7 +175,6 @@ public class TaskActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
 
             requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, PERMISSIONS_REQUEST_CALL_PHONE);
-            return;
         }else{
             String uri = "tel:" + mEvent.getAction().getData().trim();
             Intent intent = new Intent(Intent.ACTION_CALL);

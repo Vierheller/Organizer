@@ -17,6 +17,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Attix on 9/22/16.
  * Base Class of an Event, it holds all needed Data to work with an particular Event
  * Both tags and notes are lists of RealmObjects (1..n)
+ * Upon creation an event is filled with dummy data
  */
 
 
@@ -45,9 +46,9 @@ public class Event extends RealmObject{
     /**
      * Returns an integer representing the data field request
      * Options are START and END and a given int from Calendar
-     * @param dateTime
-     * @param calendarUnit
-     * @return
+     * @param dateTime from enum of this class
+     * @param calendarUnit int from Calendar Konstant (Calendar.HOUR_OF_DAY)
+     * @return int representing requested value of requested date
      */
     public int getTime(DateTime dateTime, int calendarUnit) {
         Calendar cal = Calendar.getInstance();
@@ -64,6 +65,7 @@ public class Event extends RealmObject{
 
     /**
      * Returns a short String representing a summary for this event
+     * Automatically limits length of name and description to a readaable length
      * @return summary of content
      */
     public String getShortSummary(){
@@ -78,7 +80,7 @@ public class Event extends RealmObject{
     /**
      * Returns a color for visual representing a priority of this event
      * Range from 1 to 4 with default 4
-     * @return
+     * @return integer representing the color for this event
      */
     public int getPriorityColor() {
         switch (priority){

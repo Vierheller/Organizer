@@ -1,11 +1,8 @@
 package de.grau.organizer.classes;
 
-import android.provider.CalendarContract;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,8 +12,6 @@ import java.util.List;
 import io.realm.RealmList;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Created by Christian on 12.10.2016.
