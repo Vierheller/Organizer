@@ -3,21 +3,17 @@ package de.grau.organizer.settings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Debug;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
-
-import static android.R.attr.entries;
 
 /**
  * Created by Vierheller on 25.10.2016.
@@ -58,7 +54,7 @@ public class DeleteCategoriePreference extends MultiSelectListPreference impleme
         if(positiveResult){
             Log.d(DEBUG_TAG, "Closed Categorie");
             for (int i = 0; i<entryChecked.length; i++){
-                if(entryChecked[i]==true){
+                if(entryChecked[i]){
                     Category clickedCategorie = categories.get(i);
                     Log.d(DEBUG_TAG, clickedCategorie.getName());
                     deleteCategory(clickedCategorie.getID());

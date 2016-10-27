@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import de.grau.organizer.classes.Event;
 

@@ -2,7 +2,6 @@ package de.grau.organizer.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +48,10 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         this.hasDate = hasDate;
     }
 
+    /**
+     * Returns the count of events handled by this adapter
+     * @return
+     */
     @Override
     public int getCount() {
         return eventList.size();
@@ -60,8 +63,8 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
      * Rowlayout is determined by value set to hasDate
      * @param position position of current cell
      * @param convertView
-     * @param parent hierarchical parent of thi view
-     * @return
+     * @param parent hierarchical parent of this view
+     * @return the constructed cell
      */
     @NonNull
     @Override

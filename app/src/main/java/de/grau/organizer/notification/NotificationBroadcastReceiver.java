@@ -9,11 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
-import android.support.design.widget.TabLayout;
 import android.util.Log;
 
 import de.grau.organizer.activities.TabActivity;
@@ -43,7 +38,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(DEBUG_TAG, "Received Notification request");
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String id = intent.getStringExtra(INTENT_PARAM_EVENT_ID);
         eventsManager = new EventsManagerRealm();
         eventsManager.open();

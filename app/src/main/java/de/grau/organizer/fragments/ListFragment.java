@@ -23,8 +23,6 @@ import de.grau.organizer.activities.TabActivity;
 import de.grau.organizer.adapters.EventsListAdapter;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.notification.NotificationAlarmHandler;
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,16 +100,14 @@ public class ListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.fragment_list_listview);
 
-        RealmResults<Event> realmList  = mActivity.eventsManager.getRealmEventList();
+        events = mActivity.eventsManager.getRealmEventList();
 
-        events = realmList;
-
-        realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
+        /*realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
             @Override
             public void onChange(RealmResults<Event> element) {
                 mAdapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
         mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events, true);
 
@@ -189,7 +185,6 @@ public class ListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        return;
         /*if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

@@ -1,6 +1,5 @@
 package de.grau.organizer.activities;
 
-import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,7 +34,6 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
-import de.grau.organizer.fragments.WeekFragment;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -67,7 +65,6 @@ public class TabActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
         activityContext = this;
-//        setSupportActionBar(toolbar);
 
         setupFragements();
 
@@ -80,6 +77,10 @@ public class TabActivity extends AppCompatActivity {
         handleIntent(intent);
     }
 
+    /**
+     * Method setups the Fragments of TabActivity (month, week, list)
+     * It generates the tablayout with it three sections
+     */
     public void setupFragements() {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -93,6 +94,11 @@ public class TabActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
+    /**
+     * Method setups the floatingActionButton
+     * It is used to start a dialogselection. This dialog asks the user
+     * if he wants to create a task or an event
+     */
     public void setupFloatingActionButton() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);       // Eventkind selector
 
@@ -104,13 +110,13 @@ public class TabActivity extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startEditorActivity(true);      // Ohne Startdatum laden
+                        startEditorActivity(true);      // load without startDate
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startEditorActivity(false);
+                        startEditorActivity(false);     // load with startDate
                     }
                 })
                 .build();
@@ -119,11 +125,16 @@ public class TabActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 md_event_selector.show();
-                //startEditorActivity(null);
             }
         });
     }
 
+    /**
+     * Prepare an intent and start the TaskActivity
+     * The parameter eventID will become overgiven with the intent to the TaskActivity
+     *
+     * @param eventID
+     */
     public void startTaskActivity(String eventID){
         Intent intent = new Intent(activityContext, TaskActivity.class);
         if(eventID!=null){
@@ -132,6 +143,11 @@ public class TabActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Prepare an intent and start the EditorActivity
+     * The parameter eventID will become overgiven with the intent to the EditorActivity
+     * @param eventID
+     */
     public void startEditorActivity(String eventID){
         Intent intent = new Intent(activityContext, EditorActivity.class);
         if(eventID!=null){
@@ -140,13 +156,20 @@ public class TabActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Prepare an intent and start the EditorActivity
+     * The parameter eventtype will become overgiven with the intent to the EditorActivity
+     * @param eventtype
+     */
     public void startEditorActivity(boolean eventtype){
         Intent intent = new Intent(activityContext, EditorActivity.class);
         intent.putExtra(EditorActivity.INTENT_PARAM_EVENTTYPE, eventtype);
-        //intent.putExtra(EditorActivity.INTENT_PARAM_CALLENDAR_DAY, mCalDay.getCalendar().getTimeInMillis());
         startActivity(intent);
     }
 
+    /**
+     * Prepare an intent and start the SettingsActivity
+     */
     public void startSettingsActivity() {
         Intent intent = new Intent(activityContext, SettingsActivity.class);
         startActivity(intent);
@@ -157,12 +180,21 @@ public class TabActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    /**
+     * Handles the intent for the searchquery
+     * @param intent
+     */
     private void handleIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             handleSearchIntent(intent);
         }
     }
 
+    /**
+     * Handles the search intent and start the search
+     * It will search the database with the overgiven String and call the ShowSearchResults method
+     * @param intent
+     */
     private void handleSearchIntent(Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
         if(!query.isEmpty()) {
@@ -181,9 +213,14 @@ public class TabActivity extends AppCompatActivity {
         }else {
             Toast.makeText(this,R.string.search_no_queryToast,Toast.LENGTH_LONG).show();
         }
-
     }
 
+    /**
+     * Shows a MaterialDialog with the results of the search
+     * The searchResults must be setted by the parameter of this method.
+     *
+     * @param searchResults
+     */
     private void ShowSearchResults(List<String> searchResults) {
         if (searchResults.size() > 0){
             //ToDo change currently simple List to https://github.com/afollestad/material-dialogs#simple-list-dialogs
@@ -218,7 +255,13 @@ public class TabActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * This method creates the options menu of the toolbar with its entries.
+     * Those entries become bound to their methods here
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -233,6 +276,12 @@ public class TabActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * This listener will be called when an optionsitem becomes selected.
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -254,6 +303,12 @@ public class TabActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This method is only a developer feature.
+     * It creates 100 random events
+     *
+     * @param count
+     */
     public void generateTestEvents(int count){
         Category testcategory = new Category("Test Category");
         for (int i = 0; i < count; i++) {
