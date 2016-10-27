@@ -16,6 +16,8 @@ import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -134,9 +136,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
      */
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+            Spanned result;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                result = Html.fromHtml("<font color='#FFFFFF'>"+actionBar.getTitle()+"</font>",Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                result = Html.fromHtml("<font color='#FFFFFF'>"+actionBar.getTitle()+"</font>");
+            }
+            actionBar.setTitle(result);
         }
     }
 

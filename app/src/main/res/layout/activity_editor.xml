@@ -27,6 +27,7 @@
                 app:srcCompat="@drawable/ic_cancel_black_24dp"
                 android:id="@+id/editor_toolbar_cancel"
                 android:background="@color/colorPrimary"
+                android:tint="@color/mdtp_white"
                />
             <TextView
                 android:layout_width="0dp"
@@ -44,6 +45,7 @@
                 android:id="@+id/editor_toolbar_save"
                 android:background="@color/colorPrimary"
                 android:layout_marginEnd="20dp"
+                android:tint="@color/mdtp_white"
                />
         </LinearLayout>
 

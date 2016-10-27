@@ -4,18 +4,27 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -56,6 +65,7 @@ public class TabActivity extends AppCompatActivity {
     public CalendarDay mCalDay = null;
     private List<Event> mSearchResults;
     private MaterialDialog md_event_selector;
+    SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,10 +185,6 @@ public class TabActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     /**
      * Handles the intent for the searchquery
@@ -197,6 +203,7 @@ public class TabActivity extends AppCompatActivity {
      */
     private void handleSearchIntent(Intent intent) {
         String query = intent.getStringExtra(SearchManager.QUERY);
+
         if(!query.isEmpty()) {
 
             mSearchResults = eventsManager.searchEvents(query,50);
@@ -269,11 +276,35 @@ public class TabActivity extends AppCompatActivity {
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        mSearchView =
                 (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
-        searchView.setSearchableInfo(
+        mSearchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        //Changing style of SearchView
+        setupSearchView();
+        
         return true;
+    }
+
+    /**
+     * This method will change the color of the searchViewIcon to white
+     * Reason is that it is not possible to change it by xml.
+     * We are trying to keep th Theme consistent
+     */
+    private void setupSearchView(){
+        // searchview is a parent of a LinearLayout
+        if( mSearchView.getChildAt(0) instanceof LinearLayout){
+            LinearLayout layout = (LinearLayout) mSearchView.getChildAt(0);
+            for(int i = 0 ; i < layout.getChildCount();i++){
+                //This LinearLayout contains the ImageView that is displayed in the action bar
+                if(layout.getChildAt(i) instanceof AppCompatImageView){
+                    AppCompatImageView iv = (AppCompatImageView) layout.getChildAt(i);
+                    //Setting icon of imageView in action bar
+                    iv.setImageResource(R.drawable.ic_search_white_24dp);
+                }
+            }
+        }
     }
 
     /**
