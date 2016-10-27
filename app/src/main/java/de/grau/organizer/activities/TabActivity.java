@@ -169,7 +169,7 @@ public class TabActivity extends AppCompatActivity {
 
             mSearchResults = eventsManager.searchEvents(query,50);
 
-            if (mSearchResults.size() == 50) Toast.makeText(this,"Zu viele Suchergebnisse",Toast.LENGTH_LONG).show();
+            if (mSearchResults.size() == 50) Toast.makeText(this, R.string.SearchResultsToast,Toast.LENGTH_LONG).show();
 
             List<String> result = new ArrayList<>();
             for(Event e: mSearchResults){
@@ -179,7 +179,7 @@ public class TabActivity extends AppCompatActivity {
 
             ShowSearchResults(result);
         }else {
-            Toast.makeText(this,R.string.search_no_query,Toast.LENGTH_LONG).show();
+            Toast.makeText(this,R.string.search_no_queryToast,Toast.LENGTH_LONG).show();
         }
 
     }
@@ -212,7 +212,7 @@ public class TabActivity extends AppCompatActivity {
                     .positiveText(R.string.search_schließen)
                     .show();
         } else{
-            Toast.makeText(this,R.string.search_no_result,Toast.LENGTH_LONG).show();
+            Toast.makeText(this,R.string.search_no_resultToast,Toast.LENGTH_LONG).show();
         }
     }
 
@@ -247,7 +247,7 @@ public class TabActivity extends AppCompatActivity {
         // This is only a developer option
         if (id == R.id.action_test_events) {
             generateTestEvents(100);
-            Toast.makeText(this,"Created 100 TestEvents",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.createTestEventsToast,Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);

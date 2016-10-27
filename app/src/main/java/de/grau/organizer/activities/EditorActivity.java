@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -113,7 +117,11 @@ public class EditorActivity extends AppCompatActivity {
     //HELPERS
     private Calendar currentStartDate;
     private Calendar currentEndDate;
-    //private Calendar currentStartDateFromIntent = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,29 +148,32 @@ public class EditorActivity extends AppCompatActivity {
 
         // hide some UI elements in taskmode (no endtime)
         hideEndTime();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     // This method references every necessary GUI-Element
-    private void initializeGUI(){
-        et_title =              (EditText) findViewById(R.id.editor_et_title);
-        sw_allDay   =           (Switch) findViewById(R.id.sw_allDay);
-        btn_pickDateStart =     (Button) findViewById(R.id.editor_btn_pickdate);
-        btn_pickTime =          (Button) findViewById(R.id.editor_btn_picktime);
-        btn_pickDateEnd =      (Button) findViewById(R.id.editor_btn_pickdate_fin);
-        btn_pickTime_fin =      (Button) findViewById(R.id.editor_btn_picktime_fin);
-        btn_pickNotifyDelay =   (Button) findViewById(R.id.editor_btn_picknotifydelay);
-        btn_chooseAction =      (Button) findViewById(R.id.editor_btn_chooseaction);
-        btn_addNote =           (Button) findViewById(R.id.editor_btn_addnote);
-        btn_priority =          (Button) findViewById(R.id.editor_btn_priority);
-        btn_tag_add =           (Button) findViewById(R.id.editor_btn_tags_add);
-        btn_tag_delete =        (Button) findViewById(R.id.editor_btn_tags_delete);
-        btn_category =          (Button) findViewById(R.id.editor_btn_category);
-        btn_save =              (ImageButton) findViewById(R.id.editor_toolbar_save);
-        btn_cancel =            (ImageButton) findViewById(R.id.editor_toolbar_cancel);
-        et_description=         (EditText) findViewById(R.id.editor_description);
-        tv_tags =               (TextView) findViewById(R.id.editor_tags);
-        layout_enddate =        (LinearLayout) findViewById(R.id.layout_enddate);
-        layout_notecontainer =  (LinearLayout) findViewById(R.id.editor_notecontainer);
+    private void initializeGUI() {
+        et_title = (EditText) findViewById(R.id.editor_et_title);
+        sw_allDay = (Switch) findViewById(R.id.sw_allDay);
+        btn_pickDateStart = (Button) findViewById(R.id.editor_btn_pickdate);
+        btn_pickTime = (Button) findViewById(R.id.editor_btn_picktime);
+        btn_pickDateEnd = (Button) findViewById(R.id.editor_btn_pickdate_fin);
+        btn_pickTime_fin = (Button) findViewById(R.id.editor_btn_picktime_fin);
+        btn_pickNotifyDelay = (Button) findViewById(R.id.editor_btn_picknotifydelay);
+        btn_chooseAction = (Button) findViewById(R.id.editor_btn_chooseaction);
+        btn_addNote = (Button) findViewById(R.id.editor_btn_addnote);
+        btn_priority = (Button) findViewById(R.id.editor_btn_priority);
+        btn_tag_add = (Button) findViewById(R.id.editor_btn_tags_add);
+        btn_tag_delete = (Button) findViewById(R.id.editor_btn_tags_delete);
+        btn_category = (Button) findViewById(R.id.editor_btn_category);
+        btn_save = (ImageButton) findViewById(R.id.editor_toolbar_save);
+        btn_cancel = (ImageButton) findViewById(R.id.editor_toolbar_cancel);
+        et_description = (EditText) findViewById(R.id.editor_description);
+        tv_tags = (TextView) findViewById(R.id.editor_tags);
+        layout_enddate = (LinearLayout) findViewById(R.id.layout_enddate);
+        layout_notecontainer = (LinearLayout) findViewById(R.id.editor_notecontainer);
         layout_notelist = new ArrayList<EditText>();
 
         tv_tags.setHint("No Tags");
@@ -187,12 +198,12 @@ public class EditorActivity extends AppCompatActivity {
         //currentStartDate = currentStartDateFromIntent;
         currentStartDate = Calendar.getInstance();
         currentStartDate.set(Calendar.SECOND, 0);
-        btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentStartDate.get(Calendar.MONTH)+1) +"."+ currentStartDate.get(Calendar.YEAR));
+        btn_pickDateStart.setText(currentStartDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentStartDate.get(Calendar.MONTH) + 1) + "." + currentStartDate.get(Calendar.YEAR));
 
         currentEndDate = Calendar.getInstance();
         currentEndDate.set(Calendar.SECOND, 0);
-        currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY)+1);         // Enddate is 1h in future by default
-        btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH)+"."+ (int)(currentEndDate.get(Calendar.MONTH)+1) +"."+ currentEndDate.get(Calendar.YEAR));
+        currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY) + 1);         // Enddate is 1h in future by default
+        btn_pickDateEnd.setText(currentEndDate.get(Calendar.DAY_OF_MONTH) + "." + (int) (currentEndDate.get(Calendar.MONTH) + 1) + "." + currentEndDate.get(Calendar.YEAR));
     }
 
     // check intent for eventID and eventtype
@@ -200,7 +211,7 @@ public class EditorActivity extends AppCompatActivity {
         //currentStartDateFromIntent = Calendar.getInstance();
         if (savedInstanceState == null) {                                                   // ToDo are those checks really necessary????
             Bundle extras = intent.getExtras();
-            if(extras == null) {
+            if (extras == null) {
                 eventID = null;
             } else {
                 eventID = extras.getString(INTENT_PARAM_EVENTID);
@@ -209,7 +220,7 @@ public class EditorActivity extends AppCompatActivity {
                   //  currentStartDateFromIntent.setTimeInMillis(extras.getLong(INTENT_PARAM_CALLENDAR_DAY));
             }
         } else {
-            if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String ) {
+            if (savedInstanceState.getSerializable(INTENT_PARAM_EVENTID) instanceof String) {
                 eventID = (String) savedInstanceState.getSerializable(INTENT_PARAM_EVENTID);
                 mEventtype = (Boolean) savedInstanceState.getSerializable(INTENT_PARAM_EVENTTYPE);
                 //if(savedInstanceState.getLong(INTENT_PARAM_CALLENDAR_DAY) != 0)
@@ -220,7 +231,12 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
+        super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     private void checkEditorMode() {
@@ -255,13 +271,13 @@ public class EditorActivity extends AppCompatActivity {
             // Set the notes
             mNoteList = realm_event.getNotes();
 
-            for(int i=0; i<mNoteList.size(); i++) {
+            for (int i = 0; i < mNoteList.size(); i++) {
                 addNote(mNoteList.get(i).getText());
             }
 
             // Set the action
             mAction = realm_event.getAction();
-            if(mAction != null)
+            if (mAction != null)
                 btn_chooseAction.setText(mAction.getData());
 
             //setting Buttontext to the Time from the Event, and not just the current one.
@@ -272,13 +288,13 @@ public class EditorActivity extends AppCompatActivity {
             datePickerDialogStart.updateDate(realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             setBtn_pickDateText(btn_pickDateStart, currentStartDate, realm_event.getTime(Event.DateTime.START, Calendar.YEAR), realm_event.getTime(Event.DateTime.START, Calendar.MONTH), realm_event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH));
             //If notificationtime is grater that 0, then there is a notification set for this event
-            if(realm_event.getNotificationTime()>=0){
+            if (realm_event.getNotificationTime() >= 0) {
                 useRememberNotification = true;
                 notificationTimeInterval = realm_event.getNotificationTime();
                 //We further need to set the ui of notificationTimeIntervalDialog to display the notificationTime
                 NumberPicker np = (NumberPicker) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_np);
-                np.setValue(notificationTimeInterval/5);
-                btn_pickNotifyDelay.setText(String.format(Locale.GERMANY,"%d min", notificationTimeInterval));
+                np.setValue(notificationTimeInterval / 5);
+                btn_pickNotifyDelay.setText(String.format(Locale.GERMANY, "%d min", notificationTimeInterval));
             }
 
             sw_allDay.setChecked(realm_event.isAllDay());
@@ -287,7 +303,7 @@ public class EditorActivity extends AppCompatActivity {
 
     // Hide some layout components for tasks
     private void hideEndTime() {
-        if(mEventtype) {            // if realm_event is a task
+        if (mEventtype) {            // if realm_event is a task
             sw_allDay.setVisibility(View.GONE);
             btn_pickDateEnd.setVisibility(View.GONE);
             btn_pickTime_fin.setVisibility(View.GONE);
@@ -306,11 +322,11 @@ public class EditorActivity extends AppCompatActivity {
         final Button btn_cancel = (Button) notificationTimeIntervalDialog.findViewById(R.id.dialog_numberpicker_cancel);
 
         //Setup Numberrange of numberpicker
-        final String[] numbers = new String[200/5];
-        for (int i=0; i<numbers.length; i++)
-            numbers[i] = Integer.toString(i*5);
+        final String[] numbers = new String[200 / 5];
+        for (int i = 0; i < numbers.length; i++)
+            numbers[i] = Integer.toString(i * 5);
         np.setDisplayedValues(numbers);
-        np.setMaxValue(numbers.length-1);
+        np.setMaxValue(numbers.length - 1);
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
 
@@ -322,7 +338,7 @@ public class EditorActivity extends AppCompatActivity {
                 //getValue returns the selected row. need to map to actual value that is based on array "numbers".
                 String selectedNumber = numbers[np.getValue()];
                 notificationTimeInterval = Integer.valueOf(selectedNumber);
-                btn_pickNotifyDelay.setText(notificationTimeInterval +" min");
+                btn_pickNotifyDelay.setText(notificationTimeInterval + " min");
                 useRememberNotification = true;
                 notificationTimeIntervalDialog.dismiss();
             }
@@ -339,12 +355,13 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
-    private void setupDialogPriority(){
+    private void setupDialogPriority() {
         List<Integer> priorities = new ArrayList<Integer>() {{
             add(1);
             add(2);
             add(3);
-            add(4);}};
+            add(4);
+        }};
 
         priorityDialog = new MaterialDialog.Builder(this)
                 .title(R.string.editor_dialog_priority_title)
@@ -354,8 +371,8 @@ public class EditorActivity extends AppCompatActivity {
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                        mPriority = position+1;
-                        Log.d(DEBUG_TAG, "User Priority Dialog Result = "+mPriority);
+                        mPriority = position + 1;
+                        Log.d(DEBUG_TAG, "User Priority Dialog Result = " + mPriority);
                         setPriorityButton(mPriority);
                     }
                 })
@@ -363,11 +380,11 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setupDialogDeleteTag() {
-            List<String> items = new ArrayList<String>();
+        List<String> items = new ArrayList<String>();
 
-            for (int i=0; i<mTagList.size(); i++) {       // Generate itemlist for dialog
-                items.add(mTagList.get(i).getName());
-            }
+        for (int i = 0; i < mTagList.size(); i++) {       // Generate itemlist for dialog
+            items.add(mTagList.get(i).getName());
+        }
 
             tagDeleteDialog = new MaterialDialog.Builder(this)
                     .title("Delete Tag")
@@ -434,13 +451,13 @@ public class EditorActivity extends AppCompatActivity {
         categorie_names = new ArrayList<>();
         categories = eventsManager.loadAllCategories();     // get all categories from DB
 
-        if(categories.size()>0){
+        if (categories.size() > 0) {
             mCategory = categories.get(0);
-        }else{
+        } else {
 
         }
 
-        for(int i=0; i<categories.size(); i++) {
+        for (int i = 0; i < categories.size(); i++) {
             categorie_names.add(categories.get(i).getName());
         }
 
@@ -460,7 +477,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void setCategoryButton(Category category) {
-        if(category == null) {
+        if (category == null) {
             category = eventsManager.getDefaultCategory();     // search Default Category
         }
 
@@ -489,25 +506,25 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
                 setBtn_pickDateText(btn_pickDateStart, currentStartDate, year, month, day_of_month);
-                if(!mEventtype && currentEndDate.before(currentStartDate)) {
+                if (!mEventtype && currentEndDate.before(currentStartDate)) {
                     setBtn_pickDateText(btn_pickDateEnd, currentEndDate, year, month, day_of_month);
                 }
             }
-        },startyear, startmonth, startday);
+        }, startyear, startmonth, startday);
 
         datePickerDialogEnd = new DatePickerDialog(EditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day_of_month) {
                 setBtn_pickDateText(btn_pickDateEnd, currentEndDate, year, month, day_of_month);
             }
-        },endyear, endmonth, endday);
+        }, endyear, endmonth, endday);
 
         initStartTimePicker(starthour, startminute);
         initEndTimePicker(endhour, endminute);
     }
 
     private void initStartTimePicker(int hour, int minute) {
-        btn_pickTime.setText(String.format("%02d:%02d",hour,minute));
+        btn_pickTime.setText(String.format("%02d:%02d", hour, minute));
 
         timePickerDialog = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
@@ -515,13 +532,13 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentStartDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentStartDate.set(Calendar.MINUTE, minute);
-                        btn_pickTime.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
-                        if (currentEndDate.before(currentStartDate))  {
+                        btn_pickTime.setText(String.format(Locale.GERMANY, "%02d:%02d", hourOfDay, minute));
+                        if (currentEndDate.before(currentStartDate)) {
                             btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hourOfDay, minute));
-                            currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY) <= 22 ? currentStartDate.get(Calendar.HOUR_OF_DAY) + 1 : currentStartDate.get(Calendar.HOUR_OF_DAY) );
+                            currentEndDate.set(Calendar.HOUR_OF_DAY, currentStartDate.get(Calendar.HOUR_OF_DAY) <= 22 ? currentStartDate.get(Calendar.HOUR_OF_DAY) + 1 : currentStartDate.get(Calendar.HOUR_OF_DAY));
                             currentEndDate.set(Calendar.MINUTE, currentStartDate.get(Calendar.HOUR_OF_DAY));
                         }
-                        timeEndPickerDialog.setMinTime(hourOfDay,minute,second);
+                        timeEndPickerDialog.setMinTime(hourOfDay, minute, second);
                     }
                 },
                 currentStartDate.get(Calendar.HOUR_OF_DAY),
@@ -531,7 +548,7 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void initEndTimePicker(int hour, int minute) {
-        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hour,minute));
+        btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hour, minute));
 
         timeEndPickerDialog = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
@@ -539,14 +556,14 @@ public class EditorActivity extends AppCompatActivity {
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
                         currentEndDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         currentEndDate.set(Calendar.MINUTE, minute);
-                        btn_pickTime_fin.setText(String.format(Locale.GERMANY,"%02d:%02d",hourOfDay,minute));
+                        btn_pickTime_fin.setText(String.format(Locale.GERMANY, "%02d:%02d", hourOfDay, minute));
                     }
                 },
                 currentEndDate.get(Calendar.HOUR_OF_DAY),
                 currentEndDate.get(Calendar.MINUTE),
                 true
         );
-        timeEndPickerDialog.setMinTime(currentStartDate.get(Calendar.HOUR_OF_DAY),currentStartDate.get(Calendar.MINUTE),currentStartDate.get(Calendar.SECOND));
+        timeEndPickerDialog.setMinTime(currentStartDate.get(Calendar.HOUR_OF_DAY), currentStartDate.get(Calendar.MINUTE), currentStartDate.get(Calendar.SECOND));
     }
 
 
@@ -554,10 +571,10 @@ public class EditorActivity extends AppCompatActivity {
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, month);
         date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        button.setText(dayOfMonth + "." + (int)(month+1) + "." + year);
+        button.setText(dayOfMonth + "." + (int) (month + 1) + "." + year);
     }
 
-    private void setupListeners(){
+    private void setupListeners() {
         btn_pickDateStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -568,9 +585,9 @@ public class EditorActivity extends AppCompatActivity {
         sw_allDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     changeVisibilityofTimePicker("User switched to allDay, disabling TimePicker", View.GONE, false);
-                } else{
+                } else {
                     changeVisibilityofTimePicker("User switched to on same day, enabling TimePicker", View.VISIBLE, true);
                 }
             }
@@ -587,14 +604,14 @@ public class EditorActivity extends AppCompatActivity {
         btn_pickTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timePickerDialog.show(getFragmentManager(),"timeStartPickerDialog");
+                timePickerDialog.show(getFragmentManager(), "timeStartPickerDialog");
             }
         });
 
         btn_pickTime_fin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timeEndPickerDialog.show(getFragmentManager(),"timeEndPickerDialog");
+                timeEndPickerDialog.show(getFragmentManager(), "timeEndPickerDialog");
             }
         });
 
@@ -615,10 +632,10 @@ public class EditorActivity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(verifyEvent()){
+                if (verifyEvent()) {
                     saveEvent();
                 } else {
-                    Toast.makeText(getApplicationContext(),"Event has no Title!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.noTitelChoosenToast, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -654,11 +671,11 @@ public class EditorActivity extends AppCompatActivity {
         btn_tag_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mTagList != null && mTagList.size() > 0) {           // If Taglist is empty
+                if (mTagList != null && mTagList.size() > 0) {           // If Taglist is empty
                     setupDialogDeleteTag();         // Refresh the item-list
                     tagDeleteDialog.show();
                 } else {
-                    Toast.makeText(getApplicationContext(),"Event doesn't have any Tag.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.noTagsToast, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -688,7 +705,7 @@ public class EditorActivity extends AppCompatActivity {
     private void setTagTextView() {
         tv_tags.setText("");
 
-        if(mTagList != null) {
+        if (mTagList != null) {
             for (int i = 0; i < mTagList.size(); i++) {
                 tv_tags.setText(tv_tags.getText() + " " + "#" + mTagList.get(i).getName());
             }
@@ -703,6 +720,7 @@ public class EditorActivity extends AppCompatActivity {
     /**
      * EditText in notecontainer
      * text = null -> Empty text
+     *
      * @param text
      */
     private void addNote(String text) {
@@ -714,7 +732,7 @@ public class EditorActivity extends AppCompatActivity {
         layoutParams.setMargins(0, 10, 0, 0);
         et.setLayoutParams(layoutParams);
 
-        if(text != null) {
+        if (text != null) {
             et.setText(text);
         }
         et.setHint(R.string.layout_editor_notehint);
@@ -745,7 +763,7 @@ public class EditorActivity extends AppCompatActivity {
                 case CONTACT_PICKER:
                     btn_chooseAction.setText("Action: CALL");
                     ContactHelper c = new ContactHelper();
-                    c.contactPicked(getApplicationContext(),data);
+                    c.contactPicked(getApplicationContext(), data);
                     Action action = new Action();
                     action.setType(Action.TYPE_CALL);
                     action.setData(c.getNumber());
@@ -766,12 +784,12 @@ public class EditorActivity extends AppCompatActivity {
                         new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                 startActivityForResult(contactPickerIntent, CONTACT_PICKER);
             } else {
-                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.contactPickerDeniedToast, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-     // This method calls the EventsManager to store the current Event
+    // This method calls the EventsManager to store the current Event
     private void saveEvent() {
         //Extra temp_event to save an update into realm. We cannot overwrite an already existing realm_event
         temp_event = new Event();
@@ -791,7 +809,7 @@ public class EditorActivity extends AppCompatActivity {
         //set startdate
         temp_event.setStart(currentStartDate.getTime());
 
-        if(!mEventtype) {
+        if (!mEventtype) {
             temp_event.setEnd(currentEndDate.getTime());
         }
 
@@ -813,18 +831,18 @@ public class EditorActivity extends AppCompatActivity {
         //set action
         temp_event.setAction(mAction);
 
-        if(realm_event == null) {
+        if (realm_event == null) {
             //Save realm_event into Database
             realm_event = new Event();
             realm_event = temp_event;
             eventsManager.writeEvent(realm_event);
 
             //Creates notification
-            if(useRememberNotification){
+            if (useRememberNotification) {
                 NotificationAlarmHandler.setNotification(this, temp_event);
             }
 
-            Toast.makeText(getApplicationContext(),"Saved Event", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.saveEventToast, Toast.LENGTH_LONG).show();
         } else {
 
             //Cancels previous notification in any case.
@@ -835,11 +853,11 @@ public class EditorActivity extends AppCompatActivity {
             eventsManager.updateEvent(temp_event, eventID);
 
             //Creates notification if wanted
-            if(useRememberNotification){
+            if (useRememberNotification) {
                 NotificationAlarmHandler.setNotification(this, temp_event);
             }
 
-            Toast.makeText(getApplicationContext(),"Updated Event", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.updateEventToast, Toast.LENGTH_LONG).show();
 
             temp_event = null;
         }
@@ -850,8 +868,8 @@ public class EditorActivity extends AppCompatActivity {
     //Method to filter notes with text. We don't want to store empty notes
     private List<Notes> filterNotes() {
         List<Notes> retNotes = new ArrayList<Notes>();
-        for (EditText et_note:
-            layout_notelist) {
+        for (EditText et_note :
+                layout_notelist) {
             //no need to add empty Notes
             if (et_note.getText().toString().trim().isEmpty())
                 continue;
@@ -865,6 +883,7 @@ public class EditorActivity extends AppCompatActivity {
 
     /**
      * This method validates every input and return true if the Event can be saved
+     *
      * @return isValid
      */
     private boolean verifyEvent() {
@@ -882,5 +901,31 @@ public class EditorActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         eventsManager.close();
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public com.google.android.gms.appindexing.Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Editor Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new com.google.android.gms.appindexing.Action.Builder(com.google.android.gms.appindexing.Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(com.google.android.gms.appindexing.Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 }
