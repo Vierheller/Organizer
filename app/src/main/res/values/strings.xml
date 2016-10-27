@@ -9,7 +9,7 @@
     <string name="title_activity_task">TaskActivity</string>
     <string name="search_title">Suche</string>
     <string name="search_schließen">Schließenquit</string>
-    <string name="search_hint">Search Query</string>
+    <string name="search_hint">Suchabfrage</string>
     <string name="layout_eventName">Name des Eintrags</string>
     <string name="layout_hint_eventName">Name</string>
     <string name="layout_dateTime">Datum und Uhrzeit</string>
