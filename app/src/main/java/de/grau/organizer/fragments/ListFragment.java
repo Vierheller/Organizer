@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import de.grau.organizer.R;
@@ -119,10 +120,24 @@ public class ListFragment extends Fragment {
         listView.setAdapter(mAdapter);
 
         setupListeners();
-
+        jumpToPosition();
         return view;
     }
+    private void jumpToPosition(){
+        for(int i = 0; events.size()> i; i++){
+            if((events.get(i).getTime(Event.DateTime.START, Calendar.YEAR)) == (Calendar.getInstance().get(Calendar.YEAR))){
+                listView.setSelection(i);
+                if((events.get(i).getTime(Event.DateTime.START, Calendar.MONTH)) >= (Calendar.getInstance().get(Calendar.MONTH))){
+                    listView.setSelection(i);
+                    if ((events.get(i).getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH)) >= (Calendar.getInstance().get(Calendar.DAY_OF_MONTH))){
+                        listView.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        }
 
+    }
     private void setupListeners() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
