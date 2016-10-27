@@ -5,10 +5,12 @@
 
     <TextView
         android:text="@string/remember_interval_min"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="18sp"
+        android:textAlignment="center" />
 
     <NumberPicker
         android:layout_width="match_parent"
