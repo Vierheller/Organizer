@@ -94,5 +94,12 @@
     <string name="deletedSnack">Löschen erfolgreich!</string>
     <string name="defaultDate">24.12.2016</string>
     <string name="defaultDate2">24.12.2016</string>
+    <string name="duration">Dauer</string>
+    <string name="time_to_event">Zeit bis Termin</string>
+    <string name="minutes">Minute(n)</string>
+    <string name="hours">Stunde(n)</string>
+    <string name="event_is_active">aktiv</string>
+    <string name="event_in_past">in Vergangenheit</string>
+    <string name="days">Tage</string>
 </resources>
  
