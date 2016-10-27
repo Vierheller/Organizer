@@ -226,7 +226,7 @@ public class WeekFragment extends Fragment {
         SimpleDateFormat dty = new SimpleDateFormat("dd.MM.yyyy");
         String dateEnd = dty.format(mCalEnd.getTime());
         Log.d(LOG_TAG, "Events to show: " + events.size());
-        mWeekInfoTextView.setText("Week: " + mCalStart.get(Calendar.WEEK_OF_YEAR) + "\n" + dateStart + " - " + dateEnd);
+        mWeekInfoTextView.setText("Woche: " + mCalStart.get(Calendar.WEEK_OF_YEAR) + "\n" + dateStart + " - " + dateEnd);
         mWeekView.setupEvents(events);
         mWeekView.drawCurrentSpace();
     }
