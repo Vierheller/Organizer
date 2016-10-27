@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IntRange;
 import android.support.v4.app.Fragment;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -213,7 +214,7 @@ public class WeekFragment extends Fragment {
         mCalEnd.set(Calendar.MINUTE, mCalEnd.getActualMaximum(Calendar.MINUTE));
         mCalEnd.set(Calendar.SECOND, mCalEnd.getActualMaximum(Calendar.SECOND));
     }
-
+    
     /**
      * This method can be used to redraw the events or increment, decrement the view
      * @param weeks 0 to redraw, 1 to go to the next week, -1 is the week before the current set week
