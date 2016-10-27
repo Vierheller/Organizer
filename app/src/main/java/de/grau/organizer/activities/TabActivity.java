@@ -73,9 +73,18 @@ public class TabActivity extends AppCompatActivity {
         eventsManager = new EventsManagerRealm();
         eventsManager.open();
 
-        Intent intent = getIntent();
+    }
+
+    /**
+     * onNewIntent receives and processes new intents for this activity
+     * @param intent used for performing a search
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
         handleIntent(intent);
     }
+
 
     /**
      * Method setups the Fragments of TabActivity (month, week, list)
