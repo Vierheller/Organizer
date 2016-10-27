@@ -2,6 +2,7 @@ package de.grau.organizer.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -18,7 +20,8 @@ import de.grau.organizer.classes.Event;
 
 /**
  * Simple Adapter for event data, extends ArrayAdapter<Event>
- * Adapter may be used to fill a list
+ * Adapter may be used to fill a list, through the constructor it is able to choose between
+ * a layout with or without dates
  */
 
 public class EventsListAdapter extends ArrayAdapter<Event> {
@@ -37,8 +40,8 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
      * List of events is set for this adapter instance
      * @param context
      * @param resource
-     * @param objects
-     * @param hasDate
+     * @param objects List of Events as data for the adapter
+     * @param hasDate Determines if a layout with date is chosen or just with time
      */
     public EventsListAdapter(Context context, int resource, List<Event> objects, boolean hasDate) {
         super(context, resource, objects);
@@ -54,15 +57,18 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
     /**
      * Overridden getView
      * Gets all ui Elements for the given rowLayout and sets the data corresponding to the selected event
-     * @param position
+     * Rowlayout is determined by value set to hasDate
+     * @param position position of current cell
      * @param convertView
-     * @param parent
+     * @param parent hierarchical parent of thi view
      * @return
      */
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY);
+
         int layoutId = 0;
         if(hasDate) {
             layoutId = R.layout.eventslist_row_with_date;
@@ -84,20 +90,23 @@ public class EventsListAdapter extends ArrayAdapter<Event> {
         title.setText(event.getName());
 
         start.setText("");
+        end.setText("");
+
 
         if (event.getStart()!=null){
             start.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.START,Calendar.MINUTE)));
             if(hasDate) {
                 startDate.setText("");
-                startDate.setText(event.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH) + "." + event.getTime(Event.DateTime.START, Calendar.MONTH) + 1 + "." + event.getTime(Event.DateTime.START, Calendar.YEAR));
+                startDate.setText(dt.format(event.getStart()));
             }
         }
-        end.setText("");
-        if ((event.getEnd()!=null) && (!event.getTask())){
+
+        //Tasks only have a start date, no end date needed
+        if (event.getEnd()!=null) {
             end.setText(String.format(Locale.GERMANY,"%02d:%02d",event.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY),event.getTime(Event.DateTime.END,Calendar.MINUTE)));
-            if(hasDate) {
+            if((hasDate) && (!event.getTask())) {
                 endDate.setText("");
-                endDate.setText(event.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH) + "." + event.getTime(Event.DateTime.END, Calendar.MONTH) + 1 + "." + event.getTime(Event.DateTime.END, Calendar.YEAR));
+                endDate.setText(dt.format(event.getEnd()));
             }
         }
         category.setText("");
