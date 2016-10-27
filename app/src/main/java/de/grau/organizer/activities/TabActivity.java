@@ -335,14 +335,6 @@ public class TabActivity extends AppCompatActivity {
             startSettingsActivity();
         }
 
-        // This is only a developer option
-        if (BuildConfig.DEBUG) {
-            if (id == R.id.action_test_events) {
-                generateTestEvents(100);
-                Toast.makeText(this, R.string.createTestEventsToast, Toast.LENGTH_LONG).show();
-            }
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -353,28 +345,30 @@ public class TabActivity extends AppCompatActivity {
      * @param count
      */
     public void generateTestEvents(int count){
-        Category testcategory = new Category("Test Category");
-        for (int i = 0; i < count; i++) {
-            Random r = new Random();
-            Event tmp = new Event();
-            tmp.setName("Test #"+i);
-            tmp.setCategory(testcategory);
-            tmp.setDescription("Test Description #"+i);
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.MONTH,r.nextInt(cal.getActualMaximum(Calendar.MONTH)-cal.getActualMinimum(Calendar.MONTH))+cal.getActualMinimum(Calendar.MONTH));
-            cal.set(Calendar.DAY_OF_MONTH,i%cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-            cal.set(Calendar.HOUR_OF_DAY,r.nextInt(cal.getActualMaximum(Calendar.HOUR_OF_DAY)-cal.getActualMinimum(Calendar.HOUR_OF_DAY))+cal.getActualMinimum(Calendar.HOUR_OF_DAY));
-            tmp.setStart(cal.getTime());
-            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY)+1);
-            tmp.setEnd(cal.getTime());
+        if (BuildConfig.DEBUG) {
+            Category testcategory = new Category("Test Category");
+            for (int i = 0; i < count; i++) {
+                Random r = new Random();
+                Event tmp = new Event();
+                tmp.setName("Test #" + i);
+                tmp.setCategory(testcategory);
+                tmp.setDescription("Test Description #" + i);
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.MONTH, r.nextInt(cal.getActualMaximum(Calendar.MONTH) - cal.getActualMinimum(Calendar.MONTH)) + cal.getActualMinimum(Calendar.MONTH));
+                cal.set(Calendar.DAY_OF_MONTH, i % cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+                cal.set(Calendar.HOUR_OF_DAY, r.nextInt(cal.getActualMaximum(Calendar.HOUR_OF_DAY) - cal.getActualMinimum(Calendar.HOUR_OF_DAY)) + cal.getActualMinimum(Calendar.HOUR_OF_DAY));
+                tmp.setStart(cal.getTime());
+                cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + 1);
+                tmp.setEnd(cal.getTime());
 
-            tmp.setDescription("Test Description #"+i);
+                tmp.setDescription("Test Description #" + i);
 
 
-            tmp.setPriority(r.nextInt(5 - 1) + 1);
+                tmp.setPriority(r.nextInt(5 - 1) + 1);
 
-            eventsManager.writeEvent(tmp);
+                eventsManager.writeEvent(tmp);
 
+            }
         }
     }
 
