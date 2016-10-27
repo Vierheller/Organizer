@@ -87,6 +87,9 @@ public class TaskActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Initilizes GUI of TaskActivity with all needed buttons.
+     */
     private void initializeGUI() {
         tv_title            =       (TextView) findViewById(R.id.task_tv_title);
         tv_description      =       (TextView) findViewById(R.id.task_tv_description);
@@ -104,6 +107,9 @@ public class TaskActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    /**
+     * creates onClickListeners for all Buttons in this View
+     */
     private void setupListeners() {
 
         btn_edit.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +161,9 @@ public class TaskActivity extends AppCompatActivity {
         });
     }
 
-    //TODO
+    /**
+     * If the Permission is granted for calling a number it will start the call.
+     */
     private void call(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)) {
             // TODO: Consider calling
@@ -176,6 +184,14 @@ public class TaskActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method checks the permissions-array of onRequestPermissionResult for granted permissions
+     * and if it is successful, it will start the Method call;
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
         if(requestCode == PERMISSIONS_REQUEST_CALL_PHONE
@@ -188,7 +204,12 @@ public class TaskActivity extends AppCompatActivity {
     }
 
 
-    // This method checks the permissions-array of onRequestPermissionResult for granted permissions
+    /**
+     * This method checks the permissions-array of onRequestPermissionResult for granted permissions
+     * @param array
+     * @param requestedPermission
+     * @return if Permission is granted
+     */
     boolean checkArrayContainsPermission(String[] array, String requestedPermission){
         for (String permission: array) {
             //This checks is the searched permission is granted
@@ -208,13 +229,13 @@ public class TaskActivity extends AppCompatActivity {
             btn_executeAction.setText("Call: "+mEvent.getAction().getData());
         }
         tv_startDate.setText((mEvent.getTime(Event.DateTime.START, Calendar.DAY_OF_MONTH)) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.MONTH)+1) + "." + (mEvent.getTime(Event.DateTime.START, Calendar.YEAR)));
-        setCorrectTime(mEvent.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY)+"", mEvent.getTime(Event.DateTime.START, Calendar.MINUTE)+"", tv_startTime );
+        tv_startTime.setText(String.format("%02d", mEvent.getTime(Event.DateTime.START, Calendar.HOUR_OF_DAY)) +":" + String.format("%02d",mEvent.getTime(Event.DateTime.START, Calendar.MINUTE)));
         if(mEvent.getTask()){
             tv_endTime.setVisibility(View.GONE);
             tv_endDate.setVisibility(View.GONE);
         }else {
             tv_endDate.setText((mEvent.getTime(Event.DateTime.END, Calendar.DAY_OF_MONTH)) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.MONTH)+1) + "." + (mEvent.getTime(Event.DateTime.END, Calendar.YEAR)));
-            setCorrectTime(mEvent.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY)+"",mEvent.getTime(Event.DateTime.END, Calendar.MINUTE)+"", tv_endTime );
+            tv_endTime.setText(String.format("%02d", mEvent.getTime(Event.DateTime.END, Calendar.HOUR_OF_DAY)) +":" + String.format("%02d",mEvent.getTime(Event.DateTime.END, Calendar.MINUTE)));
         }
         tv_description.setText(mEvent.getDescription());
         tv_duration_value.setText(getDurationOfEvent(mEvent));
@@ -222,7 +243,12 @@ public class TaskActivity extends AppCompatActivity {
         addNotesToGui();
     }
 
-
+    /**
+     * This Methods returns the Time, till the Event starts in HH:mm format.
+     * @param event
+     * @param nowTime
+     * @return The Time till the Event starts.
+     */
     private String getTimeUntilEventStarts(Event event, Calendar nowTime){
         long startTime = event.getStart().getTime();
         long endTime = event.getEnd().getTime();
@@ -273,23 +299,6 @@ public class TaskActivity extends AppCompatActivity {
         }
 
         return timeString;
-    }
-
-    /**
-     * Displays the current time in HH:mm.
-     * Adds a zero too the String if it has the length one.
-     *
-     * @param hour Hour of Time which should be displayed
-     * @param min   Minute of Time, which should be displayed
-     * @param textView TextView in which the Text is going to be shown.
-     */
-    private void setCorrectTime(String hour, String min, TextView textView ){
-        if(hour.length() < 2){
-            hour = "0"+hour;}
-        if(min.length() < 2){
-            min = "0" + min;
-        }
-        textView.setText(hour +":"+ min);
     }
 
     /**

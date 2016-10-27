@@ -69,9 +69,9 @@ public class Event extends RealmObject{
     public String getShortSummary(){
         SimpleDateFormat dt = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.GERMANY);
         if (isTask){
-            return this.name + " | " + this.category.getName() + "\r\n" + this.description + "\r\nStart:" + dt.format(this.start);
+            return String.format("%1.20s",this.name) + " | " + String.format("%1.30s",this.category.getName()) + "\r\n" + String.format("%1.30s",this.description) + "\r\nStart:" + dt.format(this.start);
         }else {
-            return this.name + " | " + this.category.getName() + "\r\n" + this.description + "\r\nStart:" + dt.format(this.start) + "\r\nEnde:" + dt.format(this.end);
+            return String.format("%1.20s",this.name) + " | " + String.format("%1.30s",this.category.getName()) + "\r\n" + String.format("%1.30s",this.description) + "\r\nStart:" + dt.format(this.start) + "\r\nEnde:" + dt.format(this.end);
         }
     }
 
