@@ -379,15 +379,23 @@ class EventWeekView extends RelativeLayout {
             @Override
             public void run() {
                 Log.d(DEBUG_TAG, "Changing to UI Thread");
-                weekFragment.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
+                if(weekFragment!= null ){
+                    if(weekFragment.getActivity() != null){
+                        weekFragment.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(DEBUG_TAG, "will draw horizon on UI Thread");
 
-                        currentTimeHorizon();
-                        Log.d(DEBUG_TAG, "drew horizon on UI Thread");
+                                currentTimeHorizon();
+                                Log.d(DEBUG_TAG, "drew horizon on UI Thread");
+                            }
+                        });
+                    }else{
+                        Log.d(DEBUG_TAG, "weekfragment is not null, but there is no parent activity");
                     }
-                });
+                }else{
+                    Log.d(DEBUG_TAG, "weekfragment is null");
+                }
             }
         }, mHorizonInterval, mHorizonInterval);
     }
