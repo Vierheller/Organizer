@@ -128,7 +128,7 @@ public class MonthFragment extends Fragment implements OnDateSelectedListener, O
         mCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
         mListView = (ListView) view.findViewById(R.id.month_list_view);
 
-        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>());
+        mListViewAdapter = new EventsListAdapter(mActivity, R.layout.eventslist_row, new ArrayList<Event>(), false);
 
         mListView.setAdapter(mListViewAdapter);
 

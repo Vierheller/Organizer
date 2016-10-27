@@ -76,4 +76,6 @@
     <string name="eventlist_row_category_text">Kategorie</string>
     <string name="weekViewEventTitle">Event</string>
     <string name="weekViewEventTime">Zeit</string>
+    <string name="defaultDate">24.12.2016</string>
+    <string name="defaultDate2">24.12.2016</string>
 </resources>
