@@ -22,7 +22,9 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by Vierheller on 27.09.2016.
+ * Instance of database Handler
+ * Implements the EventsManager Interface
+ * Handles all actions related to the database
  */
 
 public class EventsManagerRealm implements EventsManager {
@@ -86,9 +88,9 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Retrieves a list of events where startdate
      * lies in given year and month
-     * @param year
-     * @param month
-     * @return
+     * @param year year for this intervall
+     * @param month month for this intervall
+     * @return all Events of selected TimeFrame
      */
     @Override
     public List<Event> getEvents(int year, int month){
@@ -122,8 +124,8 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Retrieves all events for a given category
-     * @param category
-     * @return
+     * @param category Category to query events for
+     * @return List of Events containing this category
      */
     @Override
     public List<Event> getEvents(Category category) {
@@ -138,10 +140,10 @@ public class EventsManagerRealm implements EventsManager {
      * Retrieves a list of events where
      * startDate lies in given month and year
      * and priority equals given priority
-     * @param month
-     * @param year
-     * @param priority
-     * @return
+     * @param month month of intervall
+     * @param year year of intervall
+     * @param priority priority to be retrieved
+     * @return List of events which matches given criteria
      */
     @Override
     public List<Event> getEvents(int month,int year, int priority) {
@@ -175,7 +177,7 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Returns a list of events for given list of tags
-     * @param tags
+     * @param tags List of tags which are used to find the events
      * @return
      */
     @Override
@@ -197,7 +199,7 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Returns RealmResults of all available events stored in database
      * Those RealmResults are still activly bound to database and can be watched via Listener
-     * @return
+     * @return List of Events in a RealResult Collection
      */
     @Override
     public RealmResults<Event> getRealmEventList() {
@@ -209,8 +211,8 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Returns a specific event via given eventID
      * If no event was found null is returned
-     * @param eventId
-     * @return
+     * @param eventId eventId query database for
+     * @return Event if found or null
      */
     @Override
     public Event loadEvent(String eventId) {
@@ -220,6 +222,11 @@ public class EventsManagerRealm implements EventsManager {
         return result;
     }
 
+    /**
+     * Retrieves a category by given categoryId
+     * @param categoryId id query database for
+     * @return Category if found or null
+     */
     @Override
     public Category getCategory(String categoryId) {
         RealmQuery<Category> query = realm.where(Category.class);
@@ -229,10 +236,10 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     /**
-     * Returns a RealmQuery containing all Category in database
-     * containing the given category
-     * @param category
-     * @return
+     * Returns a RealmQuery containing one Category in database
+     * where the category name matches given name
+     * @param category name to search for
+     * @return Category or null
      */
     @Override
     public Category getCategoryByName(String category) {
@@ -242,9 +249,8 @@ public class EventsManagerRealm implements EventsManager {
     }
 
     /**
-     * Returns a list of all categorys
-     * Sorted by name asc
-     * @return
+     * Returns a list of all categories
+     * @return List sorted by name asc
      */
     @Override
     public List<Category> loadAllCategories() {
@@ -254,7 +260,10 @@ public class EventsManagerRealm implements EventsManager {
         return categories;
     }
 
-    // All categories without default category
+    /**
+     * Retrieves a List<Category> of all categories which are allowed to delete
+     * @return List sorted by name asc
+     */
     @Override
     public List<Category> loadAllDeleteableCategories() {
         List<Category> categories;
@@ -266,7 +275,7 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Returns the default category "Allgemein"
-     * @return
+     * @return Object<Category> with "Allgemein"
      */
     @Override
     public Category getDefaultCategory() {
@@ -278,7 +287,7 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Removes a category for a given id
      *
-     * @param categoryId
+     * @param categoryId id of Category to be delteted
      * @return false if category is still in use, true if category could be deleted
      */
     @Override
@@ -299,7 +308,7 @@ public class EventsManagerRealm implements EventsManager {
     /**
      * Deletes an event from database for given id
      * @param eventId
-     * @return
+     * @return false if event is not found, true if event is deleted
      */
     @Override
     public boolean deleteEvent(String eventId) {
@@ -329,8 +338,8 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Updates the event specified by eventId with the data contained in event_data
-     * @param event_data
-     * @param eventId
+     * @param event_data new data for this eventId
+     * @param eventId eventId of event to be updated
      */
     @Override
     public void updateEvent(Event event_data, String eventId) {
@@ -340,6 +349,11 @@ public class EventsManagerRealm implements EventsManager {
         realm.commitTransaction();
     }
 
+    /**
+     * Updates the category of given event
+     * @param event Event to be updated
+     * @param category new Category to be set
+     */
     @Override
     public void updateCategoryOfEvent(Event event, Category category) {
         realm.beginTransaction();
@@ -350,7 +364,7 @@ public class EventsManagerRealm implements EventsManager {
 
     /**
      * Writes a given category to database
-     * @param category
+     * @param category to be stored
      */
     @Override
     public void writeCategory(final Category category) {
@@ -368,7 +382,9 @@ public class EventsManagerRealm implements EventsManager {
     public static void init(Context context) {
         // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
         Realm.init(context);
-        RealmConfiguration config = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                                        .deleteRealmIfMigrationNeeded()
+                                        .build();
         Realm.setDefaultConfiguration(config);
     }
 
@@ -386,8 +402,8 @@ public class EventsManagerRealm implements EventsManager {
      * Used to perform a search for events
      * All events are returned where the field [name, description, category] contains given search string
      * Search is limited to 50 results
-     * @param search
-     * @param limit
+     * @param search string to be searched
+     * @param limit restricts the amount of searchresults up to this limits
      * @return
      */
     @Override

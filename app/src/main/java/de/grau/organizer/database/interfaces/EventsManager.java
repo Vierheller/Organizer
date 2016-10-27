@@ -15,6 +15,7 @@ import io.realm.RealmResults;
 /**
  * Interface for an EventsManager
  * Used to abstract the actual EventsManager instance from a specific database
+ * All database Handlers need to implement this interface
  */
 
 public interface EventsManager {
@@ -27,7 +28,7 @@ public interface EventsManager {
     List<Event> getEvents(CalendarDay calDate);
     List<Event> getEvents(int year, int month);
     List<Event> searchEvents(String search, int limit);
-    RealmResults<Event> getRealmEventList();
+    List<Event> getRealmEventList();
 
     Event loadEvent(String eventId);
 

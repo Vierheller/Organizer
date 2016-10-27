@@ -9,6 +9,8 @@ import android.provider.ContactsContract;
 
 /**
  * Helper class for extracting needed information for an action
+ * Extracts the Name, first phone number and email adress  from given intent if available
+ *
  */
 
 public class ContactHelper {

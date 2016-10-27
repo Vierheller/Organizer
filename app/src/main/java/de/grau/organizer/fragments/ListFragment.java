@@ -102,16 +102,16 @@ public class ListFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.fragment_list_listview);
 
-        RealmResults<Event> realmList  = mActivity.eventsManager.getRealmEventList();
+        List<Event> realmList  = mActivity.eventsManager.getRealmEventList();
 
         events = realmList;
 
-        realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
+        /*realmList.addChangeListener(new RealmChangeListener<RealmResults<Event>>() {
             @Override
             public void onChange(RealmResults<Event> element) {
                 mAdapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
         mAdapter = new EventsListAdapter(getActivity(), R.layout.eventslist_row, events, true);
 
