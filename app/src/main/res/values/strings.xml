@@ -112,7 +112,7 @@
     <string name="ActionNotExecSnack">Aktion kann nicht durchgeführt werden!</string>
     <string name="deletedSnack">Löschen erfolgreich!</string>
     <string name="editor_error_contact">Problem während der Kontaktwahl</string>
-
+    <string name="action_sync_ics">Synchronisiere mit ICS</string>
 
 
 </resources>

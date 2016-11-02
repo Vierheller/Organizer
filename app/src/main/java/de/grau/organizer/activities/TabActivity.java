@@ -32,11 +32,16 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import biweekly.component.VEvent;
 import de.grau.organizer.BuildConfig;
 import de.grau.organizer.R;
 import de.grau.organizer.adapters.SectionsPagerAdapter;
@@ -44,6 +49,7 @@ import de.grau.organizer.classes.Category;
 import de.grau.organizer.classes.Event;
 import de.grau.organizer.database.EventsManagerRealm;
 import de.grau.organizer.database.interfaces.EventsManager;
+import de.grau.organizer.ics.ICSHelper;
 
 public class TabActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = AppCompatActivity.class.getCanonicalName();
@@ -335,7 +341,43 @@ public class TabActivity extends AppCompatActivity {
             startSettingsActivity();
         }
 
+        if(id == R.id.action_sync_ics){
+            generateEventsFromICSFile();
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void generateEventsFromICSFile(){
+        InputStream fileStream = getResources().openRawResource(R.raw.my_ics);
+        String file = null;
+        List <VEvent> events = null;
+        try {
+            file = readInputStream(fileStream);
+            events = ICSHelper.getICSEvent(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(file == null || events == null)
+            return;
+        Category category = new Category("Vorlesung");
+        for (VEvent vEvent:
+             events) {
+            Event event = ICSHelper.convertVEventToEvent(vEvent);
+            event.setCategory(category);
+            eventsManager.writeEvent(event);
+        }
+    }
+
+    private String readInputStream(InputStream inputStream) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line+"\r\n");
+        }
+        return builder.toString();
     }
 
     /**
